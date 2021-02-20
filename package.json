@@ -1,0 +1,20 @@
+{
+  "name": "newcompoundgame",
+  "version": "1.0.0",
+  "description": "This is it world I am starting over because I don't know jQuery",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github/com/Multiplayer-Games-CS-Comps-Group/server.git"
+  },
+  "author": "Lydia Chau",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^3.1.1"
+  }
+}

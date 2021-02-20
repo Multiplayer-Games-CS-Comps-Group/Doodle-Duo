@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Compound Game</title>
+   </head>
+
+   <body>
+       <h1>Compound Game</h1>
+    
+        <div class="buttons">
+
+                <button onclick = "createButtonClicked()">CREATE</button>
+                <button onclick ="joinButtonClicked()">JOIN</button>
+                <div style="clear:both"></div>
+        </div>
+
+        <p id="gameId"> </p>
+        <p id="buttonCount"> The game room Id is .</p>
+        <p id='userJoin'> </p>
+
+        <script src= "/socket.io/socket.io.js"></script>
+
+        <!--initialize socket object so clients can establish connections-->
+        <script>
+            //var socket = io('/my-namespcae');
+            var socket = io();
+
+            //on connection to server, ask for user's name with an anonymous callback
+            socket.on('connect', function(){
+                // call the server-side function 'adduser' and send one parameter (value of prompt)
+                socket.emit('adduser', prompt("What's your name?"));
+            });
+
+            function createButtonClicked(){
+                    console.log('create button clicked');
+                    socket.emit('createClicked');
+            }
+            
+            function joinButtonClicked(){
+                console.log('join button clicked');
+                socket.emit('joinClicked');
+            }
+
+            socket.on('gameRoomNo', function(data){
+                        document.getElementById("buttonCount").innerHTML = 'The game room Id is ' + data + ' .';
+            });
+
+            socket.on('updateusers',function(data){
+                document.getElementById("userJoin").innerHTML = data + ' has joined.';
+            })
+            //    socket.on('newclientconnect',function(data){
+            //        document.body.innerHTML = '';
+            //        document.write(data.description);
+            //    });
+
+            //    socket.on('connectToRoom',function(data){
+            //        document.body.innerHTML = '';
+            //        document.write(data);
+            //    })
+
+            socket.on('connect_failed', function(){
+                document.write("sorry, issue with connection.");
+            })
+        </script>
+
+    </body>
+   
+</html>

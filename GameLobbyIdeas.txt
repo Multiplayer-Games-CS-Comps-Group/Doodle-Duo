@@ -1,0 +1,50 @@
+		
+
+	
+ - Homepage needs Join and Create buttons along with Name Input
+	- Name input box where people can put their name
+	- If box is empty when someone tries to create or join a room, error is thrown
+	- Name from textbox is set as playerName for future game pages.
+
+	
+	- On Create Room button press:
+		- Create page /w[ID] for some generated ID not already used
+		- Send person who clicked it to /w[ID]
+			- Provided you have a valid name input in the name box.
+		- This person has start/kick/whatever privelages for the room.
+
+	- Join button opens text input for ID
+	- If ID is valid, send person to /w[ID]
+	- If ID is not valid, error message.
+	- If room is full, error message -- "room is full" or something.
+
+	- Create a Waiting for Game Lobby instance
+	- Set creator as host
+	- Creator has access to the start game button
+		- No one else has access to start game button
+		- When pressed, start game button removes the /w[ID] page from the server
+		  and sends all connected players to /[ID] which will have tessa's stuff.
+
+	- As people join game instance, name updates on current roster
+		- Ensure it works when people leave
+	- 
+
+	* Homepage will be something like compound.com/home
+	* Game instances will be compound.com/[ID]
+	* Game instance waiting room will be compound.com/w[ID]
+
+	*
+
+	
+
+	[Generic Lobby Code exists somewhere not accessable by users]
+
+	[Copy of Generic Lobby Code at /w[ID] created when someone clicks Create Button]
+	- Players
+	- ID
+	- Host ID, etc.
+
+	[Lobby Master].html
+	[LobbyXXX].html <---- ongoing lobby
+	[LobbyABCD].html <---- ongoing lobby
+
