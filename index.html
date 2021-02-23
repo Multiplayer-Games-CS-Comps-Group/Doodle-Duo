@@ -6,49 +6,105 @@
    </head>
 
    <body>
-       <h1>Compound Game</h1>
+       <div id= 'InitialScreen'>
+        <h1>Compound Game</h1>
     
-        <div class="buttons">
+            <div class="buttons">
 
                 <button onclick = "createButtonClicked()">CREATE</button>
-                <button onclick ="joinButtonClicked()">JOIN</button>
-                <div style="clear:both"></div>
+                <div>OR</div>
+                <div>
+                    <input type='text' placeholder = 'Enter Room Id' id = 'roomIdInput'/>
+                    <button onclick ="joinButtonClicked()">JOIN</button>
+                </div>
+                
+                
+            </div>
         </div>
 
-        <p id="gameId"> </p>
-        <p id="buttonCount"> The game room Id is .</p>
-        <p id='userJoin'> </p>
+        <div id= 'waitingRoomforHost'>
+            <h1>Compound Game</h1>
+            <p id="gameId"> </p>
+            <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
+            <p id='userJoin'> </p>
 
+        </div>
+        <div id = 'example'>
+            <h3>Example</h3>
+        </div>
+        
         <script src= "/socket.io/socket.io.js"></script>
 
         <!--initialize socket object so clients can establish connections-->
         <script>
             //var socket = io('/my-namespcae');
+            let playerNumber = 0;
             var socket = io();
+            const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+            const roomInput= document.getElementById('roomIdInput');
 
             //on connection to server, ask for user's name with an anonymous callback
             socket.on('connect', function(){
                 // call the server-side function 'adduser' and send one parameter (value of prompt)
-                socket.emit('adduser', prompt("What's your name?"));
+                document.getElementById('InitialScreen').style.display = 'block';
+                document.getElementById('waitingRoomforHost').style.display = 'none';
+                document.getElementById('example').style.display = 'none';
+                //socket.emit('adduser', prompt("What's your name?"));
             });
 
             function createButtonClicked(){
-                    console.log('create button clicked');
-                    socket.emit('createClicked');
+                console.log('create button clicked');
+                socket.emit('createClicked');
+                init();
+                
             }
             
             function joinButtonClicked(){
-                console.log('join button clicked');
-                socket.emit('joinClicked');
+                const joinRoomId = roomInput.value;
+                console.log('join button clicked' + joinRoomId);
+                socket.emit('joinClicked',joinRoomId);
+                init();
+            }
+
+            function init(){
+                console.log('button clicked');
+                // document.getElementById('InitialScreen').style.display = 'none';
+                // document.getElementById('waitingRoomforHost').style.display = 'block';
+                
+            }
+
+            function reset(){
+                playerNumber = null;
+                roomInput.value = '';
+                gameCodeDisplay.innerText = '';
+                document.getElementById('InitialScreen').style.display = 'block';
+                document.getElementById('waitingRoomforHost').style.display = 'none';
             }
 
             socket.on('gameRoomNo', function(data){
-                        document.getElementById("buttonCount").innerHTML = 'The game room Id is ' + data + ' .';
+                document.getElementById('InitialScreen').style.display = 'none';
+
+                document.getElementById('waitingRoomforHost').style.display = 'block';
+                gameCodeDisplay.innerHTML =  data + ' .';
             });
 
             socket.on('updateusers',function(data){
                 document.getElementById("userJoin").innerHTML = data + ' has joined.';
-            })
+            });
+
+            socket.on('errorRoomId',function(){
+                reset();
+                alert('Unknown game code');
+            });
+            
+            socket.on('tooManyPlayers',function(){
+                reset();
+                alert('Room full');
+            });
+
+            socket.on('init',function(number){
+                playerNumber = number;
+            });
             //    socket.on('newclientconnect',function(data){
             //        document.body.innerHTML = '';
             //        document.write(data.description);

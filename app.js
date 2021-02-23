@@ -17,24 +17,78 @@ app.get('/',function(req,res){
 //     nsp.emit('hi','Hello everyone!');
 // });
 
+const state = {};
+const clientRooms = {};
 var clients = 0;
-var roomno = 1;
 var usernames = {};
 
 io.on('connection',function(socket){
     clients++;
-    socket.join("room" + roomno);
-
-    io.sockets.in("room"+roomno).emit('connectToRoom',"you have joined the room.");
-
-    socket.emit('newclientconnect',{description:'Hey, welcome!'});
-    socket.broadcast.emit('newclientconnect',{description:clients+' clients connected'})
+    
     console.log('A user connected');
+    console.log(clientRooms);
+
 
     socket.on('createClicked',function(data){
         console.log("server received");
-        var thisGameId = ( Math.random() * 100000 ) | 0;
-        io.emit('gameRoomNo', thisGameId);
+        let genId = function(min,max){ 
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        let roomId = genId(10000,99999);
+        clientRooms[socket.id]=roomId;
+        console.log('client room added roomId '+ clientRooms[socket.id]);
+        console.log(clientRooms);
+        socket.emit('gameRoomNo', roomId);
+        //around the 49 minute mark of https://www.youtube.com/watch?v=ppcBIHv_ZPs&ab_channel=TraversyMedia
+        //state[roomId]= createGameState();
+        socket.join(roomId);
+        console.log('host joined room'+roomId);
+        socket.number = 1;
+        socket.emit('init',1);
+    });
+
+    socket.on('joinClicked', function(roomId){
+        //look into the room object and grab the current players in the room
+        clientRooms[socket.id] = parseInt(roomId);
+        socket.join(parseInt(roomId));
+        const room = io.sockets.adapter.rooms[parseInt(roomId)];
+       
+        console.log('inside joinClicked');
+        console.log(io.sockets.adapter.rooms);
+        console.log(parseInt(roomId) in io.sockets.adapter.rooms);
+
+        let allPlayers;
+        console.log('allPlayers should be null ' + allPlayers);
+        if (room){
+            console.log('room exists');
+            allPlayers = room.sockets;//gives us object of all players, key is client id, object is client itself
+        }
+        console.log('allPlayers shouldnt be null ' + allPlayers);
+        let numOfPlayers = 0;
+
+        if (allPlayers){
+            numOfPlayers = Object.keys(allUsers).length;
+        }
+
+        if (numOfPlayers === 0){
+            socket.emit('errorRoomId');
+            return;
+        }
+        
+        else if (numOfPlayers > maxPlayers){
+            socket.emit('tooManyPlayers');
+            return;
+        }
+        clientRooms[socket.id] = roomId;
+        socket.join(roomId);
+        socket.in('roomid').broadcast('player joined');
+        socket.number = numOfPlayers+1;
+        //not sure about the socket.number here whether its supposed to be that or numofPlayers
+        socket.emit('init',socket.number);
+        startGameInterval(roomId);
+    
     });
 
     // when the client emits 'adduser', this listens and executes
@@ -55,8 +109,6 @@ io.on('connection',function(socket){
 
     socket.on('disconnect', function(){
         clients--;
-        socket.leave("room"+roomno);
-        socket.broadcast.emit('newclientconnect',{description: clients+' clients connected'})
         console.log('A user disconnected');
         // remove the username from global usernames list
 		delete usernames[socket.username];
@@ -66,6 +118,10 @@ io.on('connection',function(socket){
 		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
     });
 });
+
+function startGameInterval(roomId){
+    
+};
 
 http.listen(5000,function(){
     console.log('listening on *:5000');
