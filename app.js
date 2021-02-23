@@ -56,14 +56,16 @@ io.on('connection',function(socket){
         const room = io.sockets.adapter.rooms[parseInt(roomId)];
        
         console.log('inside joinClicked');
+        console.log('users'+ io.sockets);
         console.log(io.sockets.adapter.rooms);
-        console.log(parseInt(roomId) in io.sockets.adapter.rooms);
+        console.log(io.sockets.adapter.rooms.has(parseInt(roomId)));
 
         let allPlayers;
         console.log('allPlayers should be null ' + allPlayers);
-        if (room){
+        //if (room){
+        if(io.sockets.adapter.rooms.has(parseInt(roomId))){
             console.log('room exists');
-            allPlayers = room.sockets;//gives us object of all players, key is client id, object is client itself
+            //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
         }
         console.log('allPlayers shouldnt be null ' + allPlayers);
         let numOfPlayers = 0;
