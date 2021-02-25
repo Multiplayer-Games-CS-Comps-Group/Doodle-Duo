@@ -51,42 +51,41 @@ io.on('connection',function(socket){
 
     socket.on('joinClicked', function(roomId){
         //look into the room object and grab the current players in the room
-        clientRooms[socket.id] = parseInt(roomId);
-        socket.join(parseInt(roomId));
+        // clientRooms[socket.id] = parseInt(roomId);
+        // socket.join(parseInt(roomId));
         const room = io.sockets.adapter.rooms[parseInt(roomId)];
        
-        console.log('inside joinClicked');
-        console.log('users'+ io.sockets);
-        console.log(io.sockets.adapter.rooms);
+        
         console.log(io.sockets.adapter.rooms.has(parseInt(roomId)));
 
-        let allPlayers;
-        console.log('allPlayers should be null ' + allPlayers);
         //if (room){
-        if(io.sockets.adapter.rooms.has(parseInt(roomId))){
+        if(io.sockets.adapter.rooms.has(parseInt(roomId)) && (io.sockets.adapter.rooms.get(parseInt(roomId))).size !== 0){
             console.log('room exists');
+            if ((io.sockets.adapter.rooms.get(parseInt(roomId))).size > 12){
+                    socket.emit('tooManyPlayers');
+                    return;
+                }
+            clientRooms[socket.id] = parseInt(roomId);
+            socket.join(parseInt(roomId));
+            socket.emit('waitingRoomforPlayer',parseInt(roomId));
+            socket.in(parseInt(roomId)).emit('broadcastJoined');
+            console.log(io.sockets.adapter.rooms);
+            console.log((io.sockets.adapter.rooms.get(parseInt(roomId))).size);
             //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
         }
-        console.log('allPlayers shouldnt be null ' + allPlayers);
-        let numOfPlayers = 0;
-
-        if (allPlayers){
-            numOfPlayers = Object.keys(allUsers).length;
-        }
-
-        if (numOfPlayers === 0){
+        else{
             socket.emit('errorRoomId');
             return;
         }
         
-        else if (numOfPlayers > maxPlayers){
-            socket.emit('tooManyPlayers');
-            return;
-        }
-        clientRooms[socket.id] = roomId;
-        socket.join(roomId);
-        socket.in('roomid').broadcast('player joined');
-        socket.number = numOfPlayers+1;
+        // else if (numOfPlayers > maxPlayers){
+        //     socket.emit('tooManyPlayers');
+        //     return;
+        // }
+        // clientRooms[socket.id] = roomId;
+        // socket.join(roomId);
+        //socket.in('roomid').broadcast('player joined');
+        //socket.number = numOfPlayers+1;
         //not sure about the socket.number here whether its supposed to be that or numofPlayers
         socket.emit('init',socket.number);
         startGameInterval(roomId);

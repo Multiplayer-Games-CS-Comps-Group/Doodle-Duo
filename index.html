@@ -23,15 +23,23 @@
         </div>
 
         <div id= 'waitingRoomforHost'>
-            <h1>Compound Game</h1>
+            <h1>Compound Game Waiting Room</h1>
             <p id="gameId"> </p>
             <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
             <p id='userJoin'> </p>
+           
 
         </div>
+
+        <div id= 'waitingRoomforPlayer'>
+            <h1>Compound Game Waiting Room</h1>
+            <p id = 'displayRoom'></p>
+        </div>
+
         <div id = 'example'>
             <h3>Example</h3>
         </div>
+        <p id = 'playerJoin'></p>
         
         <script src= "/socket.io/socket.io.js"></script>
 
@@ -47,6 +55,7 @@
             socket.on('connect', function(){
                 // call the server-side function 'adduser' and send one parameter (value of prompt)
                 document.getElementById('InitialScreen').style.display = 'block';
+                document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'none';
                 document.getElementById('example').style.display = 'none';
                 //socket.emit('adduser', prompt("What's your name?"));
@@ -83,13 +92,13 @@
 
             socket.on('gameRoomNo', function(data){
                 document.getElementById('InitialScreen').style.display = 'none';
-
+                document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'block';
                 gameCodeDisplay.innerHTML =  data + ' .';
             });
 
             socket.on('updateusers',function(data){
-                document.getElementById("userJoin").innerHTML = data + ' has joined.';
+                //document.getElementById("userJoin").innerHTML = data + ' has joined.';
             });
 
             socket.on('errorRoomId',function(){
@@ -105,6 +114,23 @@
             socket.on('init',function(number){
                 playerNumber = number;
             });
+
+            socket.on('broadcastJoined',function(){
+                //document.getElementById("playerJoin").innerHTML = 'a player has joined!'
+                console.log('player joined');
+                var br = document.createElement("br");
+                document.getElementById("playerJoin").appendChild(br);
+                document.getElementById("playerJoin").appendChild(document.createTextNode('a player has joined!'));
+                // document.getElementById("playerJoin2").appendChild(br);
+                // document.getElementById("playerJoin2").appendChild(document.createTextNode('a player has joined!'));
+            })
+
+            socket.on('waitingRoomforPlayer',function(roomId){
+                document.getElementById('InitialScreen').style.display ='none';
+                document.getElementById('waitingRoomforPlayer').style.display = 'block';
+                document.getElementById('waitingRoomforHost').style.display='none';
+                document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '!'
+            })
             //    socket.on('newclientconnect',function(data){
             //        document.body.innerHTML = '';
             //        document.write(data.description);
