@@ -25,50 +25,55 @@ var usernames = {};
 io.on('connection',function(socket){
     clients++;
     
-    console.log('A user connected');
     console.log(clientRooms);
 
 
     socket.on('createClicked',function(data){
-        console.log("server received");
         let genId = function(min,max){ 
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
+
+        socket.username = data;
+		// add the client's username to the global list
+		usernames[socket.username] = data;
+		
+        console.log('this is host player name: '+ socket.username);
+
         let roomId = genId(10000,99999);
         clientRooms[socket.id]=roomId;
         console.log('client room added roomId '+ clientRooms[socket.id]);
-        console.log(clientRooms);
         socket.emit('gameRoomNo', roomId);
         //around the 49 minute mark of https://www.youtube.com/watch?v=ppcBIHv_ZPs&ab_channel=TraversyMedia
         //state[roomId]= createGameState();
         socket.join(roomId);
-        console.log('host joined room'+roomId);
+        console.log('host joined room '+roomId);
         socket.number = 1;
         socket.emit('init',1);
     });
 
-    socket.on('joinClicked', function(roomId){
+    socket.on('joinClicked', function(roomId,username){
         //look into the room object and grab the current players in the room
         // clientRooms[socket.id] = parseInt(roomId);
         // socket.join(parseInt(roomId));
         const room = io.sockets.adapter.rooms[parseInt(roomId)];
        
-        
-        console.log(io.sockets.adapter.rooms.has(parseInt(roomId)));
-
         //if (room){
         if(io.sockets.adapter.rooms.has(parseInt(roomId)) && (io.sockets.adapter.rooms.get(parseInt(roomId))).size !== 0){
-            console.log('room exists');
             if ((io.sockets.adapter.rooms.get(parseInt(roomId))).size > 12){
                     socket.emit('tooManyPlayers');
                     return;
                 }
+
+            socket.username = username;
+            // add the client's username to the global list
+            usernames[username] = username;
+            
             clientRooms[socket.id] = parseInt(roomId);
             socket.join(parseInt(roomId));
             socket.emit('waitingRoomforPlayer',parseInt(roomId));
-            socket.in(parseInt(roomId)).emit('broadcastJoined');
+            socket.in(parseInt(roomId)).emit('broadcastJoined',socket.username);
             console.log(io.sockets.adapter.rooms);
             console.log((io.sockets.adapter.rooms.get(parseInt(roomId))).size);
             //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
@@ -77,11 +82,7 @@ io.on('connection',function(socket){
             socket.emit('errorRoomId');
             return;
         }
-        
-        // else if (numOfPlayers > maxPlayers){
-        //     socket.emit('tooManyPlayers');
-        //     return;
-        // }
+
         // clientRooms[socket.id] = roomId;
         // socket.join(roomId);
         //socket.in('roomid').broadcast('player joined');
@@ -91,21 +92,6 @@ io.on('connection',function(socket){
         startGameInterval(roomId);
     
     });
-
-    // when the client emits 'adduser', this listens and executes
-	socket.on('adduser', function(username){
-        console.log('adduser emiited');
-		// we store the username in the socket session for this client
-		socket.username = username;
-		// add the client's username to the global list
-		usernames[username] = username;
-		// echo to client they've connected
-		//socket.emit('updatechat', 'SERVER', 'you have connected');
-		// echo globally (all clients) that a person has connected
-		//socket.broadcast.emit('updatechat', 'SERVER', username + ' has connected');
-		// update the list of users in chat, client-side
-		io.sockets.emit('updateusers', username);
-	});
     
 
     socket.on('disconnect', function(){
