@@ -1,7 +1,8 @@
 const { emit } = require('process');
 const { callbackify } = require('util');
-const { createData} = require('./compoundGame')
-const { startGameLoop} = require('./compoundGame')
+//const { createData} = require('./compoundGame')
+//const { startGameLoop} = require('./compoundGame')
+const game = require("./compoundGame");
 
 var app = require('express')();
 var http = require('http').Server(app);
@@ -98,10 +99,10 @@ io.on('connection',function(socket){
         console.log(usernames, maxPlayer, roundInput,roundTimer);
         //params: usernames, websocketID, maxplayers, roundnumber,roundTimer
         const playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
-        const gameState = createData(usernames,playersInRoom,maxPlayer, roundInput,roundTimer);
+        const gameState = game.createData(usernames,playersInRoom,maxPlayer, roundInput,roundTimer);
         
         playerSet = io.sockets.adapter.rooms.get(parseInt(roomId));
-        startGameLoop(gameState);
+        game.startGameLoop(gameState);
         
     });
 

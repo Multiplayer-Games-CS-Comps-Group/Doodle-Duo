@@ -186,3 +186,5 @@ function main(){
 }
 
 main();
+
+module.exports = { createData, startGameLoop };
