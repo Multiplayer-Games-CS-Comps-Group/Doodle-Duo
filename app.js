@@ -1,5 +1,7 @@
 const { emit } = require('process');
 const { callbackify } = require('util');
+const { createData} = require('./compoundGame')
+const { startGameLoop} = require('./compoundGame')
 
 var app = require('express')();
 var http = require('http').Server(app);
@@ -10,7 +12,9 @@ app.get('/',function(req,res){
     //the other button is for people to join the room
     //when clicked onto the button, emits "create" or "join" event and outputs the room number/ outputs joined specific room message
     res.sendfile('index.html');
+    //res.sendfile('hostWaitingRoom.html');
 });
+
 
 // var nsp = io.of('/my-namespace');
 // nsp.on('connection',function(socket){
@@ -24,9 +28,6 @@ var usernames = {};
 
 io.on('connection',function(socket){
     clients++;
-    
-    console.log(clientRooms);
-
 
     socket.on('createClicked',function(data){
         let genId = function(min,max){ 
@@ -38,17 +39,12 @@ io.on('connection',function(socket){
         socket.username = data;
 		// add the client's username to the global list
 		usernames[socket.username] = data;
-		
-        console.log('this is host player name: '+ socket.username);
-
         let roomId = genId(10000,99999);
         clientRooms[socket.id]=roomId;
-        console.log('client room added roomId '+ clientRooms[socket.id]);
         socket.emit('gameRoomNo', roomId);
         //around the 49 minute mark of https://www.youtube.com/watch?v=ppcBIHv_ZPs&ab_channel=TraversyMedia
         //state[roomId]= createGameState();
         socket.join(roomId);
-        console.log('host joined room '+roomId);
         socket.number = 1;
         socket.emit('init',1);
     });
@@ -65,17 +61,22 @@ io.on('connection',function(socket){
                     socket.emit('tooManyPlayers');
                     return;
                 }
-
-            socket.username = username;
-            // add the client's username to the global list
-            usernames[username] = username;
             
             clientRooms[socket.id] = parseInt(roomId);
             socket.join(parseInt(roomId));
+            if (username === ''){
+                socket.username = 'player '+io.sockets.adapter.rooms.get(parseInt(roomId)).size;
+            }
+
+            else{
+                socket.username = username;
+                // add the client's username to the global list
+                usernames[username] = username;
+            }
             socket.emit('waitingRoomforPlayer',parseInt(roomId));
             socket.in(parseInt(roomId)).emit('broadcastJoined',socket.username);
             console.log(io.sockets.adapter.rooms);
-            console.log((io.sockets.adapter.rooms.get(parseInt(roomId))).size);
+            console.log(io.sockets.adapter.rooms.get(parseInt(roomId)));
             //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
         }
         else{
@@ -93,6 +94,16 @@ io.on('connection',function(socket){
     
     });
     
+    socket.on('startGame',function(roomId,maxPlayer, roundInput,roundTimer){
+        console.log(usernames, maxPlayer, roundInput,roundTimer);
+        //params: usernames, websocketID, maxplayers, roundnumber,roundTimer
+        const playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
+        const gameState = createData(usernames,playersInRoom,maxPlayer, roundInput,roundTimer);
+        
+        playerSet = io.sockets.adapter.rooms.get(parseInt(roomId));
+        startGameLoop(gameState);
+        
+    });
 
     socket.on('disconnect', function(){
         clients--;

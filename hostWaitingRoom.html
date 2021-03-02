@@ -52,6 +52,7 @@
             }
 
             socket.on('gameRoomNo', function(data){
+                console.log(gameRoomNo working);
                 document.getElementById('InitialScreen').style.display = 'none';
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'block';

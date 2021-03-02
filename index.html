@@ -6,7 +6,7 @@
    </head>
 
    <body>
-       <div id= 'InitialScreen'>
+       <div id= 'InitialScreen' autocomplete="off">
         <h1>Compound Game</h1>
     
             <div class="buttons">
@@ -23,22 +23,27 @@
             </div>
         </div>
 
-        <div id= 'waitingRoomforHost'>
+        <div id= 'waitingRoomforHost'autocomplete="off">
             <h1>Compound Game Waiting Room</h1>
             <p id="gameId"> </p>
             <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
             <p id='userJoin'> </p>
-            <button>Start Game</button>
+            <input type='text' placeholder = 'Max Players' id = 'MaxPlayerInput'/>
+            <input type='text' placeholder = 'Number of Rounds' id = 'RoundInput'/>
+            <input type='text' placeholder = 'Round Timer' id = 'RoundTimerInput'/>
+
+
+            <button onclick='startGameButtonClicked()'>Start Game</button>
            
 
         </div>
 
-        <div id= 'waitingRoomforPlayer'>
+        <div id= 'waitingRoomforPlayer'autocomplete="off">
             <h1>Compound Game Waiting Room</h1>
             <p id = 'displayRoom'></p>
         </div>
 
-        <div id = 'example'>
+        <div id = 'example'autocomplete="off">
             <h3>Example</h3>
         </div>
         <p id = 'playerJoin'></p>
@@ -79,6 +84,14 @@
                 init();
             }
 
+            function startGameButtonClicked(){
+                const maxPlayer =document.getElementById('MaxPlayerInput').value;
+                const roundInput =document.getElementById('RoundInput').value;
+                const roundTimer =document.getElementById('RoundTimerInput').value;
+            
+                socket.emit('startGame',roomInput.value,maxPlayer, roundInput,roundTimer);
+            }
+
             function init(){
                 console.log('button clicked');
                 // document.getElementById('InitialScreen').style.display = 'none';
@@ -101,10 +114,6 @@
                 gameCodeDisplay.innerHTML =  data + ' .';
             });
 
-            socket.on('updateusers',function(data){
-                //document.getElementById("userJoin").innerHTML = data + ' has joined.';
-            });
-
             socket.on('errorRoomId',function(){
                 reset();
                 alert('Unknown game code');
@@ -120,13 +129,11 @@
             });
 
             socket.on('broadcastJoined',function(username){
-                //document.getElementById("playerJoin").innerHTML = 'a player has joined!'
                 console.log('player joined');
                 var br = document.createElement("br");
                 document.getElementById("playerJoin").appendChild(br);
                 document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
-                // document.getElementById("playerJoin2").appendChild(br);
-                // document.getElementById("playerJoin2").appendChild(document.createTextNode('a player has joined!'));
+                
             })
 
             socket.on('waitingRoomforPlayer',function(roomId){
@@ -145,9 +152,13 @@
             //        document.write(data);
             //    })
 
-            socket.on('connect_failed', function(){
-                document.write("sorry, issue with connection.");
-            })
+            // socket.on('updateusers',function(data){
+            //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
+            // });
+
+            // socket.on('connect_failed', function(){
+            //     document.write("sorry, issue with connection.");
+            // })
         </script>
 
     </body>
