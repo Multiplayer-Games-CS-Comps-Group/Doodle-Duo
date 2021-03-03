@@ -6,7 +6,7 @@
    </head>
 
    <body>
-       <div id= 'InitialScreen' autocomplete="off">
+       <div id= 'InitialScreen'>
         <h1>Compound Game</h1>
     
             <div class="buttons">
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div id= 'waitingRoomforHost'autocomplete="off">
+        <div id= 'waitingRoomforHost' style="display:none">
             <h1>Compound Game Waiting Room</h1>
             <p id="gameId"> </p>
             <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
@@ -38,12 +38,12 @@
 
         </div>
 
-        <div id= 'waitingRoomforPlayer'autocomplete="off">
+        <div id= 'waitingRoomforPlayer' style="display:none">
             <h1>Compound Game Waiting Room</h1>
             <p id = 'displayRoom'></p>
         </div>
 
-        <div id = 'example'autocomplete="off">
+        <div id = 'example' style="display:none">
             <h3>Example</h3>
         </div>
         <p id = 'playerJoin'></p>
@@ -61,10 +61,11 @@
             //on connection to server, ask for user's name with an anonymous callback
             socket.on('connect', function(){
                 // call the server-side function 'adduser' and send one parameter (value of prompt)
-                document.getElementById('InitialScreen').style.display = 'block';
+                
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'none';
                 document.getElementById('example').style.display = 'none';
+                document.getElementById('InitialScreen').style.display = 'block';
                 //socket.emit('adduser', prompt("What's your name?"));
             });
 
@@ -140,7 +141,7 @@
                 document.getElementById('InitialScreen').style.display ='none';
                 document.getElementById('waitingRoomforPlayer').style.display = 'block';
                 document.getElementById('waitingRoomforHost').style.display='none';
-                document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '!'
+                document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '! Waiting for host to start game...'
             })
             //    socket.on('newclientconnect',function(data){
             //        document.body.innerHTML = '';
