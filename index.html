@@ -35,7 +35,7 @@
             <p id="gameId"> </p>
             <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
             <p id='userJoin'> </p>
-            <input type='text' placeholder = 'Max Players' id = 'MaxPlayerInput'/>
+            <input type='text' placeholder = 'Max Players' id = 'MaxPlayerInput' class="uk-input"/>
             <input type='text' placeholder = 'Number of Rounds' id = 'RoundInput'/>
             <input type='text' placeholder = 'Round Timer' id = 'RoundTimerInput'/>
 
@@ -56,7 +56,7 @@
         <p id = 'playerJoin'></p>
 
         <!--     Guesser's view  -->
-        <div id="guesser_view">
+        <div id="guesser_view" style="display:none">
             <div class="uk-grid">
                 <div class="uk-card uk-card-default uk-card-body">
                     Canvas 1
@@ -68,7 +68,7 @@
         </div>
 
        <!--     Drawer's view  -->
-       <div id="drawer_view">
+       <div style="display:none" id="drawer_view">
            <div class="uk-grid">
                <div class="uk-card uk-card-default uk-card-body">
                    Canvas
@@ -117,6 +117,11 @@
                 const maxPlayer =document.getElementById('MaxPlayerInput').value;
                 const roundInput =document.getElementById('RoundInput').value;
                 const roundTimer =document.getElementById('RoundTimerInput').value;
+                document.getElementById('guesser_view').style.display = 'block';
+                document.getElementById('waitingRoomforPlayer').style.display='none';
+                document.getElementById('waitingRoomforHost').style.display = 'none';
+                document.getElementById('example').style.display = 'none';
+                document.getElementById('InitialScreen').style.display = 'none';
 
                 socket.emit('startGame',roomInput.value,maxPlayer, roundInput,roundTimer);
             }
