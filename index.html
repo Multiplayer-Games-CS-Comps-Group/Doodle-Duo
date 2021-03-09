@@ -61,28 +61,28 @@
         <div id="guesser_view" style="display:none">
             <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
                 <div class="uk-container">
-                    <div class="uk-child-width-expand uk-grid" uk-grid>
-                        <div class="uk-width-1-1 uk-height-1-10">
+                    <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+                        <div class="uk-width-1-1 uk-height-1-10" style="height: 50px">
                             Title here
                         </div>
-                        <div class="uk-width-1-2 uk-height-large">
+                        <div class="uk-width-1-2" style="height: 100vw">
                             <div class="uk-height-1-1 uk-cover-container">
-                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-2">
+                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                                     Canvas 1
                                 </div>
                             </div>
                         </div>
-                        <div class="uk-width-1-2 uk-height-large">
+                        <div class="uk-width-1-2" style="height: 100vw">
                             <div class="uk-height-1-1 uk-cover-container">
                                 <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                                     Canvas 2
                                 </div>
                             </div>
                         </div>
-                        <div class="uk-width-1-1">
+                        <div class="uk-width-1-1" style="height: 20px">
                             Word letter spaces here
                         </div>
-                        <div class="uk-width-1-2 uk-height-medium uk-align-center">
+                        <div class="uk-width-1-2 uk-height-small uk-align-center">
                             <form method="post"  class="uk-form-horizontal">
                                 <div class="uk-inline">
                                     <input class="uk-input" placeholder="Input your Guess" id="GuessInput">
