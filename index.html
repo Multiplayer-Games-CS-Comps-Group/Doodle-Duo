@@ -6,6 +6,8 @@
 
        <!-- UIkit CSS -->
        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
+        <!--  Custom CSS     -->
+       <link rel="stylesheet" href="main.css" />
 
        <!-- UIkit JS -->
        <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
@@ -57,22 +59,62 @@
 
         <!--     Guesser's view  -->
         <div id="guesser_view" style="display:none">
-            <div class="uk-grid">
-                <div class="uk-card uk-card-default uk-card-body">
-                    Canvas 1
-                </div>
-                <div class="uk-card uk-card-default uk-card-body">
-                    Canvas 2
+            <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+                <div class="uk-container">
+                    <div class="uk-child-width-expand uk-grid" uk-grid>
+                        <div class="uk-width-1-1 uk-height-1-10">
+                            Title here
+                        </div>
+                        <div class="uk-width-1-2 uk-height-large">
+                            <div class="uk-height-1-1 uk-cover-container">
+                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-2">
+                                    Canvas 1
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-width-1-2 uk-height-large">
+                            <div class="uk-height-1-1 uk-cover-container">
+                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                                    Canvas 2
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-width-1-1">
+                            Word letter spaces here
+                        </div>
+                        <div class="uk-width-1-2 uk-height-medium uk-align-center">
+                            <form method="post"  class="uk-form-horizontal">
+                                <div class="uk-inline">
+                                    <input class="uk-input" placeholder="Input your Guess" id="GuessInput">
+                                    <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
        <!--     Drawer's view  -->
        <div style="display:none" id="drawer_view">
-           <div class="uk-grid">
-               <div class="uk-card uk-card-default uk-card-body">
-                   Canvas
-               </div>
+           <div class=" uk-text-large">
+<!--               <div class="uk-container can">-->
+                   <div class="uk-grid uk-height-viewport">
+                       <div class="uk-width-1-1 uk-height-small">
+                           Title here
+                       </div>
+                       <div class="uk-width-1-1 uk-height-large">
+                           <div class="uk-height-1-1 uk-cover-container">
+                               <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                                   Canvas 2
+                               </div>
+                           </div>
+                       </div>
+                       <div class="uk-width-1-1 uk-height-small">
+                           Word to draw here
+                       </div>
+                   </div>
+<!--               </div>-->
            </div>
        </div>
 
@@ -117,7 +159,7 @@
                 const maxPlayer =document.getElementById('MaxPlayerInput').value;
                 const roundInput =document.getElementById('RoundInput').value;
                 const roundTimer =document.getElementById('RoundTimerInput').value;
-                document.getElementById('guesser_view').style.display = 'block';
+                document.getElementById('drawer_view').style.display = 'block';
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'none';
                 document.getElementById('example').style.display = 'none';
