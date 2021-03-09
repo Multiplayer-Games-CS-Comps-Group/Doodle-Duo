@@ -108,6 +108,7 @@ function startGameLoop(initData){
     var roundTimer = initData.rules.roundTimer;
     
     var gameWords = getGameWords(numRounds);
+    console.log(gameWords);
     var players = initData.players;
     var drawPairs = getDrawPairs(gameWords, players);
 
@@ -159,15 +160,31 @@ function createData(usernames, websocketID, maxplayers, roundnumber,roundTimer){
         rules = dictionary with all the rules set by the host
         other = metadata from server can be passed in this array/dictionary
     */
+
+    /*
+    [
+        ['Alex', 'xfdsfh_wqw'. 0, 0],
+        ['Bob' , 'fdef0efe'. 0, 0]
+    ]
+    */
+
+    var playerArray = [];
+    for(var i in usernames){
+        var curr = [];
+        curr.push(usernames[i]);
+        //curr.push(websocketID[i]);
+        curr.push('TempID');
+        curr.push(0);
+        curr.push(0);
+        playerArray.push(curr);
+    }
+
+
     var initData = {
-        players: [
-            ['P1', '010', pfpObj], ['P2', '020', pfpObj], ['P3', '030', pfpObj],
-            ['P4', '040', pfpObj], ['P5', '050', pfpObj], ['P6', '060', pfpObj],
-            ['P7', '070', pfpObj]
-        ],
+        players: playerArray,
         rules: {
-            maxPlayers: maxplayers,
-            numRounds: roundnumber,
+            maxPlayers: parseInt(maxplayers),
+            numRounds:  parseInt(roundnumber),
             roundTimer:  1 /*in milliseconds; 60000 is one minute*/,
             customWordRound: true,
             pairDrawing: false,
@@ -181,8 +198,9 @@ function createData(usernames, websocketID, maxplayers, roundnumber,roundTimer){
 function main(){
     // Simulate server sending data to game
     var initData = createData();
-    var endResults = startGameLoop(initData);
-    awards(endResults);
+    //console.log(initData);
+    //var endResults = startGameLoop(initData);
+   //awards(endResults);
 }
 
 main();

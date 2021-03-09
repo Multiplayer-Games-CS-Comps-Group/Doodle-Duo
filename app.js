@@ -38,8 +38,8 @@ io.on('connection',function(socket){
         }
 
         socket.username = data;
-		// add the client's username to the global list
-		usernames[socket.username] = data;
+        // add the client's username to the global list
+        usernames[socket.username] = data;
         let roomId = genId(10000,99999);
         clientRooms[socket.id]=roomId;
         socket.emit('gameRoomNo', roomId);
@@ -95,26 +95,30 @@ io.on('connection',function(socket){
     
     });
     
-    socket.on('startGame',function(roomId,maxPlayer, roundInput,roundTimer){
+    socket.on('startGame',function(roomId,maxPlayer,roundInput,roundTimer){
         console.log(usernames, maxPlayer, roundInput,roundTimer);
         //params: usernames, websocketID, maxplayers, roundnumber,roundTimer
         const playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
-        const gameState = game.createData(usernames,playersInRoom,maxPlayer, roundInput,roundTimer);
-        
+        const gameState = game.createData(usernames,playersInRoom,maxPlayer,roundInput,roundTimer);
+        //console.log(gameState);
+        //console.log('===');
+        console.log('=============');
+        console.log(roomId, maxplayer, roundInput, roundInput);
+        console.log('=============');
         playerSet = io.sockets.adapter.rooms.get(parseInt(roomId));
+        console.log(playerSet);
         game.startGameLoop(gameState);
-        
     });
 
     socket.on('disconnect', function(){
         clients--;
         console.log('A user disconnected');
         // remove the username from global usernames list
-		delete usernames[socket.username];
-		// update list of users in chat, client-side
-		io.sockets.emit('updateusers', usernames);
-		// echo globally that this client has left
-		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+        delete usernames[socket.username];
+        // update list of users in chat, client-side
+        io.sockets.emit('updateusers', usernames);
+        // echo globally that this client has left
+        socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
     });
 });
 
