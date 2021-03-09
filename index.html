@@ -123,7 +123,7 @@
                 document.getElementById('example').style.display = 'none';
                 document.getElementById('InitialScreen').style.display = 'none';
 
-                socket.emit('startGame', parseInt(roomInput.value), maxPlayer, roundInput, roundTimer);
+                socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
             }
 
             function init(){
@@ -146,6 +146,8 @@
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'block';
                 gameCodeDisplay.innerHTML =  data + ' .';
+                globalThis.currRoomId = data;
+                
             });
 
             socket.on('errorRoomId',function(){

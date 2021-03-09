@@ -103,7 +103,7 @@ io.on('connection',function(socket){
         //console.log(gameState);
         //console.log('===');
         console.log('=============');
-        console.log(roomId, maxplayer, roundInput, roundInput);
+        console.log(roomId, maxPlayer, roundInput, roundInput);
         console.log('=============');
         playerSet = io.sockets.adapter.rooms.get(parseInt(roomId));
         console.log(playerSet);
