@@ -1,11 +1,9 @@
 
 
 .text {
-    font-size: 30px;
+    font-size: 40px;
 }
 
 .canvas-tall {
-    height: 70%;
+    height: 700px;
 }
-
-

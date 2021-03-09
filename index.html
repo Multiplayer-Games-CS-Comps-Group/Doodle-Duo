@@ -7,7 +7,7 @@
        <!-- UIkit CSS -->
        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
         <!--  Custom CSS     -->
-       <link rel="stylesheet" href="main.css" />
+       <link rel="stylesheet" href="./main.css" />
 
        <!-- UIkit JS -->
        <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
@@ -97,20 +97,20 @@
 
        <!--     Drawer's view  -->
        <div style="display:none" id="drawer_view">
-           <div class=" uk-text-large">
+           <div class="uk-text-large">
 <!--               <div class="uk-container can">-->
                    <div class="uk-grid uk-height-viewport">
-                       <div class="uk-width-1-1 uk-height-small">
+                       <div class="uk-width-1-1 uk-background-primary">
                            Title here
                        </div>
-                       <div class="uk-width-1-1 uk-height-large">
-                           <div class="uk-height-1-1 uk-cover-container">
-                               <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                       <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
+                           <div class="uk-cover uk-background-primary">
+                               <div class="uk-border-rounded uk-background-muted">
                                    Canvas 2
                                </div>
                            </div>
                        </div>
-                       <div class="uk-width-1-1 uk-height-small">
+                       <div class="uk-width-1-1 uk-background-primary">
                            Word to draw here
                        </div>
                    </div>
@@ -159,7 +159,7 @@
                 const maxPlayer =document.getElementById('MaxPlayerInput').value;
                 const roundInput =document.getElementById('RoundInput').value;
                 const roundTimer =document.getElementById('RoundTimerInput').value;
-                document.getElementById('drawer_view').style.display = 'block';
+                document.getElementById('guesser_view').style.display = 'block';
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'none';
                 document.getElementById('example').style.display = 'none';
