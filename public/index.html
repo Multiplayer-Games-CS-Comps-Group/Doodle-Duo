@@ -79,7 +79,7 @@
             <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
                 <div class="uk-container">
                     <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                        <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
+                        <div class="uk-width-1-1 uk-heading-large header uk-text-center" style="height: 80px">
                             Compound Game
                         </div>
                         <div class="uk-width-1-2" style="height: 100vw">
@@ -112,9 +112,9 @@
                         </div>
                         <div class="uk-width-1-2 uk-align-center" style="height: 80px">
                             <form method="post" class="uk-form-horizontal ">
-                                <div class="uk-inline">
-                                    <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
-                                    <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
+                                <div class="uk-inline uk-height-small">
+                                    <input class="uk-input uk-box-shadow large-text" placeholder="Input your Guess" id="GuessInput">
+                                    <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil; ratio: 2"></a>
                                 </div>
                             </form>
                         </div>
@@ -141,7 +141,7 @@
            <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
                <div class="uk-container">
                    <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                       <div class="uk-width-1-1 uk-heading-large uk-text-center header-background" style="height: 80px">
+                       <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
                            Compound Game
                        </div>
                        <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
@@ -236,7 +236,7 @@
                 const maxPlayer =document.getElementById('MaxPlayerInput').value;
                 const roundInput =document.getElementById('RoundInput').value;
                 const roundTimer =document.getElementById('RoundTimerInput').value;
-                document.getElementById('drawer_view').style.display = 'block';
+                document.getElementById('guesser_view').style.display = 'block';
                 document.getElementById('waitingRoomforPlayer').style.display='none';
                 document.getElementById('waitingRoomforHost').style.display = 'none';
                 document.getElementById('example').style.display = 'none';
