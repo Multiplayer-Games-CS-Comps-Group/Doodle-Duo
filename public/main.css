@@ -1,0 +1,162 @@
+
+.header-background {
+    color: cadetblue;
+}
+
+.text {
+    font-size: 40px;
+}
+
+.large-text {
+    font-size: 40px;
+}
+
+.canvas-tall {
+    height: 700px;
+}
+
+.player-guess {
+    height: 10px;
+}
+
+.guess-container {
+    height: 200px;
+}
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.undoButtonContainer {
+    margin: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    -moz-box-shadow:    1px 6px 10px 2px #ccc;
+    -webkit-box-shadow: 1px 6px 10px 2px #ccc;
+    box-shadow:         1px 6px 10px 2px #ccc;
+}
+
+.paintButtonContainer {
+    margin: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    -moz-box-shadow:    1px 6px 10px 2px #ccc;
+    -webkit-box-shadow: 1px 6px 10px 2px #ccc;
+    box-shadow:         1px 6px 10px 2px #ccc;
+}
+
+.colorPickerContainer {
+    justify-content: center;
+    height: 200px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    transform: rotate(90deg);
+}
+
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+.icon-paintbrush {
+    width: 0.98046875em;
+    font-size: 40px;
+}
+
+.icon-undo {
+    width: 0.9580078125em;
+    font-size: 40px;
+    transform: scaleX(-1) rotate(90deg);
+}
+
+.color-range {
+    position: relative;
+    z-index: 1;
+    appearance: none;
+    border-radius: 0.5em;
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 0.5em;
+    width: 100%;
+    display: block;
+    outline: none;
+    margin: 4rem auto;
+    transition: color 0.05s linear;
+    background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.color-range:focus {
+    outline: none;
+}
+.color-range:active, .color-range:hover:active {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+}
+.color-range::-moz-range-track {
+    appearance: none;
+    opacity: 0;
+    outline: none !important;
+}
+.color-range::-ms-track {
+    outline: none !important;
+    appearance: none;
+    opacity: 0;
+}
+.color-range::-webkit-slider-thumb {
+    height: 3em;
+    width: 3em;
+    border-radius: 2em;
+    appearance: none;
+    background: white;
+    cursor: pointer;
+    cursor: move;
+    cursor: grab;
+    cursor: -webkit-grab;
+    border: 0.4em solid currentColor;
+    transition: border 0.1s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+    box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.05);
+}
+.color-range::-webkit-slider-thumb:active, .color-range::-webkit-slider-thumb:hover:active {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+    transform: scale(0.975);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+    border: 1.5em solid currentColor;
+}
+.color-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0.4em 1em rgba(0, 0, 0, 0.15);
+}
+.color-range::-moz-range-thumb {
+    height: 3em;
+    width: 3em;
+    border-radius: 2em;
+    appearance: none;
+    background: white;
+    border: 0.4em solid currentColor;
+    cursor: pointer;
+    cursor: move;
+    cursor: grab;
+    cursor: -webkit-grab;
+    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0);
+}
+.color-range::-moz-range-thumb:active, .color-range::-moz-range-thumb:hover:active {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+    transform: scale(0.975);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.color-range::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
