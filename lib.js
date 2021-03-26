@@ -140,6 +140,15 @@ function getDrawPairs(gameWords, players){
 }
 
 
+function checkIfAllDone(playerArray){
+    for(let i=0;i<playerArray.length;i++){
+        if(playerArray[i][3] == 0){
+            return false;
+        }
+    }
+    return true;
+}
+
 
 /* Export the functions */
-module.exports = { getLDistance, readCSV, shuffle, buckets, cloneArray, addArraytoStack, getDrawPairs, getGameWords};
+module.exports = { getLDistance, readCSV, shuffle, buckets, cloneArray, addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone};
