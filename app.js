@@ -1,8 +1,10 @@
+const lib = require("./lib");
+
 const { emit } = require('process');
 const { callbackify } = require('util');
 //const { createData} = require('./compoundGame')
 //const { startGameLoop} = require('./compoundGame')
-const game = require("./compoundGame");
+//const game = require("./compoundGame");
 
 var app = require('express')();
 var http = require('http').Server(app);
@@ -76,7 +78,7 @@ io.on('connection',function(socket){
             }
             socket.emit('waitingRoomforPlayer',parseInt(roomId));
             socket.in(parseInt(roomId)).emit('broadcastJoined',socket.username);
-            console.log(io.sockets.adapter.rooms);
+            //console.log(io.sockets.adapter.rooms);
             console.log(io.sockets.adapter.rooms.get(parseInt(roomId)));
             //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
         }
@@ -95,19 +97,14 @@ io.on('connection',function(socket){
     
     });
     
-    socket.on('startGame',function(roomId,maxPlayer,roundInput,roundTimer){
-        console.log(usernames, maxPlayer, roundInput,roundTimer);
-        //params: usernames, websocketID, maxplayers, roundnumber,roundTimer
-        const playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
-        const gameState = game.createData(usernames,playersInRoom,maxPlayer,roundInput,roundTimer);
-        //console.log(gameState);
-        //console.log('===');
-        console.log('=============');
-        console.log(roomId, maxPlayer, roundInput, roundInput);
-        console.log('=============');
-        playerSet = io.sockets.adapter.rooms.get(parseInt(roomId));
-        console.log(playerSet);
-        game.startGameLoop(gameState);
+    socket.on('startGame',function(roomId,maxPlayers,roundInput,roundTimer){
+        var playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
+
+        //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
+        let gameState = createData(usernames,playersInRoom,maxPlayers,roundInput,roundTimer, roomId);
+        console.log(gameState);
+
+        startGameLoop(gameState);
     });
 
     socket.on('disconnect', function(){
@@ -129,3 +126,96 @@ function startGameInterval(roomId){
 http.listen(5000,function(){
     console.log('listening on *:5000');
 });
+
+
+/*=======================================================================================*/
+/* Game Logic Code - Imported due to nodeJS limitations */
+
+
+// Simulate server creating and sending initData to the game logic
+function createData(usernames, websocketID, maxplayers, roundnumber,roundTimer, roomId){
+
+    /* gameInstance object:
+        players = array of players with [name, playerID, profile picture object]
+        rules = dictionary with all the rules set by the host
+        meta = meta data related/useful to the server
+    */
+
+    /*
+    [
+        ['xfdsfh_wqw', 'Alex', 0, 0],
+        ['fdef0efe', 'Bob' 0, 0]
+    ]
+    */
+
+    const tempIterator = websocketID.values();
+    
+    var playerArray = [];
+    for(var i in usernames){
+        var curr = [];
+        curr.push(tempIterator.next().value);
+        curr.push(usernames[i]);
+        curr.push(0);
+        curr.push(0);
+        playerArray.push(curr);
+    }
+
+    var gameInstance = {
+        players: playerArray,
+        rules: {
+            maxPlayers: parseInt(maxplayers),
+            numRounds:  parseInt(roundnumber),
+            roundTimer:  1000 /* parseInt(roundTimer) in milliseconds; 60000 is one minute*/,
+        },
+        meta: {
+            roomID: roomId,
+            totalPlayers: playerArray.length
+        }
+    }
+
+    return gameInstance;
+}
+
+function startGameLoop(gameInstance){
+    var numRounds = gameInstance.rules.numRounds;
+    var roundTimer = gameInstance.rules.roundTimer;
+    
+    var gameWords = lib.getGameWords(numRounds);
+    var players = gameInstance.players;
+    var drawPairs = lib.getDrawPairs(gameWords, players);
+
+    console.log(drawPairs);
+    for(var i=0;i<drawPairs.length;i++){
+        var currWord = drawPairs[i][0];
+        var drawer1 = drawPairs[i][1];
+        var drawer2 = drawPairs[i][2];
+        console.log(`${currWord}: ${drawer1[1]}, ${drawer2[1]}`);
+        
+        var startTime = Date.now();
+        while ((Date.now() - startTime) < roundTimer){
+            myTimer();
+
+            //Test function to test exiting the current word early
+            //exit function when all players are 'done'
+            if(currWord === 'backlog'){
+                console.log('Skipping this word');
+                break;
+            }
+        }
+
+        //After everyone guesses, or time runs out
+        console.log('Current word done!');
+    }
+    return [3, 2, 4, 5, 1, 6, 7]
+}
+
+
+
+
+
+
+function myTimer() {
+          var d = new Date();
+          var t = d.toLocaleTimeString();
+          //console.log(t);
+}
