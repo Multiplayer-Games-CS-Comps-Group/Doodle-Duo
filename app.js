@@ -90,6 +90,7 @@ io.on('connection',function(socket){
         //socket.number = numOfPlayers+1;
         //not sure about the socket.number here whether its supposed to be that or numofPlayers
         socket.emit('init',socket.number);
+
         startGameInterval(roomId);
     
     });
@@ -98,11 +99,19 @@ io.on('connection',function(socket){
         var playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
 
         //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
-        let gameState = createGameInstance(usernames,playersInRoom,maxPlayers,roundInput,roundTimer, roomId);
-        console.log(gameState);
+        let gameState = createGameInstance(usernames,playersInRoom,maxPlayers,roundInput, roundTimer, roomId);
 
+        console.log(gameState);
+        console.log('=============================');
+        //Throw an error
+        //JSON.stringify(gameState)
+        console.log(gameState.rules.maxPlayers);
+        console.log('=============================');
 
         //Idea: send to a sever wide loop for hosted game instances?
+
+
+        // ENTER GAME LOOP HERE
         startGameLoop(gameState);
         console.log('SERVER HERE!');
 
@@ -149,6 +158,8 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         ['fdef0efe', 'Bob' 0, 0]
     ]
     */
+
+    console.log(roundTimer);
 
     const tempIterator = websocketID.values();
     
@@ -205,7 +216,7 @@ function startGameLoop(gameInstance){
                 players[i][3] = 0;
             }
         }
-        //console.log(players);
+        console.log(players);
         
         var startTime = Date.now();
         while ((Date.now() - startTime) < roundTimer){
