@@ -150,5 +150,123 @@ function checkIfAllDone(playerArray){
 }
 
 
+
+/*=======================================================================================*/
+/* Game Logic Code - Imported due to nodeJS limitations */
+
+
+// Create game instance from lobby information
+function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roundTimer, roomId){
+
+    /* gameInstance object:
+        players = array of players with [name, playerID, profile picture object]
+        rules = dictionary with all the rules set by the host
+        meta = meta data related/useful to the server
+    */
+
+    /*
+    [
+        ['webSocketID', 'username', score, doneBool (0 not done, 1 done)]
+        ['xfdsfh_wqw', 'Alex', 0, 0],
+        ['fdef0efe', 'Bob' 0, 0]
+    ]
+    */
+
+    console.log(roundTimer);
+
+    const tempIterator = websocketID.values();
+    
+    var playerArray = [];
+    for(var i in usernames){
+        var curr = [];
+        curr.push(tempIterator.next().value);
+        curr.push(usernames[i]);
+        curr.push(0);
+        curr.push(0);
+        playerArray.push(curr);
+    }
+
+    var gameInstance = {
+        players: playerArray,
+        rules: {
+            maxPlayers: parseInt(maxplayers),
+            numRounds:  parseInt(roundnumber),
+            roundTimer:  1000 * parseInt(roundTimer) /* parseInt(roundTimer) in milliseconds; 60000 is one minute*/,
+        },
+        meta: {
+            roomID: roomId,
+            totalPlayers: playerArray.length
+        }
+    }
+
+    return gameInstance;
+}
+
+function startGameLoop(gameInstance){
+    // Easier access for variables in game instance
+    var numRounds = gameInstance.rules.numRounds;
+    var roundTimer = gameInstance.rules.roundTimer;
+    var players = gameInstance.players;
+
+    // Get words from CSV file
+    var gameWords = getGameWords(numRounds);
+
+    // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
+    var drawPairs = getDrawPairs(gameWords, players);
+    console.log(drawPairs);
+
+    for(var i=0;i<drawPairs.length;i++){
+        var currWord = drawPairs[i][0];
+        var drawer1 = drawPairs[i][1];
+        var drawer2 = drawPairs[i][2];
+        console.log(`${currWord}: ${drawer1[1]}, ${drawer2[1]}`);
+        
+        for(let i=0; i<players.length;i++){
+            if(players[i][0] === drawer1[0] || players[i][0] === drawer2[0]){
+                players[i][3] = 1;
+            }
+            else{
+                players[i][3] = 0;
+            }
+        }
+        console.log(players);
+        
+        var startTime = Date.now();
+        while ((Date.now() - startTime) < roundTimer){
+            //myTimer();
+
+            // test function that changes the 2 player to be set to 'done/1'
+            test(players);
+
+
+            if(checkIfAllDone(players) == true){
+                console.log('Done with round early');
+                break;
+            }
+        }
+
+        //After everyone guesses, or time runs out
+        console.log('Current round end!\n\n');
+    }
+    console.log('GAME DONE');
+    return [3, 2, 4, 5, 1, 6, 7];
+}
+
+
+function myTimer() {
+          var d = new Date();
+          var t = d.toLocaleTimeString();
+          //console.log(t);
+}
+
+
+function test(test){
+    test[1][3] = 1;
+}
+
+
 /* Export the functions */
-module.exports = { getLDistance, readCSV, shuffle, buckets, cloneArray, addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone};
+module.exports = { getLDistance, readCSV, shuffle, buckets, cloneArray, 
+    addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
+    createGameInstance, startGameLoop};
+
