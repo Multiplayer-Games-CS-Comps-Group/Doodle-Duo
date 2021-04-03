@@ -103,7 +103,10 @@ io.on('connection',function(socket){
 
         //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
         let gameState = lib.createGameInstance(usernames,playersInRoom,maxPlayers,roundInput, roundTimer, roomId);
+        console.log('\n\n====+++++++++++++++++=======');
         console.log(gameState);
+        console.log('\n---------------\n', gameState.meta.drawPairs);
+        console.log('\n\n====+++++++++++++++++=======');
 
         // ENTER GAME LOOP HERE
         lib.startGameLoop(gameState);

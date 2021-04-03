@@ -172,8 +172,6 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
     ]
     */
 
-    console.log(roundTimer);
-
     const tempIterator = websocketID.values();
     
     var playerArray = [];
@@ -183,8 +181,16 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         curr.push(usernames[i]);
         curr.push(0);
         curr.push(0);
+        curr.push(0);
         playerArray.push(curr);
     }
+
+
+    // Get words from CSV file
+    var gameWords = getGameWords(parseInt(roundnumber));
+
+    // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
+    var drawPairs = getDrawPairs(gameWords, playerArray);
 
     var gameInstance = {
         players: playerArray,
@@ -195,7 +201,8 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         },
         meta: {
             roomID: roomId,
-            totalPlayers: playerArray.length
+            totalPlayers: playerArray.length,
+            drawPairs: drawPairs
         }
     }
 
@@ -204,16 +211,9 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
 
 async function startGameLoop(gameInstance){
     // Easier access for variables in game instance
-    var numRounds = gameInstance.rules.numRounds;
     var roundTimer = gameInstance.rules.roundTimer;
     var players = gameInstance.players;
-
-    // Get words from CSV file
-    var gameWords = getGameWords(numRounds);
-
-    // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
-    var drawPairs = getDrawPairs(gameWords, players);
-    console.log(drawPairs);
+    var drawPairs = gameInstance.meta.drawPairs;
 
     for(var i=0;i<drawPairs.length;i++){
         var currWord = drawPairs[i][0];
@@ -224,9 +224,11 @@ async function startGameLoop(gameInstance){
         for(let i=0; i<players.length;i++){
             if(players[i][0] === drawer1[0] || players[i][0] === drawer2[0]){
                 players[i][3] = 1;
+                players[i][4] = 1;
             }
             else{
                 players[i][3] = 0;
+                players[i][4] = 0;
             }
         }
         console.log(players);
