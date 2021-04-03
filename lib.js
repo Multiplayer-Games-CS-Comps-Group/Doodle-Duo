@@ -202,7 +202,8 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         meta: {
             roomID: roomId,
             totalPlayers: playerArray.length,
-            drawPairs: drawPairs
+            drawPairs: drawPairs,
+            currRound: 0;
         }
     }
 
@@ -214,6 +215,9 @@ async function startGameLoop(gameInstance){
     var roundTimer = gameInstance.rules.roundTimer;
     var players = gameInstance.players;
     var drawPairs = gameInstance.meta.drawPairs;
+
+    // Set game round to 1
+    gameInstance.meta.currRound += 1;
 
     for(var i=0;i<drawPairs.length;i++){
         var currWord = drawPairs[i][0];
@@ -248,6 +252,8 @@ async function startGameLoop(gameInstance){
         }
 
         //After everyone guesses, or time runs out
+        //Increment game round
+        gameInstance.meta.currRound += 1;
         console.log('Current round end!\n\n');
     }
     console.log('GAME DONE');
