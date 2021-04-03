@@ -11,10 +11,12 @@ app.get('/',function(req,res){
     //index.html will have 2 buttons: one for creating a new room that will give a random room number
     //the other button is for people to join the room
     //when clicked onto the button, emits "create" or "join" event and outputs the room number/ outputs joined specific room message
-    res.sendfile('index.html');
+    res.sendfile('public/index.html', { root: __dirname });
     //res.sendfile('hostWaitingRoom.html');
 });
 
+
+app.use(require('express').static('public'));
 
 // var nsp = io.of('/my-namespace');
 // nsp.on('connection',function(socket){
@@ -33,7 +35,7 @@ io.on('connection',function(socket){
     clients++;
 
     socket.on('createClicked',function(data){
-        let genId = function(min,max){ 
+        let genId = function(min,max){
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -57,14 +59,14 @@ io.on('connection',function(socket){
         // clientRooms[socket.id] = parseInt(roomId);
         // socket.join(parseInt(roomId));
         const room = io.sockets.adapter.rooms[parseInt(roomId)];
-       
+
         //if (room){
         if(io.sockets.adapter.rooms.has(parseInt(roomId)) && (io.sockets.adapter.rooms.get(parseInt(roomId))).size !== 0){
             if ((io.sockets.adapter.rooms.get(parseInt(roomId))).size > 12){
                     socket.emit('tooManyPlayers');
                     return;
                 }
-            
+
             clientRooms[socket.id] = parseInt(roomId);
             socket.join(parseInt(roomId));
             if (username === ''){
@@ -95,8 +97,9 @@ io.on('connection',function(socket){
         socket.emit('init',socket.number);
 
         startGameInterval(roomId);
-    
+
     });
+
     
     socket.on('startGame',function(roomId,maxPlayers,roundInput,roundTimer){
         var playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
@@ -127,10 +130,9 @@ io.on('connection',function(socket){
 });
 
 function startGameInterval(roomId){
-    
+
 };
 
 http.listen(5000,function(){
     console.log('listening on *:5000');
 });
-
