@@ -107,8 +107,6 @@ io.on('connection',function(socket){
 
         // ENTER GAME LOOP HERE
         lib.startGameLoop(gameState);
-
-        //lib.startGameLoop(gameState);
         console.log('SERVER HERE!');
 
     });
