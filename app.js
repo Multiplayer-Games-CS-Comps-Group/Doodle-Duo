@@ -26,6 +26,9 @@ const clientRooms = {};
 var clients = 0;
 var usernames = {};
 
+var gameInstancesArray = [];
+
+
 io.on('connection',function(socket){
     clients++;
 
@@ -100,19 +103,12 @@ io.on('connection',function(socket){
 
         //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
         let gameState = lib.createGameInstance(usernames,playersInRoom,maxPlayers,roundInput, roundTimer, roomId);
-
         console.log(gameState);
-        console.log('=============================');
-        //Throw an error
-        //JSON.stringify(gameState)
-        console.log(gameState.rules.maxPlayers);
-        console.log('=============================');
-
-        //Idea: send to a sever wide loop for hosted game instances?
-
 
         // ENTER GAME LOOP HERE
         lib.startGameLoop(gameState);
+
+        //lib.startGameLoop(gameState);
         console.log('SERVER HERE!');
 
     });

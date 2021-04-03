@@ -202,7 +202,7 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
     return gameInstance;
 }
 
-function startGameLoop(gameInstance){
+async function startGameLoop(gameInstance){
     // Easier access for variables in game instance
     var numRounds = gameInstance.rules.numRounds;
     var roundTimer = gameInstance.rules.roundTimer;
