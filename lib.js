@@ -203,7 +203,7 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
             roomID: roomId,
             totalPlayers: playerArray.length,
             drawPairs: drawPairs,
-            currRound: 0;
+            currRound: 0
         }
     }
 
