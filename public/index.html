@@ -156,13 +156,16 @@
                                    <h2 id="color-choice"></h2>
                                    <input class="color-range" type="range" min="0" max="100" value="75" title="Drag me to select.">
                                </div>
+                               <input type="range" min=1 max=50 id="brush-size" value="5">
+                               <button id="clear-canvas">Clear canvas</button>
+                               <button id="undo-button">Undo button</button>                       
                            </div>
                        </div>
                        <div class="uk-width-2-3" style="height: 120vw">
                            <div class="uk-height-1-1 uk-cover-container">
                                <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                   Canvas 1
-                               </div>
+                                    <canvas id="canvas-1" width="200" height="400"></canvas>
+                                </div>
                            </div>
                        </div>
                        <div class="uk-width-1-1" style="height: 100px">
@@ -316,6 +319,7 @@
             // })
         </script>
         <script src="./javascript/colorPicker.js"></script>
+        <script src="./javascript/canvas.js" defer></script>
     </body>
 
 </html>
