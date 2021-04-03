@@ -142,7 +142,7 @@ function getDrawPairs(gameWords, players){
 
 function checkIfAllDone(playerArray){
     for(let i=0;i<playerArray.length;i++){
-        if(playerArray[i][3] == 0){
+        if(playerArray[i].isDone == 0){
             return false;
         }
     }
@@ -175,6 +175,7 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
     const tempIterator = websocketID.values();
     
     var playerArray = [];
+    /*
     for(var i in usernames){
         var curr = [];
         curr.push(tempIterator.next().value);
@@ -184,6 +185,20 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         curr.push(0);
         playerArray.push(curr);
     }
+    */
+
+    for(var i in usernames){
+        var player = {
+            websocketID: tempIterator.next().value,
+            userName: usernames[i],
+            score: 0,
+            isDone: 0,
+            isDrawer: 0
+        };
+        playerArray.push(player);
+    }
+
+
 
 
     // Get words from CSV file
@@ -223,16 +238,16 @@ async function startGameLoop(gameInstance){
         var currWord = drawPairs[i][0];
         var drawer1 = drawPairs[i][1];
         var drawer2 = drawPairs[i][2];
-        console.log(`${currWord}: ${drawer1[1]}, ${drawer2[1]}`);
+        console.log(`${currWord}: ${drawer1.userName}, ${drawer2.userName}`);
         
         for(let i=0; i<players.length;i++){
-            if(players[i][0] === drawer1[0] || players[i][0] === drawer2[0]){
-                players[i][3] = 1;
-                players[i][4] = 1;
+            if(players[i].websocketID === drawer1.websocketID || players[i].websocketID === drawer2.websocketID){
+                players[i].isDone = 1;
+                players[i].isDrawer = 1;
             }
             else{
-                players[i][3] = 0;
-                players[i][4] = 0;
+                players[i].isDone = 0;
+                players[i].isDrawer = 0;
             }
         }
         console.log(players);
@@ -241,7 +256,7 @@ async function startGameLoop(gameInstance){
         while ((Date.now() - startTime) < roundTimer){
             //myTimer();
 
-            // test function that changes the 2 player to be set to 'done/1'
+            // test function that changes the 2 player to be set to 'isDone/1'
             test(players);
 
 
@@ -269,7 +284,7 @@ function myTimer() {
 
 
 function test(test){
-    test[1][3] = 1;
+    test[1].isDone = 1;
 }
 
 
