@@ -149,6 +149,8 @@
             //var socket = io('/my-namespcae');
             let playerNumber = 0;
             var socket = io();
+            var wordToGuess = '';
+            var state = {}; //not sure if this is necessary
             const gameCodeDisplay = document.getElementById('gameCodeDisplay');
             const roomInput = document.getElementById('roomIdInput');
 
@@ -171,6 +173,7 @@
 
             }
 
+
             function joinButtonClicked(){
                 const joinRoomId = roomInput.value;
                 const nameInput = document.getElementById('nameInput').value;
@@ -180,6 +183,8 @@
             }
 
             function startGameButtonClicked(){
+                //all the changes in divs and display should be moved to a new event call according
+                //to number of players and the role of the player (drawer/guesser)
                 const maxPlayer =document.getElementById('MaxPlayerInput').value;
                 const roundInput =document.getElementById('RoundInput').value;
                 const roundTimer =document.getElementById('RoundTimerInput').value;
@@ -226,9 +231,53 @@
                 alert('Room full');
             });
 
+            socket.on('tooFewPlayers',function(){
+                //reset();
+                alert('We recommend a minimum of four players to play this game');
+            });
+
             socket.on('init',function(number){
                 playerNumber = number;
             });
+
+            socket.on('gameState',function(gameState){
+                
+                console.log('players: '+gameState.players)
+                state = gameState;
+                wordToGuess = state.meta.currWord
+                console.log('WORD TO BE GUESSED: '+wordToGuess);
+                //update role view
+                //update correct ans var
+                //update scoreboard
+            });
+
+            socket.on('drawerView',function(){
+                //update drawer view and show word they need to draw
+            });
+            socket.on('guesserView',function(){
+                //update drawer view and show word they need to draw
+            });
+
+            function guessInput(){
+                const guessInput = document.getElementById('GuessInput').value;
+                if (guessInput.equals(wordToGuess)){
+                    socket.emit('correctGuess',state,roomInput.value); //updates the player's guessed boolean to true, score changed
+                }
+                else{
+                    
+                    socket.emit('playerGuess', guessInput,roomInput.value)//socket.emit('playerGuess',guessInput,socketId)
+
+                }
+            }
+
+            socket.on('someoneGuessed',function(gameState){
+                //update container saying  '______ guessed the compound word!'
+
+            });
+
+            socket.on('wrongGuess',function(playerGuess,player){
+                //update container saying '____ guessed ' + guessInput
+            })
 
             socket.on('broadcastJoined',function(username){
                 console.log('player joined');
@@ -236,7 +285,7 @@
                 document.getElementById("playerJoin").appendChild(br);
                 document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
 
-            })
+            });
 
             socket.on('waitingRoomforPlayer',function(roomId){
                 document.getElementById('InitialScreen').style.display ='none';
@@ -244,16 +293,8 @@
                 document.getElementById('waitingRoomforHost').style.display='none';
                 document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '! Waiting for host to start game...'
             })
-            //    socket.on('newclientconnect',function(data){
-            //        document.body.innerHTML = '';
-            //        document.write(data.description);
-            //    });
 
-            //    socket.on('connectToRoom',function(data){
-            //        document.body.innerHTML = '';
-            //        document.write(data);
-            //    })
-
+            //THIS NEEDS TO BE DONE ACTUALLY!!!!!
             // socket.on('updateusers',function(data){
             //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
             // });

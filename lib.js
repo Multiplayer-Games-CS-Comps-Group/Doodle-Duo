@@ -149,6 +149,24 @@ function checkIfAllDone(playerArray){
     return true;
 }
 
+function getAllGuessers(playerArray,drawers){
+    var updatedArray =[];
+    for (var i = 0; i<playerArray.length;i++){
+        updatedArray.push(playerArray[i][0]);
+    }
+    console.log('UPDATED ALL PLAYERS WITH ID ONLY: '+ updatedArray);
+    var index = updatedArray.indexOf(drawers[0]);
+    if (index > -1) {
+        updatedArray.splice(index, 1);
+    }
+    index = updatedArray.indexOf(drawers[1]);
+    if (index > -1) {
+        updatedArray.splice(index, 1);
+    }
+    console.log('FINAL ARRAY: '+ updatedArray);
+    return updatedArray
+
+}
 
 
 /*=======================================================================================*/
@@ -184,6 +202,13 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
         curr.push(0);
         playerArray.push(curr);
     }
+    var playerStates = [];
+    for (var k =0; k<playerArray.length;k++){
+            playerStates.push({socketId: playerArray[k][0], username:playerArray[k][1], score:playerArray[k][2], guessed:false})
+        }
+    
+
+    //[{username: Lydia socketid: aldkfjal score: 0 guessed: false}]
 
 
     // Get words from CSV file
@@ -191,19 +216,26 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
 
     // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
     var drawPairs = getDrawPairs(gameWords, playerArray);
+    
+    var allGuessers= getAllGuessers(playerArray,[drawPairs[0][1][0],drawPairs[0][2][0]]);
 
     var gameInstance = {
-        players: playerArray,
+        players: playerStates,
         rules: {
             maxPlayers: parseInt(maxplayers),
             numRounds:  parseInt(roundnumber),
             roundTimer:  1000 * parseInt(roundTimer) /* parseInt(roundTimer) in milliseconds; 60000 is one minute*/,
         },
         meta: {
+            currentCountdown = null,//id of interval
+            currentTimeLeft = 0,
             roomID: roomId,
             totalPlayers: playerArray.length,
             drawPairs: drawPairs,
-            currRound: 0;
+            currRound: 0,
+            currWord: drawPairs[0][0],
+            currDrawers: [drawPairs[0][1][0],drawPairs[0][2][0]],
+            currGuessers: allGuessers
         }
     }
 
@@ -222,6 +254,7 @@ async function startGameLoop(gameInstance){
     for(var i=0;i<drawPairs.length;i++){
         var currWord = drawPairs[i][0];
         var drawer1 = drawPairs[i][1];
+        //emit event to players who r drawers that they are the drawer
         var drawer2 = drawPairs[i][2];
         console.log(`${currWord}: ${drawer1[1]}, ${drawer2[1]}`);
         
