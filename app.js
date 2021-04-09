@@ -169,11 +169,22 @@ io.on('connection',function(socket){
         updateGuessed(roomId,gameState,socket.username);
         //CHECK IF ALL OTHERS ARE DONE WITH GUESSES
         //CALL ALL GUESSED FUNCTION
-        if(allGuessed()){
+        if(allGuessed(gameState)){
             clearInterval(gameState.meta.currentCountdown);
+            updateGuessed(roomId,gameState);
         }
         
      });
+
+     function allGuessed(gameState){
+         var allCorrect = true;
+         for (var i = 0; i<gameState.players.length;i++){
+            if (gameState.players[i].guessed == false){
+                return false;
+            }
+         }
+         return allCorrect
+     }
 
      socket.on('playerGuess',function(playerGuess,roomId){
          io.sockets.in(roomId)
@@ -184,51 +195,62 @@ io.on('connection',function(socket){
     function updateGuessed(roomId,gameState){
         io.sockets.in(roomId)
             .emit('someoneGuessed',gameState);
-    }
+    };
 
-    function displayScore(roomId,gameState){
-        //showing score board 
-        //call updateGameState in 5 seconds
+    function endOfRound(roomId,gameState){
         //if result of game state != 1 (end of game/ all rounds)
         //egame state function called (go through the gameloop to update state)
-        // if (game isn[t over) {
-            setTimeout(() => updateGameState(roomId,gameState) ,5000);
-        // }
-
         //else{
             //emit to display final screen w scorboard
             //ask if wanna start over
             //clear all game states, emit end game msg
         //}
+        
+        if(gameState.meta.currRound == gameState.rules.numRounds){
+            endOfGame();
+        }
 
+        //showing score board 
+        //call updateGameState in 5 seconds
+        else{
+            io.sockets.in(roomId)
+            .emit('endRoundScores',gameState);
+            setTimeout(() => updateGameState(roomId,gameState) ,5000);
+        }
+    };
 
-    }
-
-    function countdown() {
+    function countdown(roomId,gameState) {
         if (currentTimeLeft <= 0 ) {
+          endOfRound(roomId,gameState);
           clearInterval(gameState.meta.currentCountdown);
         }
       
         currentTimeLeft--;
     }
       
-
      //params: roomId, state[roomId]
     function updateGameState(roomId, gameState){
+        gameState.meta.currRound++;
+        gameState.meta.currWord = gameState.meta.drawPairs[gameState.meta.currRound][0];
+        gameState.meta.currDrawers = [gameState.meta.drawPairs[gameState.meta.currRound][1][0],gameState.meta.drawPairs[gameState.meta.currRound][2][0]]
+        gameState.meta.currGuessers = lib.getAllGuessers(lib.playerArray,gameState.meta.currDrawers);
         gameState.meta.currentTimeLeft = gameState.rules.roundTimer;
         gameState.meta.currentCountdown = setInterval(countdown, 1000);
 
         io.sockets.in(roomId)
             .emit('gameState', gameState);
     };
+
     function notifyDrawers(roomId,gameState){
         io.sockets.in(roomId)
             .to(gameState.meta.currDrawers).emit('drawerView',gameState);
-    }
+    };
+
     function notifyGuessers(roomId,gameState){
         io.sockets.in(roomId)
             .to(gameState.meta.currGuessers).emit('guesserView',gameState);
-    }
+    };
+
     //maybe second param of endGame func could be result/ score instance of state obj
     //params: roomId, state[roomId]
     function endOfGame(){};
