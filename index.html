@@ -89,6 +89,7 @@
                 <div class="uk-margin-small-left">___</div>
               </div>
               <div>
+                <div id="timeRemaining"></div>
                 <span uk-icon="icon: clock; ratio: 3"></span>
               </div>
             </div>
@@ -123,25 +124,65 @@
   </div>
 
   <!--     Drawer's view  -->
-  <div id="drawer-view" style="display:none">
-    <div class="uk-text-large">
-      <!--               <div class="uk-container can">-->
-      <div class="uk-grid uk-height-viewport">
-        <div class="uk-width-1-1 uk-background-primary">
-          Doodle Duo
-        </div>
-        <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
-          <div class="uk-cover uk-background-primary">
-            <div class="uk-border-rounded uk-background-muted">
-              Canvas
+  <div style="display:none" id="drawer_view">
+    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+      <div class="uk-container">
+        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+          <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
+            Doodle Duo
+          </div>
+          <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
+            <div class="uk-flex-column uk-flex">
+              <div class="undoButtonContainer center-content" aria-label="undo">
+                <svg class="icon icon-undo"><use xlink:href="#icon-undo"></use></svg>
+              </div>
+              <div class="paintButtonContainer center-content" aria-label="draw">
+                <svg class="icon icon-paintbrush"><use xlink:href="#icon-paintbrush"></use></svg>
+              </div>
+              <div class="colorPickerContainer">
+                <h2 id="color-choice"></h2>
+                <input class="color-range" type="range" min="0" max="100" value="75" title="Drag me to select.">
+              </div>
+              <input type="range" min=1 max=50 id="brush-size" value="5">
+              <button id="clear-canvas">Clear canvas</button>
+              <button id="undo-button">Undo button</button>
+            </div>
+          </div>
+          <div class="uk-width-2-3" style="height: 120vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                <canvas id="canvas-1" width="200" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-1" style="height: 100px">
+            <div class="uk-height-1-1 uk-cover-container uk-align-center">
+              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
+                <div id="wordToDraw" class="uk-margin-small-left">
+                  Draw: House
+                </div>
+              </div>
+              <div>
+                <div id="dTimeRemaining"></div>
+                <span uk-icon="icon: clock; ratio: 5"></span>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
+            <div class="uk-align-center uk-flex uk-flex-column" >
+              <div id="dPlayerGuess1" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
+                Other player guess
+              </div>
+              <div id="dPlayerGuess2" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
+                Other player guess
+              </div>
+              <div id="dPlayerGuess3" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
+                Other player guess
+              </div>
             </div>
           </div>
         </div>
-        <div class="uk-width-1-1 uk-background-primary" id="wordToDraw">
-          Your word is + wordtodraw
-        </div>
       </div>
-      <!--               </div>-->
     </div>
   </div>
 
