@@ -309,6 +309,6 @@ function test(test) {
 module.exports = {
   getLDistance, readCSV, shuffle, buckets, cloneArray,
   addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
-  createGameInstance, startGameLoop
+  createGameInstance, startGameLoop, getAllGuessers
 };
 
