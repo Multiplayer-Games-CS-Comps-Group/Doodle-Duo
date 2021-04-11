@@ -132,13 +132,13 @@
         </div>
         <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
           <div class="uk-cover uk-background-primary">
-            <div class="uk-border-rounded uk-background-muted">
+            <div class="uk-border-rounded uk-background-muted" id="guesserCanvas2">
               Canvas 2
             </div>
           </div>
         </div>
-        <div class="uk-width-1-1 uk-background-primary">
-          Word to draw here
+        <div class="uk-width-1-1 uk-background-primary" id="wordToDraw">
+          Your word is + wordtodraw
         </div>
       </div>
       <!--               </div>-->
@@ -154,7 +154,7 @@
     var socket = io();
     var wordToGuess = '';
     var state = {}; //not sure if this is necessary
-    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); // 
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
     const roomInput = document.getElementById('roomIdInput');
 
     const allViews = {
@@ -168,9 +168,9 @@
 
     /**
      * Use this function to switch between the different views
-     * 
+     *
      * Pass in the ID of the view to make it display, and all other views
-     * will not display. 
+     * will not display.
      */
     function switchToView(newViewName) {
       for (let [viewName, view] of Object.entries(allViews)) {
@@ -275,12 +275,23 @@
       //update scoreboard
     });
 
+    socket.on('endRoundScores', function () {
+      //called after end of each round, shows for 5 seconds
+      //set geusser view and drawer view styles display none to hide them
+      //display scoreboard with game/round info
+    });
+
     socket.on('drawerView', function () {
       console.debug('drawerView');
 
       //update drawer view and show word they need to draw
     });
-    socket.on('guesserView', function () {
+    socket.on('guesserView', function (gameState) {
+      console.log(gameState.players.username);
+
+      // document.getElementById('guessInput').style.display = 'none';
+      //put things like this in to style elements based on game logic
+
       console.debug('guesserView');
 
       //update drawer view and show word they need to draw
@@ -290,6 +301,7 @@
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
       if (guessInput.equals(wordToGuess)) {
+        //put display stuff here for the person who guessed
         socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
       }
       else {
@@ -297,6 +309,8 @@
       }
     }
 
+
+    //prompted when user correctly guessed, sent to everyone
     socket.on('someoneGuessed', function (gameState) {
       console.debug('someoneGuessed', { gameState });
       //update container saying  '______ guessed the compound word!'
@@ -305,6 +319,7 @@
 
     socket.on('wrongGuess', function (playerGuess, player) {
       console.debug('wrongGuess', { playerGuess, player });
+
       //update container saying '____ guessed ' + guessInput
     })
 
