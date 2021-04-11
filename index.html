@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <div id='InitialScreen'>
+  <div id='initial-screen'>
     <h1>Compound Game</h1>
 
     <div class="buttons">
@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <div id='waitingRoomforHost' style="display:none">
+  <div id='waiting-room-host' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id="gameId"> </p>
     <h2> The game room Id is <span id="gameCodeDisplay"></span></h2>
@@ -47,7 +47,7 @@
 
   </div>
 
-  <div id='waitingRoomforPlayer' style="display:none">
+  <div id='waiting-room-player' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id='displayRoom'></p>
   </div>
@@ -55,10 +55,10 @@
   <div id='example' style="display:none">
     <h3>Example</h3>
   </div>
-  <p id='playerJoin'></p>
+  <p id='playerJoin'></p> <!-- TODO: Unused <p> block? Or should it be in one of the dics? -->
 
   <!--     Guesser's view  -->
-  <div id="guesser_view" style="display:none">
+  <div id="guesser-view" style="display:none">
     <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
       <div class="uk-container">
         <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
@@ -123,7 +123,7 @@
   </div>
 
   <!--     Drawer's view  -->
-  <div style="display:none" id="drawer_view">
+  <div id="drawer-view" style="display:none">
     <div class="uk-text-large">
       <!--               <div class="uk-container can">-->
       <div class="uk-grid uk-height-viewport">
@@ -150,21 +150,43 @@
   <!--initialize socket object so clients can establish connections-->
   <script>
     //var socket = io('/my-namespcae');
-    let playerNumber = 0;
+    var playerNumber = 0;
     var socket = io();
     var wordToGuess = '';
     var state = {}; //not sure if this is necessary
-    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); // 
     const roomInput = document.getElementById('roomIdInput');
+
+    const allViews = {
+      initialScreen: document.getElementById('initial-screen'),
+      waitingRoomForHost: document.getElementById('waiting-room-host'),
+      waitingRoomForPlayer: document.getElementById('waiting-room-player'),
+      example: document.getElementById('example'),
+      guesserView: document.getElementById('guesser-view'),
+      drawerView: document.getElementById('drawer-view'),
+    }
+
+    /**
+     * Use this function to switch between the different views
+     * 
+     * Pass in the ID of the view to make it display, and all other views
+     * will not display. 
+     */
+    function switchToView(newViewName) {
+      for (let [viewName, view] of Object.entries(allViews)) {
+        if (viewName === newViewName) {
+          view.style.display = 'block';
+        } else {
+          view.style.display = 'none';
+        }
+      }
+    } 
 
     //on connection to server, ask for user's name with an anonymous callback
     socket.on('connect', function () {
       // call the server-side function 'adduser' and send one parameter (value of prompt)
 
-      document.getElementById('waitingRoomforPlayer').style.display = 'none';
-      document.getElementById('waitingRoomforHost').style.display = 'none';
-      document.getElementById('example').style.display = 'none';
-      document.getElementById('InitialScreen').style.display = 'block';
+      switchToView('initialScreen');
       //socket.emit('adduser', prompt("What's your name?"));
     });
 
@@ -191,19 +213,15 @@
       const maxPlayer = document.getElementById('MaxPlayerInput').value;
       const roundInput = document.getElementById('RoundInput').value;
       const roundTimer = document.getElementById('RoundTimerInput').value;
-      document.getElementById('guesser_view').style.display = 'block';
-      document.getElementById('waitingRoomforPlayer').style.display = 'none';
-      document.getElementById('waitingRoomforHost').style.display = 'none';
-      document.getElementById('example').style.display = 'none';
-      document.getElementById('InitialScreen').style.display = 'none';
+      switchToView('guesserView');
 
       socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
     }
 
     function init() {
       console.log('button clicked');
-      // document.getElementById('InitialScreen').style.display = 'none';
-      // document.getElementById('waitingRoomforHost').style.display = 'block';
+      // document.getElementById('initial-screen').style.display = 'none';
+      // document.getElementById('waiting-room-host').style.display = 'block';
 
     }
 
@@ -211,14 +229,11 @@
       playerNumber = null;
       roomInput.value = '';
       gameCodeDisplay.innerText = '';
-      document.getElementById('InitialScreen').style.display = 'block';
-      document.getElementById('waitingRoomforHost').style.display = 'none';
+      switchToView('initialScreen');
     }
 
     socket.on('gameRoomNo', function (data) {
-      document.getElementById('InitialScreen').style.display = 'none';
-      document.getElementById('waitingRoomforPlayer').style.display = 'none';
-      document.getElementById('waitingRoomforHost').style.display = 'block';
+      switchToView('waitingRoomForHost');
       gameCodeDisplay.innerHTML = data + ' .';
       globalThis.currRoomId = data;
 
@@ -261,14 +276,14 @@
       //update drawer view and show word they need to draw
     });
 
+    //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
       if (guessInput.equals(wordToGuess)) {
         socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
       }
       else {
-
-        socket.emit('playerGuess', guessInput, roomInput.value)//socket.emit('playerGuess',guessInput,socketId)
+        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
 
       }
     }
@@ -290,10 +305,8 @@
 
     });
 
-    socket.on('waitingRoomforPlayer', function (roomId) {
-      document.getElementById('InitialScreen').style.display = 'none';
-      document.getElementById('waitingRoomforPlayer').style.display = 'block';
-      document.getElementById('waitingRoomforHost').style.display = 'none';
+    socket.on('waitingRoomForPlayer', function (roomId) {
+      switchToView('waitingRoomForPlayer');
       document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
     })
 
