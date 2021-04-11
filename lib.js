@@ -1,7 +1,8 @@
 const levenshtein = require('js-levenshtein');
-var pluralize = require('pluralize');
-var shuffle = require('shuffle-array');
-var buckets = require('buckets-js');
+const pluralize = require('pluralize');
+const shuffle = require('shuffle-array');
+const buckets = require('buckets-js');
+const fs = require('fs');
 
 
 /* Levenshtein function to check guess to answer */
@@ -9,10 +10,10 @@ var buckets = require('buckets-js');
 function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
-  var ld = levenshtein(guess, target);
+  let ld = levenshtein(guess, target);
   if (ld == 0) { return true; }
   else {
-    var newLD = levenshtein(pluralize(guess), pluralize(target));
+    let newLD = levenshtein(pluralize(guess), pluralize(target));
     if (newLD == 0) { return true; }
     else if (newLD <= 2) { return -1; }
     else { return false; }
@@ -21,8 +22,8 @@ function getLDistance(guess, target) {
 
 
 function test_getLDistance() {
-  var guess = 'firETruCks'
-  var target = 'firetruck'
+  let guess = 'firETruCks'
+  let target = 'firetruck'
   console.log(`Guess: ${guess}, Target: "${target}`)
   console.log(getLDistance(guess, target));
   console.log('---');
@@ -39,9 +40,7 @@ function test_getLDistance() {
 
 /* Read CSV file and turn into JSON object */
 function readCSV(filePath) {
-  var fs = require('fs');
-
-  var data = fs.readFileSync(filePath)
+  let data = fs.readFileSync(filePath)
     .toString()
     .split('\n')
     .map(e => e.trim())
@@ -51,21 +50,21 @@ function readCSV(filePath) {
 
 
 function test_readCSV() {
-  var a = readCSV('compounds.csv');
+  let a = readCSV('compounds.csv');
   console.log(a);
 }
 
 
 /* General math/data structure functions */
 function cloneArray(source, dest) {
-  for (var i = 0; i < source.length; i++) {
+  for (let i = 0; i < source.length; i++) {
     dest[i] = source[i];
   }
   return 1;
 }
 
 function addArraytoStack(array, stack) {
-  for (var i = 0; i < array.length; i++) {
+  for (let i = 0; i < array.length; i++) {
     stack.add(array[i]);
   }
   return 1;
@@ -75,10 +74,10 @@ function addArraytoStack(array, stack) {
 /* Game initialization functions */
 
 function getGameWords(numRounds) {
-  var databaseWords = readCSV('database.csv');
-  var out = [];
-  for (var i = 0; i < numRounds; i++) {
-    var randomWord = databaseWords[Math.floor(Math.random() * databaseWords.length)];
+  let databaseWords = readCSV('database.csv');
+  let out = [];
+  for (let i = 0; i < numRounds; i++) {
+    let randomWord = databaseWords[Math.floor(Math.random() * databaseWords.length)];
     if (out.includes(randomWord) === false) { out.push(randomWord); }
     else {
       while (out.includes(randomWord)) {
@@ -93,7 +92,7 @@ function getGameWords(numRounds) {
 
 function getDrawPairs(gameWords, players) {
   // Clone player list to pair them
-  var playerPool = []
+  let playerPool = []
   cloneArray(players, playerPool);
   shuffle(playerPool);
   while (playerPool == players) {
@@ -101,14 +100,14 @@ function getDrawPairs(gameWords, players) {
   }
 
   // Add players to stack
-  var pStack = buckets.Stack();
+  let pStack = buckets.Stack();
   addArraytoStack(playerPool, pStack);
 
   // Pop players in pairs, add to current word
   // Array of [word, drawer1, drawer2]
-  var otherStack = buckets.Stack();
-  var pairs = [];
-  for (var i = 0; i < gameWords.length; i++) {
+  let otherStack = buckets.Stack();
+  let pairs = [];
+  for (let i = 0; i < gameWords.length; i++) {
     currPair = [];
     currPair.push(gameWords[i]);
     if (pStack.size() > 1) {
@@ -119,7 +118,7 @@ function getDrawPairs(gameWords, players) {
     } else {
       if (pStack.size() == 1) {
         currPair.push(pStack.pop());
-        var temp = otherStack.toArray();
+        let temp = otherStack.toArray();
         currPair.push(temp[Math.floor(Math.random() * temp.length)]);
       } else {
         shuffle(playerPool);
@@ -150,12 +149,12 @@ function checkIfAllDone(playerArray) {
 }
 
 function getAllGuessers(playerArray, drawers) {
-  var updatedArray = [];
-  for (var i = 0; i < playerArray.length; i++) {
+  let updatedArray = [];
+  for (let i = 0; i < playerArray.length; i++) {
     updatedArray.push(playerArray[i][0]);
   }
   console.log('UPDATED ALL PLAYERS WITH ID ONLY: ' + updatedArray);
-  var index = updatedArray.indexOf(drawers[0]);
+  let index = updatedArray.indexOf(drawers[0]);
   if (index > -1) {
     updatedArray.splice(index, 1);
   }
@@ -192,9 +191,9 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber, rou
 
   const tempIterator = websocketID.values();
 
-  var playerArray = [];
-  for (var i in usernames) {
-    var curr = [];
+  const playerArray = [];
+  for (let i in usernames) {
+    const curr = [];
     curr.push(tempIterator.next().value);
     curr.push(usernames[i]);
     curr.push(0);
@@ -202,8 +201,8 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber, rou
     curr.push(0);
     playerArray.push(curr);
   }
-  var playerStates = [];
-  for (var k = 0; k < playerArray.length; k++) {
+  const playerStates = [];
+  for (let k = 0; k < playerArray.length; k++) {
     playerStates.push({ socketId: playerArray[k][0], username: playerArray[k][1], score: playerArray[k][2], guessed: false })
   }
 
@@ -212,14 +211,14 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber, rou
 
 
   // Get words from CSV file
-  var gameWords = getGameWords(parseInt(roundnumber));
+  const gameWords = getGameWords(parseInt(roundnumber));
 
   // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
-  var drawPairs = getDrawPairs(gameWords, playerArray);
+  let drawPairs = getDrawPairs(gameWords, playerArray);
 
-  var allGuessers = getAllGuessers(playerArray, [drawPairs[0][1][0], drawPairs[0][2][0]]);
+  let allGuessers = getAllGuessers(playerArray, [drawPairs[0][1][0], drawPairs[0][2][0]]);
 
-  var gameInstance = {
+  let gameInstance = {
     players: playerStates,
     rules: {
       maxPlayers: parseInt(maxplayers),
@@ -244,18 +243,18 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber, rou
 
 async function startGameLoop(gameInstance) {
   // Easier access for variables in game instance
-  var roundTimer = gameInstance.rules.roundTimer;
-  var players = gameInstance.players;
-  var drawPairs = gameInstance.meta.drawPairs;
+  let roundTimer = gameInstance.rules.roundTimer;
+  let players = gameInstance.players;
+  let drawPairs = gameInstance.meta.drawPairs;
 
   // Set game round to 1
   gameInstance.meta.currRound += 1;
 
-  for (var i = 0; i < drawPairs.length; i++) {
-    var currWord = drawPairs[i][0];
-    var drawer1 = drawPairs[i][1];
+  for (let i = 0; i < drawPairs.length; i++) {
+    let currWord = drawPairs[i][0];
+    let drawer1 = drawPairs[i][1];
     //emit event to players who r drawers that they are the drawer
-    var drawer2 = drawPairs[i][2];
+    let drawer2 = drawPairs[i][2];
     console.log(`${currWord}: ${drawer1[1]}, ${drawer2[1]}`);
 
     for (let i = 0; i < players.length; i++) {
@@ -270,7 +269,7 @@ async function startGameLoop(gameInstance) {
     }
     console.log(players);
 
-    var startTime = Date.now();
+    let startTime = Date.now();
     while ((Date.now() - startTime) < roundTimer) {
       //myTimer();
 
@@ -295,8 +294,8 @@ async function startGameLoop(gameInstance) {
 
 
 function myTimer() {
-  var d = new Date();
-  var t = d.toLocaleTimeString();
+  let d = new Date();
+  let t = d.toLocaleTimeString();
   //console.log(t);
 }
 

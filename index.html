@@ -281,7 +281,7 @@
 
             socket.on('broadcastJoined',function(username){
                 console.log('player joined');
-                var br = document.createElement("br");
+                let br = document.createElement("br");
                 document.getElementById("playerJoin").appendChild(br);
                 document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
 

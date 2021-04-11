@@ -3,18 +3,20 @@ const lib = require("./lib");
 const { emit } = require('process'); //TODO: unused?
 const { callbackify } = require('util'); //TODO: unused?
 
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+app.use(express.static('public'))
 
 app.get('/', function (req, res) {
   //index.html will have 2 buttons: one for creating a new room that will give a random room number
   //the other button is for people to join the room
   //when clicked onto the button, emits "create" or "join" event and outputs the room number/ outputs joined specific room message
-  res.sendFile('index.html');
+  res.sendFile('index.html', { root: __dirname });
   //res.sendfile('hostWaitingRoom.html');
 });
-
 
 // var nsp = io.of('/my-namespace');
 // nsp.on('connection',function(socket){
@@ -24,9 +26,9 @@ app.get('/', function (req, res) {
 const state = {};
 const clientRooms = {};
 var clients = 0;
-var usernames = {};
+const usernames = {};
 
-var gameInstancesArray = []; //TODO: unused variable?
+var gameInstancesArray = []; //TODO: unused variable? Looks like state keeps track of each state in a roomID
 
 io.on('connection', function (socket) {
   clients++;
@@ -105,7 +107,7 @@ io.on('connection', function (socket) {
         return;
       }
     }
-    var playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
+    let playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
 
     //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
     let gameState = lib.createGameInstance(usernames, playersInRoom, maxPlayers, roundInput, roundTimer, roomId);
@@ -155,7 +157,7 @@ io.on('connection', function (socket) {
 
   socket.on('correctGuess', function (gameState, roomId) {
     //update player's guess boolean to be true
-    for (var i = 0; i < gameState.players.length; i++) {
+    for (let i = 0; i < gameState.players.length; i++) {
       if (gameState.players[i].socketId.equals(socket.id)) {
         gameState.players[i].score += 10;
         gameState.players[i].guessed = true;
@@ -176,13 +178,12 @@ io.on('connection', function (socket) {
   });
 
   function allGuessed(gameState) {
-    var allCorrect = true;
-    for (var i = 0; i < gameState.players.length; i++) {
+    for (let i = 0; i < gameState.players.length; i++) {
       if (gameState.players[i].guessed == false) {
         return false;
       }
     }
-    return allCorrect
+    return true;
   }
 
   socket.on('playerGuess', function (playerGuess, roomId) {
