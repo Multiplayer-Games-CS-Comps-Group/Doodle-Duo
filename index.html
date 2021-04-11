@@ -180,7 +180,7 @@
           view.style.display = 'none';
         }
       }
-    } 
+    }
 
     //on connection to server, ask for user's name with an anonymous callback
     socket.on('connect', function () {
@@ -233,6 +233,7 @@
     }
 
     socket.on('gameRoomNo', function (data) {
+      console.debug('gameRoomNo', { data });
       switchToView('waitingRoomForHost');
       gameCodeDisplay.innerHTML = data + ' .';
       globalThis.currRoomId = data;
@@ -240,25 +241,30 @@
     });
 
     socket.on('errorRoomId', function () {
+      console.debug('errorRoomId');
       reset();
       alert('Unknown game code');
     });
 
     socket.on('tooManyPlayers', function () {
+      console.debug('tooManyPlayers');
       reset();
       alert('Room full');
     });
 
     socket.on('tooFewPlayers', function () {
+      console.debug('tooFewPlayers');
       //reset();
       alert('We recommend a minimum of four players to play this game');
     });
 
     socket.on('init', function (number) {
+      console.debug('init');
       playerNumber = number;
     });
 
     socket.on('gameState', function (gameState) {
+      console.debug('gameState', { gameState });
 
       console.log('players: ' + gameState.players)
       state = gameState;
@@ -270,9 +276,13 @@
     });
 
     socket.on('drawerView', function () {
+      console.debug('drawerView');
+
       //update drawer view and show word they need to draw
     });
     socket.on('guesserView', function () {
+      console.debug('guesserView');
+
       //update drawer view and show word they need to draw
     });
 
@@ -288,15 +298,18 @@
     }
 
     socket.on('someoneGuessed', function (gameState) {
+      console.debug('someoneGuessed', { gameState });
       //update container saying  '______ guessed the compound word!'
 
     });
 
     socket.on('wrongGuess', function (playerGuess, player) {
+      console.debug('wrongGuess', { playerGuess, player });
       //update container saying '____ guessed ' + guessInput
     })
 
     socket.on('broadcastJoined', function (username) {
+      console.debug('broadcastJoined', { username });
       console.log('player joined');
       let br = document.createElement("br");
       document.getElementById("playerJoin").appendChild(br);
@@ -305,6 +318,7 @@
     });
 
     socket.on('waitingRoomForPlayer', function (roomId) {
+      console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
       document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
     })
