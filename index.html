@@ -1,309 +1,312 @@
-
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Compound Game</title>
 
-       <!-- UIkit CSS -->
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
-        <!--  Custom CSS     -->
-       <link rel="stylesheet" href="./main.css" />
+<head>
+  <title>Compound Game</title>
 
-       <!-- UIkit JS -->
-       <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
-       <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
-   </head>
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
+  <!--  Custom CSS     -->
+  <link rel="stylesheet" href="./main.css" />
 
-   <body>
-       <div id= 'InitialScreen'>
-        <h1>Compound Game</h1>
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+</head>
 
-            <div class="buttons">
-                <input type = 'text' placeholder="Enter Player Name" id='nameInput'/>
-                <br><br>
-                <button onclick = "createButtonClicked()">CREATE</button>
-                <div>OR</div>
-                <div>
-                    <input type='text' placeholder = 'Enter Room Id' id = 'roomIdInput'/>
-                    <button onclick ="joinButtonClicked()">JOIN</button>
-                </div>
+<body>
+  <div id='InitialScreen'>
+    <h1>Compound Game</h1>
+
+    <div class="buttons">
+      <input type='text' placeholder="Enter Player Name" id='nameInput' />
+      <br><br>
+      <button onclick="createButtonClicked()">CREATE</button>
+      <div>OR</div>
+      <div>
+        <input type='text' placeholder='Enter Room Id' id='roomIdInput' />
+        <button onclick="joinButtonClicked()">JOIN</button>
+      </div>
 
 
+    </div>
+  </div>
+
+  <div id='waitingRoomforHost' style="display:none">
+    <h1>Compound Game Waiting Room</h1>
+    <p id="gameId"> </p>
+    <h2> The game room Id is <span id="gameCodeDisplay"></span></h2>
+    <p id='userJoin'> </p>
+    <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
+    <input type='text' placeholder='Number of Rounds' id='RoundInput' />
+    <input type='text' placeholder='Round Timer' id='RoundTimerInput' />
+
+
+    <button onclick='startGameButtonClicked()'>Start Game</button>
+
+
+  </div>
+
+  <div id='waitingRoomforPlayer' style="display:none">
+    <h1>Compound Game Waiting Room</h1>
+    <p id='displayRoom'></p>
+  </div>
+
+  <div id='example' style="display:none">
+    <h3>Example</h3>
+  </div>
+  <p id='playerJoin'></p>
+
+  <!--     Guesser's view  -->
+  <div id="guesser_view" style="display:none">
+    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+      <div class="uk-container">
+        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+          <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
+            Compound Game
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 1
+              </div>
             </div>
-        </div>
-
-        <div id= 'waitingRoomforHost' style="display:none">
-            <h1>Compound Game Waiting Room</h1>
-            <p id="gameId"> </p>
-            <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
-            <p id='userJoin'> </p>
-            <input type='text' placeholder = 'Max Players' id = 'MaxPlayerInput' class="uk-input"/>
-            <input type='text' placeholder = 'Number of Rounds' id = 'RoundInput'/>
-            <input type='text' placeholder = 'Round Timer' id = 'RoundTimerInput'/>
-
-
-            <button onclick='startGameButtonClicked()'>Start Game</button>
-
-
-        </div>
-
-        <div id= 'waitingRoomforPlayer' style="display:none">
-            <h1>Compound Game Waiting Room</h1>
-            <p id = 'displayRoom'></p>
-        </div>
-
-        <div id = 'example' style="display:none">
-            <h3>Example</h3>
-        </div>
-        <p id = 'playerJoin'></p>
-
-        <!--     Guesser's view  -->
-        <div id="guesser_view" style="display:none">
-            <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-                <div class="uk-container">
-                    <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                        <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-                            Compound Game
-                        </div>
-                        <div class="uk-width-1-2" style="height: 100vw">
-                            <div class="uk-height-1-1 uk-cover-container">
-                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                    Canvas 1
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2" style="height: 100vw">
-                            <div class="uk-height-1-1 uk-cover-container">
-                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                    Canvas 2
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-1" style="height: 80px">
-                            <div class="uk-height-1-1 uk-cover-container uk-align-center">
-                                <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                                    <div class="uk-margin-small-left ">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                </div>
-                                <div>
-                                    <span uk-icon="icon: clock; ratio: 3"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-                            <form method="post" class="uk-form-horizontal ">
-                                <div class="uk-inline">
-                                    <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
-                                    <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-                            <div class="uk-align-center" >
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 2
+              </div>
             </div>
+          </div>
+          <div class="uk-width-1-1" style="height: 80px">
+            <div class="uk-height-1-1 uk-cover-container uk-align-center">
+              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
+                <div class="uk-margin-small-left ">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+              </div>
+              <div>
+                <span uk-icon="icon: clock; ratio: 3"></span>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-2 uk-align-center" style="height: 80px">
+            <form method="post" class="uk-form-horizontal ">
+              <div class="uk-inline">
+                <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
+                <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
+              </div>
+            </form>
+          </div>
+          <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
+            <div class="uk-align-center">
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-       <!--     Drawer's view  -->
-       <div style="display:none" id="drawer_view">
-           <div class="uk-text-large">
-<!--               <div class="uk-container can">-->
-                   <div class="uk-grid uk-height-viewport">
-                       <div class="uk-width-1-1 uk-background-primary">
-                           Title here
-                       </div>
-                       <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
-                           <div class="uk-cover uk-background-primary">
-                               <div class="uk-border-rounded uk-background-muted">
-                                   Canvas 2
-                               </div>
-                           </div>
-                       </div>
-                       <div class="uk-width-1-1 uk-background-primary">
-                           Word to draw here
-                       </div>
-                   </div>
-<!--               </div>-->
-           </div>
-       </div>
+  <!--     Drawer's view  -->
+  <div style="display:none" id="drawer_view">
+    <div class="uk-text-large">
+      <!--               <div class="uk-container can">-->
+      <div class="uk-grid uk-height-viewport">
+        <div class="uk-width-1-1 uk-background-primary">
+          Title here
+        </div>
+        <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
+          <div class="uk-cover uk-background-primary">
+            <div class="uk-border-rounded uk-background-muted">
+              Canvas 2
+            </div>
+          </div>
+        </div>
+        <div class="uk-width-1-1 uk-background-primary">
+          Word to draw here
+        </div>
+      </div>
+      <!--               </div>-->
+    </div>
+  </div>
 
-        <script src= "/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 
-        <!--initialize socket object so clients can establish connections-->
-        <script>
-            //var socket = io('/my-namespcae');
-            let playerNumber = 0;
-            var socket = io();
-            var wordToGuess = '';
-            var state = {}; //not sure if this is necessary
-            const gameCodeDisplay = document.getElementById('gameCodeDisplay');
-            const roomInput = document.getElementById('roomIdInput');
+  <!--initialize socket object so clients can establish connections-->
+  <script>
+    //var socket = io('/my-namespcae');
+    let playerNumber = 0;
+    var socket = io();
+    var wordToGuess = '';
+    var state = {}; //not sure if this is necessary
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const roomInput = document.getElementById('roomIdInput');
 
-            //on connection to server, ask for user's name with an anonymous callback
-            socket.on('connect', function(){
-                // call the server-side function 'adduser' and send one parameter (value of prompt)
+    //on connection to server, ask for user's name with an anonymous callback
+    socket.on('connect', function () {
+      // call the server-side function 'adduser' and send one parameter (value of prompt)
 
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-                document.getElementById('example').style.display = 'none';
-                document.getElementById('InitialScreen').style.display = 'block';
-                //socket.emit('adduser', prompt("What's your name?"));
-            });
+      document.getElementById('waitingRoomforPlayer').style.display = 'none';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+      document.getElementById('example').style.display = 'none';
+      document.getElementById('InitialScreen').style.display = 'block';
+      //socket.emit('adduser', prompt("What's your name?"));
+    });
 
-            function createButtonClicked(){
-                console.log('create button clicked');
-                const nameInput = document.getElementById('nameInput').value;
-                socket.emit('createClicked',nameInput);
-                init();
+    function createButtonClicked() {
+      console.log('create button clicked');
+      const nameInput = document.getElementById('nameInput').value;
+      socket.emit('createClicked', nameInput);
+      init();
 
-            }
+    }
 
 
-            function joinButtonClicked(){
-                const joinRoomId = roomInput.value;
-                const nameInput = document.getElementById('nameInput').value;
-                console.log('join button clicked' + joinRoomId);
-                socket.emit('joinClicked',joinRoomId,nameInput);
-                init();
-            }
+    function joinButtonClicked() {
+      const joinRoomId = roomInput.value;
+      const nameInput = document.getElementById('nameInput').value;
+      console.log('join button clicked' + joinRoomId);
+      socket.emit('joinClicked', joinRoomId, nameInput);
+      init();
+    }
 
-            function startGameButtonClicked(){
-                //all the changes in divs and display should be moved to a new event call according
-                //to number of players and the role of the player (drawer/guesser)
-                const maxPlayer =document.getElementById('MaxPlayerInput').value;
-                const roundInput =document.getElementById('RoundInput').value;
-                const roundTimer =document.getElementById('RoundTimerInput').value;
-                document.getElementById('guesser_view').style.display = 'block';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-                document.getElementById('example').style.display = 'none';
-                document.getElementById('InitialScreen').style.display = 'none';
+    function startGameButtonClicked() {
+      //all the changes in divs and display should be moved to a new event call according
+      //to number of players and the role of the player (drawer/guesser)
+      const maxPlayer = document.getElementById('MaxPlayerInput').value;
+      const roundInput = document.getElementById('RoundInput').value;
+      const roundTimer = document.getElementById('RoundTimerInput').value;
+      document.getElementById('guesser_view').style.display = 'block';
+      document.getElementById('waitingRoomforPlayer').style.display = 'none';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+      document.getElementById('example').style.display = 'none';
+      document.getElementById('InitialScreen').style.display = 'none';
 
-                socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
-            }
+      socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
+    }
 
-            function init(){
-                console.log('button clicked');
-                // document.getElementById('InitialScreen').style.display = 'none';
-                // document.getElementById('waitingRoomforHost').style.display = 'block';
+    function init() {
+      console.log('button clicked');
+      // document.getElementById('InitialScreen').style.display = 'none';
+      // document.getElementById('waitingRoomforHost').style.display = 'block';
 
-            }
+    }
 
-            function reset(){
-                playerNumber = null;
-                roomInput.value = '';
-                gameCodeDisplay.innerText = '';
-                document.getElementById('InitialScreen').style.display = 'block';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-            }
+    function reset() {
+      playerNumber = null;
+      roomInput.value = '';
+      gameCodeDisplay.innerText = '';
+      document.getElementById('InitialScreen').style.display = 'block';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+    }
 
-            socket.on('gameRoomNo', function(data){
-                document.getElementById('InitialScreen').style.display = 'none';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'block';
-                gameCodeDisplay.innerHTML =  data + ' .';
-                globalThis.currRoomId = data;
-                
-            });
+    socket.on('gameRoomNo', function (data) {
+      document.getElementById('InitialScreen').style.display = 'none';
+      document.getElementById('waitingRoomforPlayer').style.display = 'none';
+      document.getElementById('waitingRoomforHost').style.display = 'block';
+      gameCodeDisplay.innerHTML = data + ' .';
+      globalThis.currRoomId = data;
 
-            socket.on('errorRoomId',function(){
-                reset();
-                alert('Unknown game code');
-            });
+    });
 
-            socket.on('tooManyPlayers',function(){
-                reset();
-                alert('Room full');
-            });
+    socket.on('errorRoomId', function () {
+      reset();
+      alert('Unknown game code');
+    });
 
-            socket.on('tooFewPlayers',function(){
-                //reset();
-                alert('We recommend a minimum of four players to play this game');
-            });
+    socket.on('tooManyPlayers', function () {
+      reset();
+      alert('Room full');
+    });
 
-            socket.on('init',function(number){
-                playerNumber = number;
-            });
+    socket.on('tooFewPlayers', function () {
+      //reset();
+      alert('We recommend a minimum of four players to play this game');
+    });
 
-            socket.on('gameState',function(gameState){
-                
-                console.log('players: '+gameState.players)
-                state = gameState;
-                wordToGuess = state.meta.currWord
-                console.log('WORD TO BE GUESSED: '+wordToGuess);
-                //update role view
-                //update correct ans var
-                //update scoreboard
-            });
+    socket.on('init', function (number) {
+      playerNumber = number;
+    });
 
-            socket.on('drawerView',function(){
-                //update drawer view and show word they need to draw
-            });
-            socket.on('guesserView',function(){
-                //update drawer view and show word they need to draw
-            });
+    socket.on('gameState', function (gameState) {
 
-            function guessInput(){
-                const guessInput = document.getElementById('GuessInput').value;
-                if (guessInput.equals(wordToGuess)){
-                    socket.emit('correctGuess',state,roomInput.value); //updates the player's guessed boolean to true, score changed
-                }
-                else{
-                    
-                    socket.emit('playerGuess', guessInput,roomInput.value)//socket.emit('playerGuess',guessInput,socketId)
+      console.log('players: ' + gameState.players)
+      state = gameState;
+      wordToGuess = state.meta.currWord
+      console.log('WORD TO BE GUESSED: ' + wordToGuess);
+      //update role view
+      //update correct ans var
+      //update scoreboard
+    });
 
-                }
-            }
+    socket.on('drawerView', function () {
+      //update drawer view and show word they need to draw
+    });
+    socket.on('guesserView', function () {
+      //update drawer view and show word they need to draw
+    });
 
-            socket.on('someoneGuessed',function(gameState){
-                //update container saying  '______ guessed the compound word!'
+    function guessInput() {
+      const guessInput = document.getElementById('GuessInput').value;
+      if (guessInput.equals(wordToGuess)) {
+        socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
+      }
+      else {
 
-            });
+        socket.emit('playerGuess', guessInput, roomInput.value)//socket.emit('playerGuess',guessInput,socketId)
 
-            socket.on('wrongGuess',function(playerGuess,player){
-                //update container saying '____ guessed ' + guessInput
-            })
+      }
+    }
 
-            socket.on('broadcastJoined',function(username){
-                console.log('player joined');
-                let br = document.createElement("br");
-                document.getElementById("playerJoin").appendChild(br);
-                document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
+    socket.on('someoneGuessed', function (gameState) {
+      //update container saying  '______ guessed the compound word!'
 
-            });
+    });
 
-            socket.on('waitingRoomforPlayer',function(roomId){
-                document.getElementById('InitialScreen').style.display ='none';
-                document.getElementById('waitingRoomforPlayer').style.display = 'block';
-                document.getElementById('waitingRoomforHost').style.display='none';
-                document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '! Waiting for host to start game...'
-            })
+    socket.on('wrongGuess', function (playerGuess, player) {
+      //update container saying '____ guessed ' + guessInput
+    })
 
-            //THIS NEEDS TO BE DONE ACTUALLY!!!!!
-            // socket.on('updateusers',function(data){
-            //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
-            // });
+    socket.on('broadcastJoined', function (username) {
+      console.log('player joined');
+      let br = document.createElement("br");
+      document.getElementById("playerJoin").appendChild(br);
+      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined!'));
 
-            // socket.on('connect_failed', function(){
-            //     document.write("sorry, issue with connection.");
-            // })
-        </script>
+    });
 
-    </body>
+    socket.on('waitingRoomforPlayer', function (roomId) {
+      document.getElementById('InitialScreen').style.display = 'none';
+      document.getElementById('waitingRoomforPlayer').style.display = 'block';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+      document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
+    })
+
+    //THIS NEEDS TO BE DONE ACTUALLY!!!!!
+    // socket.on('updateusers',function(data){
+    //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
+    // });
+
+    // socket.on('connect_failed', function(){
+    //     document.write("sorry, issue with connection.");
+    // })
+  </script>
+
+</body>
 
 </html>

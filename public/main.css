@@ -1,21 +1,19 @@
-
-
 .text {
-    font-size: 40px;
+  font-size: 40px;
 }
 
 .large-text {
-    font-size: 80px;
+  font-size: 80px;
 }
 
 .canvas-tall {
-    height: 700px;
+  height: 700px;
 }
 
 .player-guess {
-    height: 70px;
+  height: 70px;
 }
 
 .guess-container {
-    height: 200px;
+  height: 200px;
 }
