@@ -63,18 +63,18 @@
       <div class="uk-container">
         <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
           <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-            Compound Game
+            Doodle Duo
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas1" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 1
               </div>
             </div>
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas2" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 2
               </div>
             </div>
@@ -104,15 +104,15 @@
           <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
             <div class="uk-align-center">
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+                style="width: 50vw" id="playerGuess1">
                 Other player guess
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+                style="width: 50vw" id="playerGuess2">
                 Other player guess
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+                style="width: 50vw" id="playerGuess3">
                 Other player guess
               </div>
             </div>
@@ -128,12 +128,12 @@
       <!--               <div class="uk-container can">-->
       <div class="uk-grid uk-height-viewport">
         <div class="uk-width-1-1 uk-background-primary">
-          Title here
+          Doodle Duo
         </div>
         <div class="uk-cover-container canvas-tall uk-width-1-1" style="background-color: aquamarine">
           <div class="uk-cover uk-background-primary">
-            <div class="uk-border-rounded uk-background-muted" id="guesserCanvas2">
-              Canvas 2
+            <div class="uk-border-rounded uk-background-muted">
+              Canvas
             </div>
           </div>
         </div>
