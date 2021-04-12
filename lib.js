@@ -10,31 +10,11 @@ function getLDistance(guess, target){
     guess = guess.toLowerCase();
     target = target.toLowerCase();
     var ld = levenshtein(guess, target);
-    if(ld == 0){return true;}
+    if(ld == 0){return ld;}
     else{
         var newLD = levenshtein(pluralize(guess), pluralize(target));
-        if(newLD == 0){return true;}
-        else if(newLD <= 2){return -1;}
-        else{return false;}
+        return newLD;
     }
-}
-
-
-function test_getLDistance(){
-    var guess = 'firETruCks'
-    var target = 'firetruck'
-    console.log(`Guess: ${guess}, Target: "${target}`)
-    console.log(getLDistance(guess, target));
-    console.log('---');
-    guess = 'cars'
-    target = 'firetruck'
-    console.log(`Guess: ${guess}, Target: "${target}`)
-    console.log(getLDistance(guess, target));
-    console.log('---');
-    guess = 'cat'
-    target = 'bats'
-    console.log(`Guess: ${guess}, Target: "${target}`)
-    console.log(getLDistance(guess, target));
 }
 
 /* Read CSV file and turn into JSON object */
@@ -47,12 +27,6 @@ function readCSV(filePath){
         .map(e => e.trim())
         .map(e => e.split(',').map(e => e.trim()));
     return data[0];
-}
-
-
-function test_readCSV(){
-    var a = readCSV('compounds.csv');
-    console.log(a);
 }
 
 
