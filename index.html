@@ -290,6 +290,12 @@
       //update drawer view and show word they need to draw
     });
 
+    socket.on('timerUpdate', function (timeLeft) {
+      console.debug('timerUpdate', timeLeft);
+
+      //update timer
+    });
+
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
@@ -310,7 +316,7 @@
     socket.on('wrongGuess', function (playerGuess, player) {
       console.debug('wrongGuess', { playerGuess, player });
       //update container saying '____ guessed ' + guessInput
-    })
+    });
 
     socket.on('broadcastJoined', function (username) {
       console.debug('broadcastJoined', { username });
@@ -325,7 +331,7 @@
       console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
       document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
-    })
+    });
 
     //THIS NEEDS TO BE DONE ACTUALLY!!!!!
     // socket.on('updateusers',function(data){

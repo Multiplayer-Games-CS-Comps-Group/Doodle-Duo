@@ -148,8 +148,6 @@ io.on('connection', function (socket) {
     for (let k = 0; k < currentUsernames.length; k++) {
       playerStates.push({ socketId: null, username: currentUsernames[k], score: 0, guessed: false })
     }
-
-
     //TODO: Default values if these aren't entered by the user? Or will that be client side? (Should probably handle it here)
     //TODO: This should probably just take in the users object? Although we don't want to duplicate that, so maybe not. (But we're duplicating rn... so still bad)
     //TODO: I AM CURRENTLY NOT ACTUALLY INITIALIZING THE GAME STATE SO I CAN GET OTHER STUFF TO WORK, FIRST.
@@ -263,14 +261,14 @@ io.on('connection', function (socket) {
 
   function endOfRound(lobbyId) {
     //if result of game state != 1 (end of game/ all rounds)
-    //egame state function called (go through the gameloop to update state)
+    //game state function called (go through the gameloop to update state)
     //else{
-    //emit to display final screen w scorboard
-    //ask if wanna start over
-    //clear all game states, emit end game msg
+    //  emit to display final screen w scorboard
+    //  ask if wanna start over
+    //  clear all game states, emit end game msg
     //}
 
-    if (lobbies[lobbyId].state.meta.currRound == lobbies[lobbyId].state.rules.numRounds) {
+    if (lobbies[lobbyId].state.meta.currRound >= lobbies[lobbyId].state.rules.numRounds) {
       endOfGame();
     }
 
@@ -287,15 +285,18 @@ io.on('connection', function (socket) {
     }
   };
 
-  function countdown(roomId, gameState) {
-    console.log('Time left in a game: ', gameState.meta.currentTimeLeft)
+  function countdown(lobbyId) {
+    console.log('Time left in a game: ', lobbies[lobbyId].state.meta.currentTimeLeft)
 
-    if (gameState.meta.currentTimeLeft <= 0) {
-      endOfRound(roomId, gameState);
-      clearInterval(gameState.meta.currentCountdown);
+    if (lobbies[lobbyId].state.meta.currentTimeLeft <= 0) {
+      endOfRound(lobbyId, lobbies[lobbyId].state);
+      clearInterval(lobbies[lobbyId].state.meta.currentCountdown);
+    } else {
+      io.sockets.in(lobbyId)
+        .emit('timerUpdate', lobbies[lobbyId].state.meta.currentTimeLeft);
     }
 
-    gameState.meta.currentTimeLeft--;
+    lobbies[lobbyId].state.meta.currentTimeLeft--;
   }
 
   //params: roomId, state[roomId]
@@ -338,7 +339,7 @@ io.on('connection', function (socket) {
     // update list of users in chat, client-side
     // io.sockets.emit('updateusers', usernames);
     // echo globally that this client has left
-    socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+    socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected'); //TODO: Probably want to emit just to the room, not all lobbies
   });
 });
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
