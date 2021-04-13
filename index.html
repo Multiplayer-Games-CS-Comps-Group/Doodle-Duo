@@ -240,6 +240,10 @@
 
     });
 
+    socket.on('endRoundScores', function () {
+      console.debug('endRoundScores');
+    });
+
     socket.on('errorRoomId', function () {
       console.debug('errorRoomId');
       reset();

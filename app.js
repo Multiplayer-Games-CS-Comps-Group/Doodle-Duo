@@ -36,11 +36,12 @@ function genId(min, max, dict, prefix = null) {
   // Generate new random ID until it's not a duplicate of one in the 
   // dictionary it's being generated for
   while (newId in dict) newId = getRandBetween(min, max);
-
   if (prefix) newId = prefix + newId;
-
   return newId;
 }
+
+const getSocket = (socketId) =>
+  io.sockets.sockets.get(socketId);
 
 const checkRoomExists = (roomName) =>
   io.sockets.adapter.rooms.has(roomName);
@@ -48,7 +49,7 @@ const getRoomSize = (roomName) =>
   io.sockets.adapter.rooms.get(roomName).size;
 
 const getUsername = (socketObject) =>
-  lobbies[socketObject.lobbyId].users[socketObject.userId];
+  lobbies[socketObject.lobbyId].users[socketObject.id];
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -60,13 +61,11 @@ const getUsername = (socketObject) =>
 //TODO: No duplicate username? Not necessary since userId but might be preferred
 //TODO: https://socket.io/docs/v4/emitting-events/ Acknowledgements might be good for joining a lobby.
 //TODO: Have the users join a room with their lobby id.
-//TODO: Instead of the custom userId, we should just track the .id field provided by socketio.
-//      However, this should NOT be provided to the front-end.
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
  * 
- * Each socket object should keep track of its lobbyId and userId.
+ * Each socket object should keep track of its lobbyId.
  */
 const lobbies = {}
 function createLobby() {
@@ -83,22 +82,18 @@ function createLobby() {
 /* 
  * Adds a user to a lobby.
  * 
- * Adds their {userId: username} pair to the users dict in lobby.
- * Also assigns the socket object the lobbyId and userId properties,
- * and has it join a room with name lobbyId.
+ * Adds their {socketio.id: username} pair to the users dict in lobby.
+ * Also assigns the socket object the lobbyId property, and has it
+ * join a room with name lobbyId.
  */
 function addUserToLobby(lobbyId, socketObject, username) {
-  // If user already has an ID, they should already be in a lobby/
-  // TODO: Might want to allow a user with an existing ID to join a lobby 
-  // (for example if they came from a previous game).
-  if ('userId' in socketObject) return;
+  // If user is already in a lobby, don't let them rejoin
+  if ('lobbyId' in socketObject) return;
 
   socketObject.lobbyId = lobbyId;
   socketObject.join(lobbyId);
 
-  let userId = genId(10000, 99999, lobbies[lobbyId].users, 'user');
-  socketObject.userId = userId;
-  lobbies[lobbyId].users[userId] = username;
+  lobbies[lobbyId].users[socketObject.id] = username;
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
@@ -109,6 +104,9 @@ io.on('connection', function (socket) {
   socket.on('createClicked', function (newUsername) {
     let newLobbyId = createLobby();
 
+    if (newUsername === '') {
+      newUsername = 'Player 1';
+    }
     addUserToLobby(newLobbyId, socket, newUsername);
 
     socket.emit('gameRoomNo', newLobbyId); //TODO: Rename to 'succesfullyJoinedLobby'/'joinedLobbyEvent' or something?
@@ -150,7 +148,7 @@ io.on('connection', function (socket) {
     for (let k = 0; k < currentUsernames.length; k++) {
       playerStates.push({ socketId: null, username: currentUsernames[k], score: 0, guessed: false })
     }
-  
+
 
     //TODO: Default values if these aren't entered by the user? Or will that be client side? (Should probably handle it here)
     //TODO: This should probably just take in the users object? Although we don't want to duplicate that, so maybe not. (But we're duplicating rn... so still bad)
@@ -207,8 +205,8 @@ io.on('connection', function (socket) {
     //clear all game states, emit end game msg
 
     console.log('\n\n====+++++++++++++++++=======');
-    console.log(lobbies[lobbyId].state);
-    console.log('\n---------------\n', lobbies[lobbyId].state.meta.drawPairs);
+    // console.log(lobbies[lobbyId].state);
+    // console.log('\n---------------\n', lobbies[lobbyId].state.meta.drawPairs);
     console.log('\n\n====+++++++++++++++++=======');
 
     // ENTER GAME LOOP HERE
@@ -263,10 +261,7 @@ io.on('connection', function (socket) {
       .emit('someoneGuessed', gameState);
   };
 
-  function endOfRound(roomId, gameState) {
-    console.log("End of the round! Displaying scores now")
-    console.log("Next round will start in 5 seconds")
-
+  function endOfRound(lobbyId) {
     //if result of game state != 1 (end of game/ all rounds)
     //egame state function called (go through the gameloop to update state)
     //else{
@@ -275,17 +270,20 @@ io.on('connection', function (socket) {
     //clear all game states, emit end game msg
     //}
 
-    if (gameState.meta.currRound == gameState.rules.numRounds) {
+    if (lobbies[lobbyId].state.meta.currRound == lobbies[lobbyId].state.rules.numRounds) {
       endOfGame();
     }
 
     //showing score board 
     //call updateGameState in 5 seconds
     else {
-      io.sockets.in(roomId)
-        .emit('endRoundScores', gameState);
+      console.log("End of the round! Displaying scores now"); //TODO: TEMP
+      console.log("Next round will start in 5 seconds"); //TODO: TEMP
+      io.sockets.in(lobbyId)
+        .emit('endRoundScores', lobbies[lobbyId].state);
+      
       setTimeout(() => console.log("About to start next round!"), 4900); //TODO: TEMP
-      setTimeout(() => updateGameState(roomId, gameState), 5000);
+      setTimeout(() => updateGameState(lobbyId, lobbies[lobbyId].state), 5000);
     }
   };
 
@@ -313,18 +311,16 @@ io.on('connection', function (socket) {
       .emit('gameState', gameState);
   };
 
-  //TODO: These functions will almost certainly not work.
-  //Instead, I should either keep track of the socketio id instead of or in addition to the user id,
-  //or I should somehow maintain access to the sockets  themselves (seems worse; should be able to 
-  //get socket object from id)
-  function notifyDrawers(roomId, gameState) { 
-    io.sockets.in(roomId)
-      .to(gameState.meta.currDrawers).emit('drawerView', gameState);
+  function notifyDrawers(lobbyId) {
+    for (let id of lobbies[lobbyId].state.meta.currDrawers) {
+      io.sockets.in(id).emit('drawerView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
+    }
   };
 
-  function notifyGuessers(roomId, gameState) {
-    io.sockets.in(roomId)
-      .to(gameState.meta.currGuessers).emit('guesserView', gameState);
+  function notifyGuessers(lobbyId) {
+    for (let id of lobbies[lobbyId].state.meta.currGuessers) {
+      io.sockets.in(id).emit('guesserView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
+    }
   };
 
   //maybe second param of endGame func could be result/ score instance of state obj
