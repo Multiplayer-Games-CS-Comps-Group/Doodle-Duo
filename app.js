@@ -141,6 +141,13 @@ io.on('connection', function (socket) {
       return;
     }
 
+    /* START TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST */
+    lobbies[lobbyId].state = lib.createGameInstance(currentUsernames, currentRoomSize, maxPlayers, roundInput, roundTimer, lobbyId);
+
+
+    /* END TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST */
+
+
     let currentUsernames = Object.values(lobbies[lobbyId].users);
 
     //TODO: TEMPORARY FOR LOOP AND VARIABLE 
@@ -162,8 +169,8 @@ io.on('connection', function (socket) {
       },
       meta: {
         currentCountdown: null,
-        currentTimeLeft: 5,
-        roomID: lobbyId, //TODO: roomID vs roomId (capitalization)
+        currentTimeLeft: 5, //TEST at 5 second rounds
+        roomID: lobbyId, //TODO: roomID vs roomId (capitalization) (actually, we shouldn't need this inside the gameState at all)
         totalPlayers: currentRoomSize,
         drawPairs: -9999,
         currRound: 0,
@@ -279,7 +286,7 @@ io.on('connection', function (socket) {
       console.log("Next round will start in 5 seconds"); //TODO: TEMP
       io.sockets.in(lobbyId)
         .emit('endRoundScores', lobbies[lobbyId].state);
-      
+
       setTimeout(() => console.log("About to start next round!"), 4900); //TODO: TEMP
       setTimeout(() => updateGameState(lobbyId, lobbies[lobbyId].state), 5000);
     }
@@ -328,7 +335,7 @@ io.on('connection', function (socket) {
   //params: roomId, state[roomId]
   function endOfGame() { };
   //params: roomId
-  function startGameTimer(lobbyId) { 
+  function startGameTimer(lobbyId) {
     lobbies[lobbyId].state.meta.currentCountdown = setInterval(() => countdown(lobbyId), 1000);
   };
 
