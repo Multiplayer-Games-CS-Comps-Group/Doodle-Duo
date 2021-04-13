@@ -1,9 +1,10 @@
+"use strict";
+
 const levenshtein = require('js-levenshtein');
 const pluralize = require('pluralize');
 const shuffle = require('shuffle-array');
 const buckets = require('buckets-js');
 const fs = require('fs');
-
 
 /* Levenshtein function to check guess to answer */
 /* Correct guess: true, Incorrect: false, Close: -1*/

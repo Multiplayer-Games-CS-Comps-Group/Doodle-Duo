@@ -1,7 +1,6 @@
-const lib = require("./lib");
+"use strict";
 
-const { emit } = require('process'); //TODO: unused?
-const { callbackify } = require('util'); //TODO: unused?
+const lib = require("./lib");
 
 const express = require('express');
 const app = express();
@@ -11,24 +10,13 @@ const io = require('socket.io')(http);
 app.use(express.static('public'))
 
 app.get('/', function (req, res) {
-  //index.html will have 2 buttons: one for creating a new room that will give a random room number
-  //the other button is for people to join the room
-  //when clicked onto the button, emits "create" or "join" event and outputs the room number/ outputs joined specific room message
   res.sendFile('index.html', { root: __dirname });
-  //res.sendfile('hostWaitingRoom.html');
 });
-
-// var nsp = io.of('/my-namespace');
-// nsp.on('connection',function(socket){
-//     nsp.emit('hi','Hello everyone!');
-// });
 
 const state = {};
 const clientRooms = {};
-var clients = 0;
 const usernames = {};
-
-var gameInstancesArray = []; //TODO: unused variable? Looks like state keeps track of each state in a roomID
+let clients = 0;
 
 io.on('connection', function (socket) {
   clients++;
