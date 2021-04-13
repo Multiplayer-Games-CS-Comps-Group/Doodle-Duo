@@ -162,11 +162,11 @@ io.on('connection', function (socket) {
       rules: {
         maxPlayers: 10,
         numRounds: 3,
-        roundTimer: 1000 * 15
+        roundTimer: 1000 * 5 //TEST at 5 second rounds
       },
       meta: {
         currentCountdown: null,
-        currentTimeLeft: 0,
+        currentTimeLeft: 5,
         roomID: lobbyId, //TODO: roomID vs roomId (capitalization)
         totalPlayers: currentRoomSize,
         drawPairs: -9999,
@@ -218,6 +218,8 @@ io.on('connection', function (socket) {
     // lib.startGameLoop(gameState); TODO: I think we never want to call this? We made our own loop using setInterval.
     console.log('SERVER HERE!');
 
+    //TODO: TEMPORARY (should be called by updateGameState) (we really need clearer funciton names)
+    lobbies[lobbyId].state.meta.currentCountdown = setInterval(() => countdown(lobbyId, lobbies[lobbyId].state), 1000);
   });
 
   socket.on('correctGuess', function (gameState, roomId) {
@@ -254,7 +256,6 @@ io.on('connection', function (socket) {
   socket.on('playerGuess', function (playerGuess, roomId) {
     io.sockets.in(roomId)
       .emit('wrongGuess', playerGuess, socket.id);
-
   });
 
   function updateGuessed(roomId, gameState) {
@@ -263,6 +264,9 @@ io.on('connection', function (socket) {
   };
 
   function endOfRound(roomId, gameState) {
+    console.log("End of the round! Displaying scores now")
+    console.log("Next round will start in 5 seconds")
+
     //if result of game state != 1 (end of game/ all rounds)
     //egame state function called (go through the gameloop to update state)
     //else{
@@ -280,17 +284,20 @@ io.on('connection', function (socket) {
     else {
       io.sockets.in(roomId)
         .emit('endRoundScores', gameState);
+      setTimeout(() => console.log("About to start next round!"), 4900); //TODO: TEMP
       setTimeout(() => updateGameState(roomId, gameState), 5000);
     }
   };
 
   function countdown(roomId, gameState) {
-    if (currentTimeLeft <= 0) {
+    console.log('Time left in a game: ', gameState.meta.currentTimeLeft)
+
+    if (gameState.meta.currentTimeLeft <= 0) {
       endOfRound(roomId, gameState);
       clearInterval(gameState.meta.currentCountdown);
     }
 
-    currentTimeLeft--;
+    gameState.meta.currentTimeLeft--;
   }
 
   //params: roomId, state[roomId]
