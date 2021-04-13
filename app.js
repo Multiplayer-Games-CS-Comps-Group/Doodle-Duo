@@ -7,14 +7,26 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Server Setup START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 app.use(express.static('public'))
 
 app.get('/', function (req, res) {
   res.sendFile('index.html', { root: __dirname });
 });
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Server Setup END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
 
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+const MAX_LOBBY_SIZE = 12;
+const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4? 
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+
+
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 const getRandBetween = (min, max) =>
   Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
 
@@ -30,10 +42,24 @@ function genId(min, max, dict, prefix = null) {
   return newId;
 }
 
+const checkRoomExists = (roomName) => 
+  io.sockets.adapter.rooms.has(roomName);
+const getRoomSize = (roomName) => 
+  io.sockets.adapter.rooms.get(roomName).size;
+
+const getUsername = (socketObject) => 
+  lobbies[socketObject.lobbyId].users[socketObject.userId];
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+
+
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 //TODO: Make a global users dict that points to lobbyId instead?
 //TODO: Make lobby into a class?
 //TODO: Default usernames
 //TODO: No duplicate username? Not necessary since userId but might be preferred
+//TODO: https://socket.io/docs/v4/emitting-events/ Acknowledgements might be good for joining a lobby.
+//TODO: Have the users join a room with their lobby id.
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
@@ -52,108 +78,80 @@ function createLobby() {
   return lobbyId;
 }
 
+/* 
+ * Adds a user to a lobby.
+ * 
+ * Adds their {userId: username} pair to the users dict in lobby.
+ * Also assigns the socket object the lobbyId and userId properties,
+ * and has it join a room with name lobbyId.
+ */ 
 function addUserToLobby(lobbyId, socketObject, username) {
   // If user already has an ID, they should already be in a lobby/
   // TODO: Might want to allow a user with an existing ID to join a lobby 
   // (for example if they came from a previous game).
-  if ('userId' in socketObject) return; 
+  if ('userId' in socketObject) return;
 
   socketObject.lobbyId = lobbyId;
-  
+  socketObject.join(lobbyId);
+
   let userId = genId(10000, 99999, lobbies[lobbyId].users, 'user');
   socketObject.userId = userId;
   lobbies[lobbyId].users[userId] = username;
 }
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
-// TEST CODE
-// let newLobby1 = createLobby();
-// let newLobby2 = createLobby();
-// let test12 = {}
-// addUserToLobby(newLobby1, {}, 'monkey1');
-// addUserToLobby(newLobby1, {}, 'monkey2');
-// addUserToLobby(newLobby1, {}, 'monkey3');
-// addUserToLobby(newLobby1, {}, 'monkey4');
-// addUserToLobby(newLobby2, {}, 'gorilla1');
-// addUserToLobby(newLobby2, {}, 'gorilla2');
-// addUserToLobby(newLobby2, {}, 'gorilla3');
-// addUserToLobby(newLobby2, test12, 'gorilla4');
 
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 io.on('connection', function (socket) {
-  socket.on('createClicked', function (data) {
-    socket.username = data;
-    // add the client's username to the global list
-    // usernames[socket.username] = data;
-    socket.emit('gameRoomNo', roomId);
-    //around the 49 minute mark of https://www.youtube.com/watch?v=ppcBIHv_ZPs&ab_channel=TraversyMedia
-    //state[roomId]= createGameState();
-    socket.join(roomId);
-    socket.number = 1;
-    socket.emit('init', 1);
+  socket.on('createClicked', function (newUsername) {
+    let newLobbyId = createLobby();
+
+    addUserToLobby(newLobbyId, socket, newUsername);
+
+    socket.emit('gameRoomNo', newLobbyId); //TODO: Rename to 'succesfullyJoinedLobby'/'joinedLobbyEvent' or something?
+    socket.emit('init', 1); //TODO: Replace with 'succesfullyJoinedLobby'?
   });
 
-  socket.on('joinClicked', function (roomId, username) {
-    //look into the room object and grab the current players in the room
-    // clientRooms[socket.id] = parseInt(roomId);
-    // socket.join(parseInt(roomId));
-    const room = io.sockets.adapter.rooms[parseInt(roomId)];
-
-    //if (room){
-    if (io.sockets.adapter.rooms.has(parseInt(roomId)) && (io.sockets.adapter.rooms.get(parseInt(roomId))).size !== 0) {
-      if ((io.sockets.adapter.rooms.get(parseInt(roomId))).size > 12) {
+  socket.on('joinClicked', function (lobbyId, username) {
+    if (checkRoomExists(lobbyId) && getRoomSize(lobbyId) > 0) {
+      if (getRoomSize(lobbyId) >= MAX_LOBBY_SIZE) {
         socket.emit('tooManyPlayers');
         return;
       }
 
-      socket.join(parseInt(roomId));
       if (username === '') {
-        socket.username = 'player ' + io.sockets.adapter.rooms.get(parseInt(roomId)).size;
+        username = 'player' + getRoomSize(lobbyId);
       }
+      addUserToLobby(lobbyId, socket, username);
 
-      else {
-        socket.username = username;
-        // add the client's username to the global list
-        // usernames[username] = username;
-      }
-      socket.emit('waitingRoomforPlayer', parseInt(roomId));
-      socket.in(parseInt(roomId)).emit('broadcastJoined', socket.username);
-      //console.log(io.sockets.adapter.rooms);
-      console.log(io.sockets.adapter.rooms.get(parseInt(roomId)));
-      //allPlayers = room.allSockets();//gives us object of all players, key is client id, object is client itself
+      socket.emit('waitingRoomforPlayer', lobbyId);
+      io.in(lobbyId).emit('broadcastJoined', getUsername(socket));
+    } else {
+      socket.emit('errorRoomId'); //TODO: should maybe do this with a callback? And pass an error message
+      return;
     }
-    else {
-      socket.emit('errorRoomId');
+  });
+
+  socket.on('startGame', function (lobbyId, maxPlayers, roundInput, roundTimer) {
+    let currentRoomSize = getRoomSize(lobbyId);
+
+    if (currentRoomSize < MIN_PLAYERS) {
+      socket.emit('tooFewPlayers'); //TODO: is there a better way to handle errors? (callbacks??)
       return;
     }
 
-    // clientRooms[socket.id] = roomId;
-    // socket.join(roomId);
-    //socket.in('roomid').broadcast('player joined');
-    //socket.number = numOfPlayers+1;
-    //not sure about the socket.number here whether its supposed to be that or numofPlayers
-    socket.emit('init', socket.number);
+    let currentUsernames = Object.values(lobbies[lobbyId].users);
+    //TODO: Default values if these aren't entered by the user? Or will that be client side? (Should probably handle it here)
+    //TODO: This should probably just take in the users object? Although we don't want to duplicate that, so maybe not. (But we're duplicating rn... so still bad)
+    lobbies[lobbyId].state = lib.createGameInstance(currentUsernames, currentRoomSize, maxPlayers, roundInput, roundTimer, lobbyId); 
 
-    startGameInterval(roomId);
+    //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
+    updateGameState(lobbyId, lobbies[lobbyId].state);
 
-  });
-
-  socket.on('startGame', function (roomId, maxPlayers, roundInput, roundTimer) {
-    //console.log('INSIDE START GAME FUNC');
-    if (io.sockets.adapter.rooms.has(parseInt(roomId)) && (io.sockets.adapter.rooms.get(parseInt(roomId))).size !== 0) {
-      if ((io.sockets.adapter.rooms.get(parseInt(roomId))).size < 2) {
-        socket.emit('tooFewPlayers');
-        return;
-      }
-    }
-    let playersInRoom = io.sockets.adapter.rooms.get(parseInt(roomId));
-
-    //console.log(`roomID: ${roomId}; maxPlayers: ${maxPlayers}; roundInput: ${roundInput}; roundTimer: ${roundTimer}`);
-    let gameState = lib.createGameInstance(usernames, playersInRoom, maxPlayers, roundInput, roundTimer, roomId);
-    //emit 'New Round' even that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
-    state[roomId] = gameState;
-    updateGameState(roomId, state[roomId]);
-    console.log('curr drawers: ' + state[roomId].meta.currDrawers);
-    notifyDrawers(roomId, state[roomId]);
-    notifyGuessers(roomId, state[roomId]);
+    console.log('Current drawers: ' + lobbies[lobbyId].state.meta.currDrawers);
+    notifyDrawers(lobbyId, lobbies[lobbyId].state);
+    notifyGuessers(lobbyId, lobbies[lobbyId].state);
 
     //
     //players will type their guesses and events are emitted
@@ -174,9 +172,6 @@ io.on('connection', function (socket) {
     //emit to display final screen w scorboard
     //ask if wanna start over
     //clear all game states, emit end game msg
-
-
-
 
     console.log('\n\n====+++++++++++++++++=======');
     console.log(gameState);
@@ -306,9 +301,10 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
   });
 });
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+
 
 
 http.listen(5000, function () {
   console.log('listening on *:5000');
 });
-
