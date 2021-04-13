@@ -215,7 +215,7 @@ io.on('connection', function (socket) {
     console.log('SERVER HERE!');
 
     //TODO: TEMPORARY (should be called by updateGameState) (we really need clearer funciton names)
-    lobbies[lobbyId].state.meta.currentCountdown = setInterval(() => countdown(lobbyId, lobbies[lobbyId].state), 1000);
+    startGameTimer(lobbyId);
   });
 
   socket.on('correctGuess', function (gameState, roomId) {
@@ -289,8 +289,8 @@ io.on('connection', function (socket) {
     console.log('Time left in a game: ', lobbies[lobbyId].state.meta.currentTimeLeft)
 
     if (lobbies[lobbyId].state.meta.currentTimeLeft <= 0) {
-      endOfRound(lobbyId, lobbies[lobbyId].state);
       clearInterval(lobbies[lobbyId].state.meta.currentCountdown);
+      endOfRound(lobbyId);
     } else {
       io.sockets.in(lobbyId)
         .emit('timerUpdate', lobbies[lobbyId].state.meta.currentTimeLeft);
@@ -306,7 +306,7 @@ io.on('connection', function (socket) {
     gameState.meta.currDrawers = [gameState.meta.drawPairs[gameState.meta.currRound][1][0], gameState.meta.drawPairs[gameState.meta.currRound][2][0]]
     gameState.meta.currGuessers = lib.getAllGuessers(lib.playerArray, gameState.meta.currDrawers);
     gameState.meta.currentTimeLeft = gameState.rules.roundTimer;
-    gameState.meta.currentCountdown = setInterval(countdown, 1000);
+    startGameTimer(lobbyId);
 
     io.sockets.in(roomId)
       .emit('gameState', gameState);
@@ -328,7 +328,9 @@ io.on('connection', function (socket) {
   //params: roomId, state[roomId]
   function endOfGame() { };
   //params: roomId
-  function startGameInterval() { };
+  function startGameTimer(lobbyId) { 
+    lobbies[lobbyId].state.meta.currentCountdown = setInterval(() => countdown(lobbyId), 1000);
+  };
 
 
 
