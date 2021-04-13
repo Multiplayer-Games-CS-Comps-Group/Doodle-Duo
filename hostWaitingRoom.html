@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Compound Game</title>
-   </head>
 
-   <body>
+<head>
+  <title>Compound Game</title>
+</head>
 
-        <div id= 'waitingRoomforHost'>
-            <h1>Compound Game Waiting Room</h1>
-            <p id="gameId"> </p>
-            <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
-            <p id='userJoin'> </p>
-            <button>Start Game</button>
-           
-        </div>
+<body>
 
-        <p id = 'playerJoin'></p>
-        
-        <script src= "/socket.io/socket.io.js"></script>
+  <div id='waitingRoomforHost'>
+    <h1>Compound Game Waiting Room</h1>
+    <p id="gameId"> </p>
+    <h2> The game room Id is <span id="gameCodeDisplay"></span></h2>
+    <p id='userJoin'> </p>
+    <button>Start Game</button>
 
-        <!--initialize socket object so clients can establish connections-->
-        <script>
-            //var socket = io('/my-namespcae');
-            let playerNumber = 0;
-            var socket = io();
-            const gameCodeDisplay = document.getElementById('gameCodeDisplay');
-            const roomInput= document.getElementById('roomIdInput');
+  </div>
 
-            //on connection to server, ask for user's name with an anonymous callback
-            socket.on('connect', function(){
-                // call the server-side function 'adduser' and send one parameter (value of prompt)
-                document.getElementById('InitialScreen').style.display = 'block';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-                document.getElementById('example').style.display = 'none';
-                //socket.emit('adduser', prompt("What's your name?"));
-            });
+  <p id='playerJoin'></p>
 
-            function init(){
-                console.log('button clicked');
-                // document.getElementById('InitialScreen').style.display = 'none';
-                // document.getElementById('waitingRoomforHost').style.display = 'block';
-            }
+  <script src="/socket.io/socket.io.js"></script>
 
-            function reset(){
-                playerNumber = null;
-                roomInput.value = '';
-                gameCodeDisplay.innerText = '';
-                document.getElementById('InitialScreen').style.display = 'block';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-            }
+  <!--initialize socket object so clients can establish connections-->
+  <script>
+    //var socket = io('/my-namespcae');
+    let playerNumber = 0;
+    var socket = io();
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const roomInput = document.getElementById('roomIdInput');
 
-            socket.on('gameRoomNo', function(data){
-                console.log(gameRoomNo working);
-                document.getElementById('InitialScreen').style.display = 'none';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'block';
-                gameCodeDisplay.innerHTML =  data + ' .';
-            });
+    //on connection to server, ask for user's name with an anonymous callback
+    socket.on('connect', function () {
+      // call the server-side function 'adduser' and send one parameter (value of prompt)
+      document.getElementById('InitialScreen').style.display = 'block';
+      document.getElementById('waitingRoomforPlayer').style.display = 'none';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+      document.getElementById('example').style.display = 'none';
+      //socket.emit('adduser', prompt("What's your name?"));
+    });
 
-            socket.on('updateusers',function(data){
-                //document.getElementById("userJoin").innerHTML = data + ' has joined.';
-            });
+    function init() {
+      console.log('button clicked');
+      // document.getElementById('InitialScreen').style.display = 'none';
+      // document.getElementById('waitingRoomforHost').style.display = 'block';
+    }
 
-            socket.on('init',function(number){
-                playerNumber = number;
-            });
+    function reset() {
+      playerNumber = null;
+      roomInput.value = '';
+      gameCodeDisplay.innerText = '';
+      document.getElementById('InitialScreen').style.display = 'block';
+      document.getElementById('waitingRoomforHost').style.display = 'none';
+    }
 
-            socket.on('broadcastJoined',function(username){
-                //document.getElementById("playerJoin").innerHTML = 'a player has joined!'
-                console.log('player joined');
-                var br = document.createElement("br");
-                document.getElementById("playerJoin").appendChild(br);
-                document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
-                // document.getElementById("playerJoin2").appendChild(br);
-                // document.getElementById("playerJoin2").appendChild(document.createTextNode('a player has joined!'));
-            })
+    socket.on('gameRoomNo', function (data) {
+      console.log('gameRoomNo working');
+      document.getElementById('InitialScreen').style.display = 'none';
+      document.getElementById('waitingRoomforPlayer').style.display = 'none';
+      document.getElementById('waitingRoomforHost').style.display = 'block';
+      gameCodeDisplay.innerHTML = data + ' .';
+    });
 
-            socket.on('connect_failed', function(){
-                document.write("sorry, issue with connection.");
-            })
-        </script>
+    socket.on('updateusers', function (data) {
+      //document.getElementById("userJoin").innerHTML = data + ' has joined.';
+    });
 
-    </body>
-   
+    socket.on('init', function (number) {
+      playerNumber = number;
+    });
+
+    socket.on('broadcastJoined', function (username) {
+      //document.getElementById("playerJoin").innerHTML = 'a player has joined!'
+      console.log('player joined');
+      var br = document.createElement("br");
+      document.getElementById("playerJoin").appendChild(br);
+      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined!'));
+      // document.getElementById("playerJoin2").appendChild(br);
+      // document.getElementById("playerJoin2").appendChild(document.createTextNode('a player has joined!'));
+    })
+
+    socket.on('connect_failed', function () {
+      document.write("sorry, issue with connection.");
+    })
+  </script>
+
+</body>
+
 </html>

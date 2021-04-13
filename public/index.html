@@ -1,325 +1,423 @@
-
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Compound Game</title>
 
-       <!-- UIkit CSS -->
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
-        <!--  Custom CSS     -->
-       <link rel="stylesheet" href="main.css" />
+<head>
+  <title>Compound Game</title>
 
-       <!-- UIkit JS -->
-       <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
-       <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
-   </head>
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
+  <!--  Custom CSS     -->
+  <link rel="stylesheet" href="./main.css" />
 
-   <body>
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+</head>
 
-    <!-- non-UI kit Icon Definitions  -->
-   <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-       <defs>
-           <symbol id="icon-paintbrush" viewBox="0 0 20 20">
-               <path d="M1.384 16.647c0 0-0.675 2.080-1.384 2.807 0 0 0.212 0.224 0.758 0.544 0 0 1.402-1.449 2.155-1.963 0 0.001-0.217-1.692-1.528-1.388z"></path>
-               <path d="M18.988 2.545c-2.452-4.682-6.469-1.471-6.469-1.471 5.353 1.57 4.618 8.168 4.618 8.168 4.135-2.452 1.851-6.697 1.851-6.697z"></path>
-               <path d="M8.832 12.031c1.27-1.632 7.594-5.629 7.602-5.634-0.274-0.744-0.592-1.355-0.933-1.858-1.752 0.738-8.301 6.189-8.301 6.189 2.329-3.11 7.583-7.055 7.592-7.061-1.702-1.73-3.61-1.417-3.61-1.417-3.204 2.925-7.31 7.898-8.855 9.809-0.195 0.223-0.404 0.483-0.627 0.781 0 0 1.788-1.477 2.372-0.756 0.585 0.722 0.412 2.166 0.412 2.166s1.169-1.477 1.857-0.722c0.687 0.756 0.24 1.788 0 2.062 0 0 0.996-0.997 1.203-0.618 0.206 0.378 0.034 1.237-0.585 2.027 0 0 0.114-0.132 0.273-0.336 4.732-5.805 9.907-7.419 9.907-7.419-0.104-0.685-0.236-1.303-0.389-1.862-2.36 0.969-7.917 4.651-7.917 4.651z"></path>
-               <path d="M7.148 15.589c-0.035-0.274-0.808 0-0.808 0 0.12-0.274-0.052-1.013-0.378-1.425s-1.478 0.086-1.478 0.086c0-0.345-0.464-1.22-0.979-1.581-0.514-0.36-1.805 0.172-1.805 0.172 0.224 1.942-0.316 3.808-0.316 3.808 2.736-1.033 1.528 1.39 1.528 1.39 1.805-1.064 4.046-1.039 4.046-1.039 0.516-0.878 0.19-1.41 0.19-1.41z"></path>
-           </symbol>
-           <symbol id="icon-undo" viewBox="0 0 19 20">
-               <path d="M11.864 16.206c-3.311 1.617-7.112 0.638-8.491-2.185-1.281-2.623-0.021-5.912 2.815-7.664 0.926 1.626 1.742 2.93 1.919 2.93 0.459 0 3.172-6.964 3.044-7.477s-7.839-2.136-8.074-1.752c-0.089 0.146 0.559 1.532 1.417 3.184-4.014 2.657-5.646 7.684-3.628 11.814 2.211 4.522 7.956 6.257 12.837 3.873 0.944-0.461 1.783-1.043 2.512-1.714l-2.049-2.731c-0.621 0.683-1.394 1.277-2.301 1.72z"></path>
-               <path d="M15.811 11.077c-0.082 0.596-0.263 1.186-0.531 1.752l2.574 2.45c0.608-0.935 1.049-1.957 1.3-3.012l-3.343-1.189z"></path>
-           </symbol>
-       </defs>
-   </svg>
+<body>
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <symbol id="icon-paintbrush" viewBox="0 0 20 20">
+        <path
+          d="M1.384 16.647c0 0-0.675 2.080-1.384 2.807 0 0 0.212 0.224 0.758 0.544 0 0 1.402-1.449 2.155-1.963 0 0.001-0.217-1.692-1.528-1.388z">
+        </path>
+        <path
+          d="M18.988 2.545c-2.452-4.682-6.469-1.471-6.469-1.471 5.353 1.57 4.618 8.168 4.618 8.168 4.135-2.452 1.851-6.697 1.851-6.697z">
+        </path>
+        <path
+          d="M8.832 12.031c1.27-1.632 7.594-5.629 7.602-5.634-0.274-0.744-0.592-1.355-0.933-1.858-1.752 0.738-8.301 6.189-8.301 6.189 2.329-3.11 7.583-7.055 7.592-7.061-1.702-1.73-3.61-1.417-3.61-1.417-3.204 2.925-7.31 7.898-8.855 9.809-0.195 0.223-0.404 0.483-0.627 0.781 0 0 1.788-1.477 2.372-0.756 0.585 0.722 0.412 2.166 0.412 2.166s1.169-1.477 1.857-0.722c0.687 0.756 0.24 1.788 0 2.062 0 0 0.996-0.997 1.203-0.618 0.206 0.378 0.034 1.237-0.585 2.027 0 0 0.114-0.132 0.273-0.336 4.732-5.805 9.907-7.419 9.907-7.419-0.104-0.685-0.236-1.303-0.389-1.862-2.36 0.969-7.917 4.651-7.917 4.651z">
+        </path>
+        <path
+          d="M7.148 15.589c-0.035-0.274-0.808 0-0.808 0 0.12-0.274-0.052-1.013-0.378-1.425s-1.478 0.086-1.478 0.086c0-0.345-0.464-1.22-0.979-1.581-0.514-0.36-1.805 0.172-1.805 0.172 0.224 1.942-0.316 3.808-0.316 3.808 2.736-1.033 1.528 1.39 1.528 1.39 1.805-1.064 4.046-1.039 4.046-1.039 0.516-0.878 0.19-1.41 0.19-1.41z">
+        </path>
+      </symbol>
+      <symbol id="icon-undo" viewBox="0 0 19 20">
+        <path
+          d="M11.864 16.206c-3.311 1.617-7.112 0.638-8.491-2.185-1.281-2.623-0.021-5.912 2.815-7.664 0.926 1.626 1.742 2.93 1.919 2.93 0.459 0 3.172-6.964 3.044-7.477s-7.839-2.136-8.074-1.752c-0.089 0.146 0.559 1.532 1.417 3.184-4.014 2.657-5.646 7.684-3.628 11.814 2.211 4.522 7.956 6.257 12.837 3.873 0.944-0.461 1.783-1.043 2.512-1.714l-2.049-2.731c-0.621 0.683-1.394 1.277-2.301 1.72z">
+        </path>
+        <path
+          d="M15.811 11.077c-0.082 0.596-0.263 1.186-0.531 1.752l2.574 2.45c0.608-0.935 1.049-1.957 1.3-3.012l-3.343-1.189z">
+        </path>
+      </symbol>
+    </defs>
+  </svg>
 
-       <div id= 'InitialScreen'>
-        <h1>Compound Game</h1>
+  <div id='initial-screen'>
+    <h1>Compound Game</h1>
 
-            <div class="buttons">
-                <input type = 'text' placeholder="Enter Player Name" id='nameInput'/>
-                <br><br>
-                <button onclick = "createButtonClicked()">CREATE</button>
-                <div>OR</div>
-                <div>
-                    <input type='text' placeholder = 'Enter Room Id' id = 'roomIdInput'/>
-                    <button onclick ="joinButtonClicked()">JOIN</button>
-                </div>
+    <div class="buttons">
+      <input type='text' placeholder="Enter Player Name" id='nameInput' />
+      <br><br>
+      <button onclick="createButtonClicked()">CREATE</button>
+      <div>OR</div>
+      <div>
+        <input type='text' placeholder='Enter Room Id' id='roomIdInput' />
+        <button onclick="joinButtonClicked()">JOIN</button>
+      </div>
+    </div>
+  </div>
+
+  <div id='waiting-room-host' style="display:none">
+    <h1>Compound Game Waiting Room</h1>
+    <p id="gameId"> </p>
+    <h2> The game room Id is <span id="gameCodeDisplay"></span></h2>
+    <p id='userJoin'> </p>
+    <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
+    <input type='text' placeholder='Number of Rounds' id='RoundInput' />
+    <input type='text' placeholder='Round Timer' id='RoundTimerInput' />
 
 
+    <button onclick='startGameButtonClicked()'>Start Game</button>
+
+
+  </div>
+
+  <div id='waiting-room-player' style="display:none">
+    <h1>Compound Game Waiting Room</h1>
+    <p id='displayRoom'></p>
+  </div>
+
+  <div id='example' style="display:none">
+    <h3>Example</h3>
+  </div>
+  <p id='playerJoin'></p> <!-- TODO: Unused <p> block? Or should it be in one of the dics? -->
+
+  <!--     Guesser's view  -->
+  <div id="guesser-view" style="display:none">
+    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+      <div class="uk-container">
+        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+          <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
+            Compound Game
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 1
+              </div>
             </div>
-        </div>
-
-        <div id= 'waitingRoomforHost' style="display:none">
-            <h1>Compound Game Waiting Room</h1>
-            <p id="gameId"> </p>
-            <h2> The game room Id is <span id = "gameCodeDisplay"></span></h2>
-            <p id='userJoin'> </p>
-            <input type='text' placeholder = 'Max Players' id = 'MaxPlayerInput' class="uk-input"/>
-            <input type='text' placeholder = 'Number of Rounds' id = 'RoundInput'/>
-            <input type='text' placeholder = 'Round Timer' id = 'RoundTimerInput'/>
-
-
-            <button onclick='startGameButtonClicked()'>Start Game</button>
-
-
-        </div>
-
-        <div id= 'waitingRoomforPlayer' style="display:none">
-            <h1>Compound Game Waiting Room</h1>
-            <p id = 'displayRoom'></p>
-        </div>
-
-        <div id = 'example' style="display:none">
-            <h3>Example</h3>
-        </div>
-        <p id = 'playerJoin'></p>
-
-        <!--     Guesser's view  -->
-        <div id="guesser_view" style="display:none">
-            <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-                <div class="uk-container">
-                    <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                        <div class="uk-width-1-1 uk-heading-large header uk-text-center" style="height: 80px">
-                            Compound Game
-                        </div>
-                        <div class="uk-width-1-2" style="height: 100vw">
-                            <div class="uk-height-1-1 uk-cover-container">
-                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                    Canvas 1
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2" style="height: 100vw">
-                            <div class="uk-height-1-1 uk-cover-container">
-                                <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                    Canvas 2
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-1" style="height: 100px">
-                            <div class="uk-height-1-1 uk-cover-container uk-align-center">
-                                <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                    <div class="uk-margin-small-left">___</div>
-                                </div>
-                                <div>
-                                    <span uk-icon="icon: clock; ratio: 5"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-                            <form method="post" class="uk-form-horizontal ">
-                                <div class="uk-inline uk-height-small">
-                                    <input class="uk-input uk-box-shadow large-text" placeholder="Input your Guess" id="GuessInput">
-                                    <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil; ratio: 2"></a>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-                            <div class="uk-align-center uk-flex uk-flex-column" >
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                                <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                    Other player guess
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 2
+              </div>
             </div>
+          </div>
+          <div class="uk-width-1-1" style="height: 80px">
+            <div class="uk-height-1-1 uk-cover-container uk-align-center">
+              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+                <div class="uk-margin-small-left">___</div>
+              </div>
+              <div>
+                <span uk-icon="icon: clock; ratio: 3"></span>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-2 uk-align-center" style="height: 80px">
+            <form method="post" class="uk-form-horizontal ">
+              <div class="uk-inline">
+                <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
+                <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
+              </div>
+            </form>
+          </div>
+          <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
+            <div class="uk-align-center">
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-       <!--     Drawer's view  -->
-       <div style="display:none" id="drawer_view">
-           <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-               <div class="uk-container">
-                   <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                       <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
-                           Compound Game
-                       </div>
-                       <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
-                           <div class="uk-flex-column uk-flex">
-                               <div class="undoButtonContainer center-content" aria-label="undo">
-                                   <svg class="icon icon-undo"><use xlink:href="#icon-undo"></use></svg>
-                               </div>
-                               <div class="paintButtonContainer center-content" aria-label="draw">
-                                   <svg class="icon icon-paintbrush"><use xlink:href="#icon-paintbrush"></use></svg>
-                               </div>
-                               <div class="colorPickerContainer">
-                                   <h2 id="color-choice"></h2>
-                                   <input class="color-range" type="range" min="0" max="100" value="75" title="Drag me to select.">
-                               </div>
-                               <input type="range" min=1 max=50 id="brush-size" value="5">
-                               <button id="clear-canvas">Clear canvas</button>
-                               <button id="undo-button">Undo button</button>                       
-                           </div>
-                       </div>
-                       <div class="uk-width-2-3" style="height: 120vw">
-                           <div class="uk-height-1-1 uk-cover-container">
-                               <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                                    <canvas id="canvas-1" width="200" height="400"></canvas>
-                                </div>
-                           </div>
-                       </div>
-                       <div class="uk-width-1-1" style="height: 100px">
-                           <div class="uk-height-1-1 uk-cover-container uk-align-center">
-                               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                                   <div class="uk-margin-small-left">
-                                       Draw: House
-                                   </div>
-                               </div>
-                               <div>
-                                   <span uk-icon="icon: clock; ratio: 5"></span>
-                               </div>
-                           </div>
-                       </div>
-                       <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
-                           <div class="uk-align-center uk-flex uk-flex-column" >
-                               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                   Other player guess
-                               </div>
-                               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                   Other player guess
-                               </div>
-                               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                                   Other player guess
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-       </div>
+  <!--     Drawer's view  -->
+<<<<<<< HEAD
+  <div style="display:none" id="drawer-view">
+=======
+  <div style="display:none" id="drawer_view">
+>>>>>>> 5b644b9b1626e6b0dbb53a487f809b73eaca8cfd
+    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+      <div class="uk-container">
+        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+          <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
+            Compound Game
+          </div>
+          <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
+            <div class="uk-flex-column uk-flex">
+              <div class="undoButtonContainer center-content" aria-label="undo">
+                <svg class="icon icon-undo">
+                  <use xlink:href="#icon-undo"></use>
+                </svg>
+              </div>
+              <div class="paintButtonContainer center-content" aria-label="draw">
+                <svg class="icon icon-paintbrush">
+                  <use xlink:href="#icon-paintbrush"></use>
+                </svg>
+              </div>
+              <div class="colorPickerContainer">
+                <h2 id="color-choice"></h2>
+                <input class="color-range" type="range" min="0" max="100" value="75" title="Drag me to select.">
+              </div>
+              <input type="range" min=1 max=50 id="brush-size" value="5">
+              <button id="clear-canvas">Clear canvas</button>
+              <button id="undo-button">Undo button</button>
+            </div>
+          </div>
+          <div class="uk-width-2-3" style="height: 120vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                <canvas id="canvas-1" width="200" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-1" style="height: 100px">
+            <div class="uk-height-1-1 uk-cover-container uk-align-center">
+              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
+                <div class="uk-margin-small-left">
+                  Draw: House
+                </div>
+              </div>
+              <div>
+                <span uk-icon="icon: clock; ratio: 5"></span>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
+            <div class="uk-align-center uk-flex uk-flex-column">
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
+                style="width: 50vw">
+                Other player guess
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
 
-        <script src= "/socket.io/socket.io.js"></script>
+  <!--initialize socket object so clients can establish connections-->
+  <script>
+    //var socket = io('/my-namespcae');
+    var playerNumber = 0;
+    var socket = io();
+    var wordToGuess = '';
+    var state = {}; //not sure if this is necessary
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); // 
+    const roomInput = document.getElementById('roomIdInput');
 
-        <!--initialize socket object so clients can establish connections-->
-        <script>
-            //var socket = io('/my-namespcae');
-            let playerNumber = 0;
-            var socket = io();
-            const gameCodeDisplay = document.getElementById('gameCodeDisplay');
-            const roomInput = document.getElementById('roomIdInput');
+    const allViews = {
+      initialScreen: document.getElementById('initial-screen'),
+      waitingRoomForHost: document.getElementById('waiting-room-host'),
+      waitingRoomForPlayer: document.getElementById('waiting-room-player'),
+      example: document.getElementById('example'),
+      guesserView: document.getElementById('guesser-view'),
+      drawerView: document.getElementById('drawer-view'),
+    }
 
-            //on connection to server, ask for user's name with an anonymous callback
-            socket.on('connect', function(){
-                // call the server-side function 'adduser' and send one parameter (value of prompt)
+    /**
+     * Use this function to switch between the different views
+     * 
+     * Pass in the ID of the view to make it display, and all other views
+     * will not display. 
+     */
+    function switchToView(newViewName) {
+      for (let [viewName, view] of Object.entries(allViews)) {
+        if (viewName === newViewName) {
+          view.style.display = 'block';
+        } else {
+          view.style.display = 'none';
+        }
+      }
+    }
 
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-                document.getElementById('example').style.display = 'none';
-                document.getElementById('InitialScreen').style.display = 'block';
-                //socket.emit('adduser', prompt("What's your name?"));
-            });
+    //on connection to server, ask for user's name with an anonymous callback
+    socket.on('connect', function () {
+      // call the server-side function 'adduser' and send one parameter (value of prompt)
 
-            function createButtonClicked(){
-                console.log('create button clicked');
-                const nameInput = document.getElementById('nameInput').value;
-                socket.emit('createClicked',nameInput);
-                init();
+      switchToView('initialScreen');
+      //socket.emit('adduser', prompt("What's your name?"));
+    });
 
-            }
+    function createButtonClicked() {
+      console.log('create button clicked');
+      const nameInput = document.getElementById('nameInput').value;
+      socket.emit('createClicked', nameInput);
+      init();
 
-            function joinButtonClicked(){
-                const joinRoomId = roomInput.value;
-                const nameInput = document.getElementById('nameInput').value;
-                console.log('join button clicked' + joinRoomId);
-                socket.emit('joinClicked',joinRoomId,nameInput);
-                init();
-            }
+    }
 
-            function startGameButtonClicked(){
-                const maxPlayer =document.getElementById('MaxPlayerInput').value;
-                const roundInput =document.getElementById('RoundInput').value;
-                const roundTimer =document.getElementById('RoundTimerInput').value;
-                document.getElementById('guesser_view').style.display = 'block';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-                document.getElementById('example').style.display = 'none';
-                document.getElementById('InitialScreen').style.display = 'none';
 
-                socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
-            }
+    function joinButtonClicked() {
+      const joinRoomId = roomInput.value;
+      const nameInput = document.getElementById('nameInput').value;
+      console.log('join button clicked' + joinRoomId);
+      socket.emit('joinClicked', joinRoomId, nameInput);
+      init();
+    }
 
-            function init(){
-                console.log('button clicked');
-                // document.getElementById('InitialScreen').style.display = 'none';
-                // document.getElementById('waitingRoomforHost').style.display = 'block';
+    function startGameButtonClicked() {
+      //all the changes in divs and display should be moved to a new event call according
+      //to number of players and the role of the player (drawer/guesser)
+      const maxPlayer = document.getElementById('MaxPlayerInput').value;
+      const roundInput = document.getElementById('RoundInput').value;
+      const roundTimer = document.getElementById('RoundTimerInput').value;
+      switchToView('guesserView');
 
-            }
+      socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
+    }
 
-            function reset(){
-                playerNumber = null;
-                roomInput.value = '';
-                gameCodeDisplay.innerText = '';
-                document.getElementById('InitialScreen').style.display = 'block';
-                document.getElementById('waitingRoomforHost').style.display = 'none';
-            }
+    function init() {
+      console.log('button clicked');
+      // document.getElementById('initial-screen').style.display = 'none';
+      // document.getElementById('waiting-room-host').style.display = 'block';
 
-            socket.on('gameRoomNo', function(data){
-                document.getElementById('InitialScreen').style.display = 'none';
-                document.getElementById('waitingRoomforPlayer').style.display='none';
-                document.getElementById('waitingRoomforHost').style.display = 'block';
-                gameCodeDisplay.innerHTML =  data + ' .';
-                globalThis.currRoomId = data;
+    }
 
-            });
+    function reset() {
+      playerNumber = null;
+      roomInput.value = '';
+      gameCodeDisplay.innerText = '';
+      switchToView('initialScreen');
+    }
 
-            socket.on('errorRoomId',function(){
-                reset();
-                alert('Unknown game code');
-            });
+    socket.on('gameRoomNo', function (data) {
+      console.debug('gameRoomNo', { data });
+      switchToView('waitingRoomForHost');
+      gameCodeDisplay.innerHTML = data + ' .';
+      globalThis.currRoomId = data;
 
-            socket.on('tooManyPlayers',function(){
-                reset();
-                alert('Room full');
-            });
+    });
 
-            socket.on('init',function(number){
-                playerNumber = number;
-            });
+    socket.on('endRoundScores', function () {
+      console.debug('endRoundScores');
+    });
 
-            socket.on('broadcastJoined',function(username){
-                console.log('player joined');
-                var br = document.createElement("br");
-                document.getElementById("playerJoin").appendChild(br);
-                document.getElementById("playerJoin").appendChild(document.createTextNode(username+ '  has joined!'));
+    socket.on('errorRoomId', function () {
+      console.debug('errorRoomId');
+      reset();
+      alert('Unknown game code');
+    });
 
-            })
+    socket.on('tooManyPlayers', function () {
+      console.debug('tooManyPlayers');
+      reset();
+      alert('Room full');
+    });
 
-            socket.on('waitingRoomforPlayer',function(roomId){
-                document.getElementById('InitialScreen').style.display ='none';
-                document.getElementById('waitingRoomforPlayer').style.display = 'block';
-                document.getElementById('waitingRoomforHost').style.display='none';
-                document.getElementById('displayRoom').innerText= 'You are in room '+ roomId + '! Waiting for host to start game...'
-            })
-            //    socket.on('newclientconnect',function(data){
-            //        document.body.innerHTML = '';
-            //        document.write(data.description);
-            //    });
+    socket.on('tooFewPlayers', function () {
+      console.debug('tooFewPlayers');
+      //reset();
+      alert('We recommend a minimum of four players to play this game');
+    });
 
-            //    socket.on('connectToRoom',function(data){
-            //        document.body.innerHTML = '';
-            //        document.write(data);
-            //    })
+    socket.on('init', function (number) {
+      console.debug('init');
+      playerNumber = number;
+    });
 
-            // socket.on('updateusers',function(data){
-            //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
-            // });
+    socket.on('gameState', function (gameState) {
+      console.debug('gameState', { gameState });
 
-            // socket.on('connect_failed', function(){
-            //     document.write("sorry, issue with connection.");
-            // })
-        </script>
-        <script src="./javascript/colorPicker.js"></script>
-        <script src="./javascript/canvas.js" defer></script>
-    </body>
+      console.log('players: ' + gameState.players)
+      state = gameState;
+      wordToGuess = state.meta.currWord
+      console.log('WORD TO BE GUESSED: ' + wordToGuess);
+      //update role view
+      //update correct ans var
+      //update scoreboard
+    });
+
+    socket.on('drawerView', function () {
+      console.debug('drawerView');
+
+      //update drawer view and show word they need to draw
+    });
+    socket.on('guesserView', function () {
+      console.debug('guesserView');
+
+      //update drawer view and show word they need to draw
+    });
+
+    socket.on('timerUpdate', function (timeLeft) {
+      console.debug('timerUpdate', timeLeft);
+
+      //update timer
+    });
+
+    //TODO: checking of the guess should be moved server side
+    function guessInput() {
+      const guessInput = document.getElementById('GuessInput').value;
+      if (guessInput.equals(wordToGuess)) {
+        socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
+      }
+      else {
+        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+      }
+    }
+
+    socket.on('someoneGuessed', function (gameState) {
+      console.debug('someoneGuessed', { gameState });
+      //update container saying  '______ guessed the compound word!'
+
+    });
+
+    socket.on('wrongGuess', function (playerGuess, player) {
+      console.debug('wrongGuess', { playerGuess, player });
+      //update container saying '____ guessed ' + guessInput
+    });
+
+    socket.on('broadcastJoined', function (username) {
+      console.debug('broadcastJoined', { username });
+      console.log('player joined');
+      let br = document.createElement("br");
+      document.getElementById("playerJoin").appendChild(br);
+      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined!'));
+
+    });
+
+    socket.on('waitingRoomForPlayer', function (roomId) {
+      console.debug('waitingRoomForPlayer', { roomId });
+      switchToView('waitingRoomForPlayer');
+      document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
+    });
+
+    //THIS NEEDS TO BE DONE ACTUALLY!!!!!
+    // socket.on('updateusers',function(data){
+    //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
+    // });
+
+    // socket.on('connect_failed', function(){
+    //     document.write("sorry, issue with connection.");
+    // })
+  </script>
+
+</body>
 
 </html>
