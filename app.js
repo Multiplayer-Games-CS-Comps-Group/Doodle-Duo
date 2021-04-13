@@ -13,26 +13,76 @@ app.get('/', function (req, res) {
   res.sendFile('index.html', { root: __dirname });
 });
 
-const state = {};
-const clientRooms = {};
-const usernames = {};
-let clients = 0;
+
+
+const getRandBetween = (min, max) =>
+  Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
+
+function genId(min, max, dict, prefix = null) {
+  let newId = getRandBetween(min, max);
+
+  // Generate new random ID until it's not a duplicate of one in the 
+  // dictionary it's being generated for
+  while (newId in dict) newId = getRandBetween(min, max);
+
+  if (prefix) newId = prefix + newId;
+
+  return newId;
+}
+
+//TODO: Make a global users dict that points to lobbyId instead?
+//TODO: Make lobby into a class?
+//TODO: Default usernames
+//TODO: No duplicate username? Not necessary since userId but might be preferred
+
+/*
+ * lobbies keeps track of the game and user data for each current ongoing game or lobby.
+ * 
+ * Each socket object should keep track of its lobbyId and userId.
+ */
+const lobbies = {}
+function createLobby() {
+  let lobbyId = genId(10000, 99999, lobbies, 'lobby');
+
+  lobbies[lobbyId] = {
+    state: {},
+    users: {}
+  }
+
+  return lobbyId;
+}
+
+function addUserToLobby(lobbyId, socketObject, username) {
+  // If user already has an ID, they should already be in a lobby/
+  // TODO: Might want to allow a user with an existing ID to join a lobby 
+  // (for example if they came from a previous game).
+  if ('userId' in socketObject) return; 
+
+  socketObject.lobbyId = lobbyId;
+  
+  let userId = genId(10000, 99999, lobbies[lobbyId].users, 'user');
+  socketObject.userId = userId;
+  lobbies[lobbyId].users[userId] = username;
+}
+
+// TEST CODE
+// let newLobby1 = createLobby();
+// let newLobby2 = createLobby();
+// let test12 = {}
+// addUserToLobby(newLobby1, {}, 'monkey1');
+// addUserToLobby(newLobby1, {}, 'monkey2');
+// addUserToLobby(newLobby1, {}, 'monkey3');
+// addUserToLobby(newLobby1, {}, 'monkey4');
+// addUserToLobby(newLobby2, {}, 'gorilla1');
+// addUserToLobby(newLobby2, {}, 'gorilla2');
+// addUserToLobby(newLobby2, {}, 'gorilla3');
+// addUserToLobby(newLobby2, test12, 'gorilla4');
 
 io.on('connection', function (socket) {
-  clients++;
-
   socket.on('createClicked', function (data) {
-    let genId = function (min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     socket.username = data;
     // add the client's username to the global list
-    usernames[socket.username] = data;
-    let roomId = genId(10000, 99999);
-    clientRooms[socket.id] = roomId;
+    // usernames[socket.username] = data;
     socket.emit('gameRoomNo', roomId);
     //around the 49 minute mark of https://www.youtube.com/watch?v=ppcBIHv_ZPs&ab_channel=TraversyMedia
     //state[roomId]= createGameState();
@@ -54,7 +104,6 @@ io.on('connection', function (socket) {
         return;
       }
 
-      clientRooms[socket.id] = parseInt(roomId);
       socket.join(parseInt(roomId));
       if (username === '') {
         socket.username = 'player ' + io.sockets.adapter.rooms.get(parseInt(roomId)).size;
@@ -63,7 +112,7 @@ io.on('connection', function (socket) {
       else {
         socket.username = username;
         // add the client's username to the global list
-        usernames[username] = username;
+        // usernames[username] = username;
       }
       socket.emit('waitingRoomforPlayer', parseInt(roomId));
       socket.in(parseInt(roomId)).emit('broadcastJoined', socket.username);
@@ -248,12 +297,11 @@ io.on('connection', function (socket) {
 
 
   socket.on('disconnect', function () {
-    clients--;
     console.log('A user disconnected');
     // remove the username from global usernames list
-    delete usernames[socket.username];
+    // delete usernames[socket.username];
     // update list of users in chat, client-side
-    io.sockets.emit('updateusers', usernames);
+    // io.sockets.emit('updateusers', usernames);
     // echo globally that this client has left
     socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
   });
