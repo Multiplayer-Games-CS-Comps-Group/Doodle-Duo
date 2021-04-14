@@ -11,11 +11,11 @@ lobbies = {
       players: {
         socketId1: {
           score: 50,
-          guessed: true
+          doneGuessing: true
         },
         socketId2: {
           score: 50,
-          guessed: false
+          doneGuessing: false
         },
         //...
       },
@@ -30,6 +30,7 @@ lobbies = {
           {drawer1: socketId3, drawer2: socketId4, word: 'racecar'},
           //...
         ], //length = numRounds
+        numPlayers: 5,
       },
       timer: {
         id: null, //id of interval
@@ -82,8 +83,8 @@ lobbies = {
 // Timer updates: integer time left
 
 // Beginning of round:
-// - Each guesser is told they are a guesser, and the word they have to draw
-// - Each drawer is told they are a drawer
+// - Each drawer is told they are a drawer, and the word they have to draw
+// - Each guesser is told they are a guesser
 
 // [Guessing and returning correctness stuff]
 // [Posting messages/wrong guesses to the chat stuff]
@@ -92,11 +93,13 @@ lobbies = {
 scores = {
   socketId1: {
     username: 'username1',
-    score: 55
+    score: 55,
+    guessed: true
   },
   socketId2: {
     username: 'username2',
-    score: 37
+    score: 37,
+    guessed: false
   },
   //...
 }

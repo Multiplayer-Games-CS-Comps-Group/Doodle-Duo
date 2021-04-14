@@ -96,7 +96,7 @@ function getDrawPairs(gameWords, players) {
   let playerPool = []
   cloneArray(players, playerPool);
   shuffle(playerPool);
-  while (playerPool == players) {
+  while (playerPool == players) { //TODO: == doesn't work on arrays
     shuffle(playerPool);
   }
 
@@ -109,34 +109,49 @@ function getDrawPairs(gameWords, players) {
   let otherStack = buckets.Stack();
   let pairs = [];
   for (let i = 0; i < gameWords.length; i++) {
-    currPair = [];
-    currPair.push(gameWords[i]);
+    let currPair = {};
+    currPair.word = gameWords[i];
     if (pStack.size() > 1) {
       otherStack.add(pStack.peek());
-      currPair.push(pStack.pop());
+      currPair.drawer1 = pStack.pop();
       otherStack.add(pStack.peek());
-      currPair.push(pStack.pop());
+      currPair.drawer2 = pStack.pop();
     } else {
       if (pStack.size() == 1) {
-        currPair.push(pStack.pop());
+        currPair.drawer1 = pStack.pop();
         let temp = otherStack.toArray();
-        currPair.push(temp[Math.floor(Math.random() * temp.length)]);
+        currPair.drawer2 = temp[Math.floor(Math.random() * temp.length)];
       } else {
         shuffle(playerPool);
-        while (playerPool == players) {
+        while (playerPool == players) { //TODO: == doesn't work on arrays
           shuffle(playerPool);
         }
         addArraytoStack(playerPool, pStack);
         otherStack.clear();
         otherStack.add(pStack.peek());
-        currPair.push(pStack.pop());
+        currPair.drawer1 = pStack.pop();
         otherStack.add(pStack.peek());
-        currPair.push(pStack.pop());
+        currPair.drawer2 = pStack.pop();
       }
     }
     pairs.push(currPair);
   }
   return pairs;
+}
+
+function testGetDrawPairs() { //TODO: delete this function
+  console.log(
+    getDrawPairs(
+      ["word1", "word2", "word3", "word4", "word5", "word6"],
+      ["p1", "p2", "p3", "p4", "p5"]
+    )
+  )
+  console.log(
+    getDrawPairs(
+      ["word1", "word2", "word3", "word4", "word5", "word6"],
+      ["p1", "p2", "p3"]
+    )
+  )
 }
 
 function checkIfAllDone(playerArray) {
@@ -185,55 +200,77 @@ function getAllGuessers(playerArray, drawers) {
  *   ['fdef0efe', 'Bob' 0, 0]
  * ]
  */
-function createGameInstance(usernames, websocketID, maxplayers, roundnumber, roundTimer, roomId) {
-  const tempIterator = websocketID.values();
-
-  let playerArray = [];
-
-  for (let i in usernames) {
-    let player = {
-      websocketID: tempIterator.next().value,
-      userName: usernames[i],
+function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
+  let players = {};
+  for (let userId of userIdList) {
+    players[userId] = {
       score: 0,
-      isDone: 0,
-      isDrawer: 0
+      doneGuessing: false
     };
-    playerArray.push(player);
   }
 
-  //TODO: LYDIA'S CODE (UNCOMMENT????)
-  // const playerStates = [];
-  // for (let k = 0; k < playerArray.length; k++) {
-  //   playerStates.push({ socketId: playerArray[k][0], username: playerArray[k][1], score: playerArray[k][2], guessed: false })
-  // }
-
   // Get words from CSV file
-  let gameWords = getGameWords(parseInt(roundnumber));
+  let gameWords = getGameWords(numRounds);
 
   // Assign pair partners to each word ['word', 'Drawer1', 'Drawer2']
-  let drawPairs = getDrawPairs(gameWords, playerArray);
+  let drawPairs = getDrawPairs(gameWords, userIdList);
 
   let gameInstance = {
-    players: playerArray,
+    players,
     rules: {
-      maxPlayers: parseInt(maxplayers),
-      numRounds: parseInt(roundnumber),
-      roundTimer: 1000 * parseInt(roundTimer) /* parseInt(roundTimer) in milliseconds; 60000 is one minute*/,
+      maxPlayers,
+      numRounds,
+      roundTimer,
     },
     meta: {
-      currentCountdown: null,//id of interval
-      currentTimeLeft: 0,
-      roomID: roomId,
-      totalPlayers: playerArray.length,
       drawPairs: drawPairs,
-      currRound: 0,
-      currWord: drawPairs[0][0],
-      currDrawers: [drawPairs[0][1][0], drawPairs[0][2][0]],
-      currGuessers: allGuessers
+      numPlayers: userIdList.length,
+    },
+    timer: {
+      id: null, //id of interval
+      timeLeft: 0,
+    },
+    roundInfo: {
+      round: -1,
+      word: null,
+      drawers: null,
+      guessers: null,
     }
   }
 
   return gameInstance;
+}
+
+function setupRound(gameInstance, roundNum) {
+  let curDrawPair = gameInstance.meta.drawPairs[roundNum];
+  let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
+  let allPlayers = Object.keys(gameInstance.players);
+  gameInstance.roundInfo = {
+    round: roundNum,
+    word: curDrawPair.word,
+    drawers,
+    guessers: allPlayers.filter(id => !drawers.includes(id)),
+  };
+
+  for (let id of allPlayers) {
+    gameInstance.players[id].doneGuessing = drawers.includes(id);
+  }
+}
+
+function testCreateGameInstance() { //TODO: delete this function
+  let newGameInstance = createGameInstance(
+    ["p1", "p2", "p3", "p4", "p5"],
+    12,
+    8,
+    40
+  );
+
+  console.log("newGameInstance", newGameInstance);
+  console.log("newGameInstance.meta.drawPairs", newGameInstance.meta.drawPairs);
+
+  setupRound(newGameInstance, 0);
+  console.log("newGameInstance round 0", newGameInstance);
+  console.log("newGameInstance.meta.drawPairs round 0", newGameInstance.meta.drawPairs);
 }
 
 async function startGameLoop(gameInstance) {
