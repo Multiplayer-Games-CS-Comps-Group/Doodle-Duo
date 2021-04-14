@@ -11,7 +11,7 @@ lobbies = {
       players: {
         socketId1: {
           score: 50,
-          doneGuessing: true
+          doneGuessing: true //Drawers start with doneGuessing = true
         },
         socketId2: {
           score: 50,

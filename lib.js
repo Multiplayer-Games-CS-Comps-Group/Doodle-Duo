@@ -223,7 +223,7 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
       roundTimer,
     },
     meta: {
-      drawPairs: drawPairs,
+      drawPairs,
       numPlayers: userIdList.length,
     },
     timer: {
@@ -232,16 +232,16 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
     },
     roundInfo: {
       round: -1,
-      word: null,
-      drawers: null,
-      guessers: null,
+      word: '',
+      drawers: [],
+      guessers: [],
     }
   }
 
   return gameInstance;
 }
 
-function setupRound(gameInstance, roundNum) {
+function setUpRound(gameInstance, roundNum) {
   let curDrawPair = gameInstance.meta.drawPairs[roundNum];
   let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
   let allPlayers = Object.keys(gameInstance.players);
@@ -268,7 +268,7 @@ function testCreateGameInstance() { //TODO: delete this function
   console.log("newGameInstance", newGameInstance);
   console.log("newGameInstance.meta.drawPairs", newGameInstance.meta.drawPairs);
 
-  setupRound(newGameInstance, 0);
+  setUpRound(newGameInstance, 0);
   console.log("newGameInstance round 0", newGameInstance);
   console.log("newGameInstance.meta.drawPairs round 0", newGameInstance.meta.drawPairs);
 }
@@ -342,6 +342,6 @@ function test(test) {
 module.exports = {
   getLDistance, readCSV, shuffle, buckets, cloneArray,
   addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
-  createGameInstance, startGameLoop, getAllGuessers
+  createGameInstance, startGameLoop, getAllGuessers, setUpRound
 };
 

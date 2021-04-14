@@ -367,6 +367,10 @@
       //update timer
     });
 
+    socket.on('gameOverEvent', function () {
+      console.debug('gameOverEvent');
+    });
+
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
