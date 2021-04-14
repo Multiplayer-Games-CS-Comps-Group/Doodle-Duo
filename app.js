@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const lib = require("./lib");
+const lib = require('./lib');
 
 const express = require('express');
 const app = express();
@@ -22,6 +22,12 @@ app.get('/', function (req, res) {
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 const MAX_LOBBY_SIZE = 12;
 const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4? 
+
+const DEFAULT_MAX_PLAYERS = 12;
+const DEFAULT_NUM_ROUNDS = 8; 
+const DEFAULT_ROUND_TIMER = 3; //TODO: set this back to 45
+
+const SCORE_DISPLAY_TIMER = 5;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -133,7 +139,11 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('startGame', function (lobbyId, maxPlayers, roundInput, roundTimer) {
+  socket.on('startGame', function (lobbyId, maxPlayers, numRounds, roundTimer) {
+    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
+    if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
+    if (roundTimer === '') roundTimer = DEFAULT_ROUND_TIMER;
+
     let currentRoomSize = getRoomSize(lobbyId);
 
     if (currentRoomSize < MIN_PLAYERS) {
@@ -141,46 +151,25 @@ io.on('connection', function (socket) {
       return;
     }
 
-    let currentUsernames = Object.values(lobbies[lobbyId].users);
+    let currentUserIds = Object.keys(lobbies[lobbyId].users);
 
-    //TODO: TEMPORARY FOR LOOP AND VARIABLE 
-    const playerStates = [];
-    for (let k = 0; k < currentUsernames.length; k++) {
-      playerStates.push({ socketId: null, username: currentUsernames[k], score: 0, guessed: false })
-    }
     //TODO: Default values if these aren't entered by the user? Or will that be client side? (Should probably handle it here)
-    //TODO: This should probably just take in the users object? Although we don't want to duplicate that, so maybe not. (But we're duplicating rn... so still bad)
-    //TODO: I AM CURRENTLY NOT ACTUALLY INITIALIZING THE GAME STATE SO I CAN GET OTHER STUFF TO WORK, FIRST.
-    // lobbies[lobbyId].state = lib.createGameInstance(currentUsernames, currentRoomSize, maxPlayers, roundInput, roundTimer, lobbyId); 
-    //TODO: THIS IS TEMPORARY
-    lobbies[lobbyId].state = {
-      players: playerStates,
-      rules: {
-        maxPlayers: 10,
-        numRounds: 3,
-        roundTimer: 1000 * 5 //TEST at 5 second rounds
-      },
-      meta: {
-        currentCountdown: null,
-        currentTimeLeft: 5,
-        roomID: lobbyId, //TODO: roomID vs roomId (capitalization)
-        totalPlayers: currentRoomSize,
-        drawPairs: -9999,
-        currRound: 0,
-        currWord: 'hamburglar',
-        currDrawers: [Object.keys(lobbies[lobbyId].users)[0], Object.keys(lobbies[lobbyId].users)[1]],
-        currGuessers: Object.keys(lobbies[lobbyId].users).slice(2)
-      }
-    }
-    //TODO: Ok so we really should not be duplicating stuff like roomId. We'll have to have a conversation about what's stored where.
-    //      In order to not duplicate stuff, we can have functions that find all the right bits of data and send them to the clients.
+    lobbies[lobbyId].state = lib.createGameInstance(
+      currentUserIds,
+      parseInt(maxPlayers),
+      numRounds,
+      roundTimer
+    );
+    lib.setUpRound(lobbies[lobbyId].state, 0);
+    startRound(lobbyId);
 
+    console.log('Current drawers: ' + lobbies[lobbyId].state.roundInfo.drawers);
+    
     //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
     // updateGameState(lobbyId, lobbies[lobbyId].state); //TODO: UNCOMMENT THIS
 
-    console.log('Current drawers: ' + lobbies[lobbyId].state.meta.currDrawers);
-    notifyDrawers(lobbyId, lobbies[lobbyId].state);
-    notifyGuessers(lobbyId, lobbies[lobbyId].state);
+
+
 
     //
     //players will type their guesses and events are emitted
@@ -188,8 +177,8 @@ io.on('connection', function (socket) {
     //whenever 'correctGuess' event is emitted, check to see if all other players guessed correctly
     //if so, end round early
 
-    // if (response === "DIE") {
-    //     console.log("mama mia!");
+    // if (response === 'DIE') {
+    //     console.log('mama mia!');
     //     clearTimeout(currentCountdown);
 
     //OR
@@ -202,20 +191,17 @@ io.on('connection', function (socket) {
     //ask if wanna start over
     //clear all game states, emit end game msg
 
-    console.log('\n\n====+++++++++++++++++=======');
+    // console.log('\n\n====+++++++++++++++++=======');
     // console.log(lobbies[lobbyId].state);
     // console.log('\n---------------\n', lobbies[lobbyId].state.meta.drawPairs);
-    console.log('\n\n====+++++++++++++++++=======');
+    // console.log('\n\n====+++++++++++++++++=======');
 
     // ENTER GAME LOOP HERE
     //if result of game state != 1 (end of game/ all rounds)
     //emit game state function called (go through the gameloop to update state)
     //else emit endGame event, clear game state
     // lib.startGameLoop(gameState); TODO: I think we never want to call this? We made our own loop using setInterval.
-    console.log('SERVER HERE!');
-
-    //TODO: TEMPORARY (should be called by updateGameState) (we really need clearer funciton names)
-    startGameTimer(lobbyId);
+    // console.log('SERVER HERE!');
   });
 
   socket.on('correctGuess', function (gameState, roomId) {
@@ -234,7 +220,7 @@ io.on('connection', function (socket) {
     //CHECK IF ALL OTHERS ARE DONE WITH GUESSES
     //CALL ALL GUESSED FUNCTION
     if (allGuessed(gameState)) {
-      clearInterval(gameState.meta.currentCountdown);
+      clearInterval(gameState.state.timer.id);
       updateGuessed(roomId, gameState);
     }
 
@@ -268,68 +254,83 @@ io.on('connection', function (socket) {
     //  clear all game states, emit end game msg
     //}
 
-    if (lobbies[lobbyId].state.meta.currRound >= lobbies[lobbyId].state.rules.numRounds) {
-      endOfGame();
-    }
-
-    //showing score board 
-    //call updateGameState in 5 seconds
-    else {
-      console.log("End of the round! Displaying scores now"); //TODO: TEMP
-      console.log("Next round will start in 5 seconds"); //TODO: TEMP
+    if (lobbies[lobbyId].state.roundInfo.round + 1 >= lobbies[lobbyId].state.rules.numRounds) {
+      endOfGame(lobbyId);
+    } else {
+      console.log('End of the round! Displaying scores now'); //TODO: TEMP
+      console.log(`Next round will start in ${SCORE_DISPLAY_TIMER} seconds`); //TODO: TEMP
       io.sockets.in(lobbyId)
         .emit('endRoundScores', lobbies[lobbyId].state);
-      
-      setTimeout(() => console.log("About to start next round!"), 4900); //TODO: TEMP
-      setTimeout(() => updateGameState(lobbyId, lobbies[lobbyId].state), 5000);
+
+      setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }
   };
 
   function countdown(lobbyId) {
-    console.log('Time left in a game: ', lobbies[lobbyId].state.meta.currentTimeLeft)
+    console.log('Time left in a game: ', lobbies[lobbyId].state.timer.timeLeft)
 
-    if (lobbies[lobbyId].state.meta.currentTimeLeft <= 0) {
-      clearInterval(lobbies[lobbyId].state.meta.currentCountdown);
+    if (lobbies[lobbyId].state.timer.timeLeft <= 0) {
+      clearInterval(lobbies[lobbyId].state.timer.id);
       endOfRound(lobbyId);
     } else {
       io.sockets.in(lobbyId)
-        .emit('timerUpdate', lobbies[lobbyId].state.meta.currentTimeLeft);
+        .emit('timerUpdate', lobbies[lobbyId].state.timer.timeLeft);
     }
 
-    lobbies[lobbyId].state.meta.currentTimeLeft--;
+    lobbies[lobbyId].state.timer.timeLeft--;
   }
 
   //params: roomId, state[roomId]
-  function updateGameState(roomId, gameState) {
-    gameState.meta.currRound++;
-    gameState.meta.currWord = gameState.meta.drawPairs[gameState.meta.currRound][0];
-    gameState.meta.currDrawers = [gameState.meta.drawPairs[gameState.meta.currRound][1][0], gameState.meta.drawPairs[gameState.meta.currRound][2][0]]
-    gameState.meta.currGuessers = lib.getAllGuessers(lib.playerArray, gameState.meta.currDrawers);
-    gameState.meta.currentTimeLeft = gameState.rules.roundTimer;
-    startGameTimer(lobbyId);
+  // function updateGameState(roomId, gameState) {
+  //   gameState.meta.currRound++;
+  //   gameState.meta.currWord = gameState.meta.drawPairs[gameState.meta.currRound][0];
+  //   gameState.meta.currDrawers = [gameState.meta.drawPairs[gameState.meta.currRound][1][0], gameState.meta.drawPairs[gameState.meta.currRound][2][0]]
+  //   gameState.meta.currGuessers = lib.getAllGuessers(lib.playerArray, gameState.meta.currDrawers);
+  //   gameState.meta.currentTimeLeft = gameState.rules.roundTimer;
+  //   startGameTimer(lobbyId);
 
-    io.sockets.in(roomId)
-      .emit('gameState', gameState);
-  };
+  //   io.sockets.in(roomId)
+  //     .emit('gameState', gameState);
+  // };
+
+  function advanceRoundAndStart(lobbyId) {
+    lobbies[lobbyId].state.roundInfo.round += 1;
+    lib.setUpRound(lobbies[lobbyId].state, lobbies[lobbyId].state.roundInfo.round);
+
+    startRound(lobbyId);
+  }
+
+  function startRound(lobbyId) {
+    lobbies[lobbyId].state.timer.timeLeft = lobbies[lobbyId].state.rules.roundTimer;
+
+    notifyDrawers(lobbyId);
+    notifyGuessers(lobbyId);
+    startGameTimer(lobbyId);
+    //TODO: Do we need to emit a 'new round' event? Or is notifying the drawers and guessers good enough?
+    // (It's probably good enough, we just need to be sure to pass them any needed new-round info)
+  }
 
   function notifyDrawers(lobbyId) {
-    for (let id of lobbies[lobbyId].state.meta.currDrawers) {
+    for (let id of lobbies[lobbyId].state.roundInfo.drawers) {
       io.sockets.in(id).emit('drawerView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
     }
   };
 
   function notifyGuessers(lobbyId) {
-    for (let id of lobbies[lobbyId].state.meta.currGuessers) {
+    for (let id of lobbies[lobbyId].state.roundInfo.guessers) {
       io.sockets.in(id).emit('guesserView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
     }
   };
 
-  //maybe second param of endGame func could be result/ score instance of state obj
-  //params: roomId, state[roomId]
-  function endOfGame() { };
-  //params: roomId
-  function startGameTimer(lobbyId) { 
-    lobbies[lobbyId].state.meta.currentCountdown = setInterval(() => countdown(lobbyId), 1000);
+  //params: lobbyId
+  function endOfGame(lobbyId) { 
+    console.log("Ending the game!");
+    io.sockets.in(lobbyId).emit('gameOverEvent'); //TODO: probably should emit final scores
+  };
+
+  //params: lobbyId
+  function startGameTimer(lobbyId) {
+    lobbies[lobbyId].state.timer.id = setInterval(() => countdown(lobbyId), 1000);
   };
 
 
