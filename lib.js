@@ -172,37 +172,23 @@ function getAllGuessers(playerArray, drawers) {
 /* Game Logic Code - Imported due to nodeJS limitations */
 
 
-// Create game instance from lobby information
+/* Creates game instance from lobby information
+ *
+ * gameInstance object:
+ * - players = array of players with [name, playerID, profile picture object]
+ * - rules = dictionary with all the rules set by the host
+ * - meta = meta data related/useful to the server
+ *
+ * [
+ *   ['webSocketID', 'username', score, doneBool (0 not done, 1 done)]
+ *   ['xfdsfh_wqw', 'Alex', 0, 0],
+ *   ['fdef0efe', 'Bob' 0, 0]
+ * ]
+ */
 function createGameInstance(usernames, websocketID, maxplayers, roundnumber, roundTimer, roomId) {
-
-  /* gameInstance object:
-      players = array of players with [name, playerID, profile picture object]
-      rules = dictionary with all the rules set by the host
-      meta = meta data related/useful to the server
-  */
-
-  /*
-  [
-      ['webSocketID', 'username', score, doneBool (0 not done, 1 done)]
-      ['xfdsfh_wqw', 'Alex', 0, 0],
-      ['fdef0efe', 'Bob' 0, 0]
-  ]
-  */
-
   const tempIterator = websocketID.values();
 
   let playerArray = [];
-  /*
-  for(let i in usernames){
-      let curr = [];
-      curr.push(tempIterator.next().value);
-      curr.push(usernames[i]);
-      curr.push(0);
-      curr.push(0);
-      curr.push(0);
-      playerArray.push(curr);
-  }
-  */
 
   for (let i in usernames) {
     let player = {
@@ -220,9 +206,6 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber, rou
   // for (let k = 0; k < playerArray.length; k++) {
   //   playerStates.push({ socketId: playerArray[k][0], username: playerArray[k][1], score: playerArray[k][2], guessed: false })
   // }
-
-
-
 
   // Get words from CSV file
   let gameWords = getGameWords(parseInt(roundnumber));

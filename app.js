@@ -143,7 +143,7 @@ io.on('connection', function (socket) {
 
     /* START TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST */
     lobbies[lobbyId].state = lib.createGameInstance(currentUsernames, currentRoomSize, maxPlayers, roundInput, roundTimer, lobbyId);
-
+    
 
     /* END TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST */
 
