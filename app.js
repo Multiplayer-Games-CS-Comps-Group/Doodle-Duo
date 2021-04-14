@@ -24,7 +24,7 @@ const MAX_LOBBY_SIZE = 12;
 const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4? 
 
 const DEFAULT_MAX_PLAYERS = 12;
-const DEFAULT_NUM_ROUNDS = 8; 
+const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 3; //TODO: set this back to 45
 
 const SCORE_DISPLAY_TIMER = 5;
@@ -56,6 +56,24 @@ const getRoomSize = (roomName) =>
 
 const getUsername = (socketObject) =>
   lobbies[socketObject.lobbyId].users[socketObject.id];
+
+const createScoreObject = (lobbyId) => {
+  let scores = {};
+  for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)) {
+    scores[socketId] = {
+      username,
+      score: lobbies[lobbyId].state.players[socketId].score,
+      drawer: 0,
+      doneGuessing: lobbies[lobbyId].state.players[socketId].doneGuessing,
+    }
+  }
+
+  let [drawer1, drawer2] = lobbies[lobbyId].state.roundInfo.drawers;
+  scores[drawer1].drawer = 1;
+  scores[drawer2].drawer = 2;
+
+  return scores;
+};
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -164,7 +182,7 @@ io.on('connection', function (socket) {
     startRound(lobbyId);
 
     console.log('Current drawers: ' + lobbies[lobbyId].state.roundInfo.drawers);
-    
+
     //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
     // updateGameState(lobbyId, lobbies[lobbyId].state); //TODO: UNCOMMENT THIS
 
@@ -312,20 +330,20 @@ io.on('connection', function (socket) {
 
   function notifyDrawers(lobbyId) {
     for (let id of lobbies[lobbyId].state.roundInfo.drawers) {
-      io.sockets.in(id).emit('drawerView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
+      io.sockets.in(id).emit('drawerView', createScoreObject(lobbyId)); //TODO: Think about what information we actually want/need to send
     }
   };
 
   function notifyGuessers(lobbyId) {
     for (let id of lobbies[lobbyId].state.roundInfo.guessers) {
-      io.sockets.in(id).emit('guesserView', lobbies[lobbyId].state); //TODO: Think about what information we actually want/need to send
+      io.sockets.in(id).emit('guesserView', createScoreObject(lobbyId)); //TODO: Think about what information we actually want/need to send
     }
   };
 
   //params: lobbyId
-  function endOfGame(lobbyId) { 
+  function endOfGame(lobbyId) {
     console.log("Ending the game!");
-    io.sockets.in(lobbyId).emit('gameOverEvent'); //TODO: probably should emit final scores
+    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId)); //TODO: probably should emit final scores
   };
 
   //params: lobbyId

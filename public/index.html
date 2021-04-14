@@ -350,13 +350,13 @@
       //update scoreboard
     });
 
-    socket.on('drawerView', function () {
-      console.debug('drawerView');
+    socket.on('drawerView', function (scores) {
+      console.debug('drawerView', { scores });
 
       //update drawer view and show word they need to draw
     });
-    socket.on('guesserView', function () {
-      console.debug('guesserView');
+    socket.on('guesserView', function (scores) {
+      console.debug('guesserView', { scores });
 
       //update drawer view and show word they need to draw
     });
@@ -367,8 +367,8 @@
       //update timer
     });
 
-    socket.on('gameOverEvent', function () {
-      console.debug('gameOverEvent');
+    socket.on('gameOverEvent', function (scores) {
+      console.debug('gameOverEvent', { scores });
     });
 
     //TODO: checking of the guess should be moved server side
