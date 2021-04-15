@@ -81,10 +81,8 @@ const createScoreObject = (lobbyId) => {
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 //TODO: Make a global users dict that points to lobbyId instead?
 //TODO: Make lobby into a class?
-//TODO: Default usernames
 //TODO: No duplicate username? Not necessary since userId but might be preferred
 //TODO: https://socket.io/docs/v4/emitting-events/ Acknowledgements might be good for joining a lobby.
-//TODO: Have the users join a room with their lobby id.
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
@@ -171,7 +169,6 @@ io.on('connection', function (socket) {
 
     let currentUserIds = Object.keys(lobbies[lobbyId].users);
 
-    //TODO: Default values if these aren't entered by the user? Or will that be client side? (Should probably handle it here)
     lobbies[lobbyId].state = lib.createGameInstance(
       currentUserIds,
       parseInt(maxPlayers),
@@ -182,12 +179,9 @@ io.on('connection', function (socket) {
     startRound(lobbyId);
 
     console.log('Current drawers: ' + lobbies[lobbyId].state.roundInfo.drawers);
-
+    
+    
     //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
-    // updateGameState(lobbyId, lobbies[lobbyId].state); //TODO: UNCOMMENT THIS
-
-
-
 
     //
     //players will type their guesses and events are emitted
@@ -209,17 +203,10 @@ io.on('connection', function (socket) {
     //ask if wanna start over
     //clear all game states, emit end game msg
 
-    // console.log('\n\n====+++++++++++++++++=======');
-    // console.log(lobbies[lobbyId].state);
-    // console.log('\n---------------\n', lobbies[lobbyId].state.meta.drawPairs);
-    // console.log('\n\n====+++++++++++++++++=======');
-
     // ENTER GAME LOOP HERE
     //if result of game state != 1 (end of game/ all rounds)
     //emit game state function called (go through the gameloop to update state)
     //else emit endGame event, clear game state
-    // lib.startGameLoop(gameState); TODO: I think we never want to call this? We made our own loop using setInterval.
-    // console.log('SERVER HERE!');
   });
 
   socket.on('correctGuess', function (gameState, roomId) {
@@ -330,20 +317,20 @@ io.on('connection', function (socket) {
 
   function notifyDrawers(lobbyId) {
     for (let id of lobbies[lobbyId].state.roundInfo.drawers) {
-      io.sockets.in(id).emit('drawerView', createScoreObject(lobbyId)); //TODO: Think about what information we actually want/need to send
+      io.sockets.in(id).emit('drawerView', createScoreObject(lobbyId));
     }
   };
 
   function notifyGuessers(lobbyId) {
     for (let id of lobbies[lobbyId].state.roundInfo.guessers) {
-      io.sockets.in(id).emit('guesserView', createScoreObject(lobbyId)); //TODO: Think about what information we actually want/need to send
+      io.sockets.in(id).emit('guesserView', createScoreObject(lobbyId));
     }
   };
 
   //params: lobbyId
   function endOfGame(lobbyId) {
     console.log("Ending the game!");
-    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId)); //TODO: probably should emit final scores
+    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId));
   };
 
   //params: lobbyId
