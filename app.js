@@ -74,18 +74,26 @@ const createScoreObject = (lobbyId) => {
 
   return scores;
 };
+
+function allGuessed(lobbyId) {
+  for (let { doneGuessing } of Object.values(lobbies[lobbyId].state.players)) {
+    if (!doneGuessing) return false;
+  }
+  return true;
+}
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
 
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-//TODO: Make a global users dict that points to lobbyId instead?
-//TODO: Make lobby into a class?
-//TODO: No duplicate username? Not necessary since userId but might be preferred
+//TODO: Make a global users dict that points to lobbyId instead? (Only if we're worried about
+//      users knowing eachother's socketId's)
 //TODO: https://socket.io/docs/v4/emitting-events/ Acknowledgements might be good for joining a lobby.
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
+ * 
+ * See notes.js for the structure of lobbies
  * 
  * Each socket object should keep track of its lobbyId.
  */
@@ -136,6 +144,9 @@ io.on('connection', function (socket) {
   });
 
   socket.on('joinClicked', function (lobbyId, username) {
+    lobbyId = lobbyId.trim();
+    if (lobbyId.slice(0, 5) !== "lobby") lobbyId = "lobby" + lobbyId;
+
     if (checkRoomExists(lobbyId) && getRoomSize(lobbyId) > 0) {
       if (getRoomSize(lobbyId) >= MAX_LOBBY_SIZE) {
         socket.emit('tooManyPlayers');
@@ -155,7 +166,8 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('startGame', function (lobbyId, maxPlayers, numRounds, roundTimer) {
+  socket.on('startGame', function (maxPlayers, numRounds, roundTimer) {
+    let lobbyId = socket.lobbyId;
     if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
     else maxPlayers = parseInt(maxPlayers); //TODO: error handling for unparseable values
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
@@ -180,59 +192,7 @@ io.on('connection', function (socket) {
     );
     lib.setUpRound(lobbies[lobbyId].state, 0);
     startRound(lobbyId);
-
-    //
-    //players will type their guesses and events are emitted
-    //
-    //whenever 'correctGuess' event is emitted, check to see if all other players guessed correctly
-    //if so, end round early
-
-    //OR
-    //if timeLeft == 0 and curRound != numOfRounds
-    //emit to display scoreboard
-    //emit updateGameState to start next round and update views
-
-    //else
-    //emit to display final screen w scorboard
-    //ask if wanna start over
-    //clear all game states, emit end game msg
-
-    // ENTER GAME LOOP HERE
-    //if result of game state != 1 (end of game/ all rounds)
-    //emit game state function called (go through the gameloop to update state)
-    //else emit endGame event, clear game state
   });
-
-  socket.on('correctGuess', function (gameState, roomId) { //TODO: I think this should be deleted
-    //update player's guess boolean to be true
-    for (let i = 0; i < gameState.players.length; i++) {
-      if (gameState.players[i].socketId.equals(socket.id)) {
-        gameState.players[i].score += 10;
-        gameState.players[i].guessed = true;
-      }
-    }
-    state[roomId] = gameState;
-    //WARNING! WE NEED TO DIFFERENTIATE BETWEEN UPDATE STATE WHEN CORRECT GUESSES ARE MADE
-    //VERSUS NEW ROUND DATA
-    //updateGameState(roomId, state[roomId]);
-    updateGuessed(roomId, gameState, socket.username);
-    //CHECK IF ALL OTHERS ARE DONE WITH GUESSES
-    //CALL ALL GUESSED FUNCTION
-    if (allGuessed(gameState)) {
-      clearInterval(gameState.state.timer.id);
-      updateGuessed(roomId, gameState);
-    }
-
-  });
-
-  function allGuessed(gameState) {
-    for (let i = 0; i < gameState.players.length; i++) {
-      if (gameState.players[i].guessed == false) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   socket.on('playerGuess', function (playerGuess) {
     let lobbyId = socket.lobbyId;
@@ -254,9 +214,10 @@ io.on('connection', function (socket) {
       var drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
       lobbies[lobbyId].state.players[drawer2] += 5;
 
-      updateGuessed(roomId, state[roomId]);
-      if (allGuessed(gameState)) {
-        clearInterval(gameState.state.timer.id);
+      updateGuessed(lobbyId, socket);
+      if (allGuessed(lobbyId)) {
+        clearInterval(lobbies[lobbyId].state.timer.id);
+        endOfRound(lobbyId);
       }
     }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?) 
     else if(ld == 1){
@@ -269,20 +230,18 @@ io.on('connection', function (socket) {
     }
   });
 
-  function updateGuessed(roomId, gameState) { //TODO: Needs updating, sends too much data
-    io.sockets.in(roomId)
-      .emit('someoneGuessed', gameState);
+  function updateGuessed(lobbyId, socketObj) {
+    socketObj.emit('correctGuess'); //The view can update to make it clear they guessed
+    io.sockets.in(lobbyId)
+      .emit(
+        'someoneGuessed',
+        createScoreObject(lobbyId),
+        socketObj.id,
+        lobbies[lobbyId].users[socketObj.id]
+      );
   };
 
   function endOfRound(lobbyId) {
-    //if result of game state != 1 (end of game/ all rounds)
-    //game state function called (go through the gameloop to update state)
-    //else{
-    //  emit to display final screen w scorboard
-    //  ask if wanna start over
-    //  clear all game states, emit end game msg
-    //}
-
     if (lobbies[lobbyId].state.roundInfo.round + 1 >= lobbies[lobbyId].state.rules.numRounds) {
       endOfGame(lobbyId);
     } else {
@@ -308,19 +267,6 @@ io.on('connection', function (socket) {
 
     lobbies[lobbyId].state.timer.timeLeft--;
   }
-
-  //params: roomId, state[roomId]
-  // function updateGameState(roomId, gameState) {
-  //   gameState.meta.currRound++;
-  //   gameState.meta.currWord = gameState.meta.drawPairs[gameState.meta.currRound][0];
-  //   gameState.meta.currDrawers = [gameState.meta.drawPairs[gameState.meta.currRound][1][0], gameState.meta.drawPairs[gameState.meta.currRound][2][0]]
-  //   gameState.meta.currGuessers = lib.getAllGuessers(lib.playerArray, gameState.meta.currDrawers);
-  //   gameState.meta.currentTimeLeft = gameState.rules.roundTimer;
-  //   startGameTimer(lobbyId);
-
-  //   io.sockets.in(roomId)
-  //     .emit('gameState', gameState);
-  // };
 
   function advanceRoundAndStart(lobbyId) {
     lobbies[lobbyId].state.roundInfo.round += 1;
@@ -372,26 +318,18 @@ io.on('connection', function (socket) {
     }
   };
 
-  //params: lobbyId
   function endOfGame(lobbyId) {
     console.log("Ending the game!");
     io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId));
   };
 
-  //params: lobbyId
   function startGameTimer(lobbyId) {
     lobbies[lobbyId].state.timer.id = setInterval(() => countdown(lobbyId), 1000);
   };
 
-
-
   socket.on('disconnect', function () {
     console.log('A user disconnected');
-    // remove the username from global usernames list
-    // delete usernames[socket.username];
-    // update list of users in chat, client-side
-    // io.sockets.emit('updateusers', usernames);
-    // echo globally that this client has left
+    //TODO: Removing users from game lobbies, and updating those lobbies appropriately
     socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected'); //TODO: Probably want to emit just to the room, not all lobbies
   });
 });
