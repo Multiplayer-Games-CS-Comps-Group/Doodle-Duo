@@ -26,8 +26,20 @@ lobbies = {
       },
       meta: {
         drawPairs: [
-          {drawer1: socketId1, drawer2: socketId2, word: 'firetruck'},
-          {drawer1: socketId3, drawer2: socketId4, word: 'racecar'},
+          {drawer1: socketId1, drawer2: socketId2,
+            compound: {
+              word: 'firetruck',
+              left 'fire',
+              right: 'truck'
+            }
+          },
+          {drawer1: socketId3, drawer2: socketId4,
+            compound: {
+              word: 'racecar',
+              left: 'race',
+              right: 'car'
+            }
+          },
           //...
         ], //length = numRounds
         numPlayers: 5,
@@ -38,7 +50,11 @@ lobbies = {
       },
       roundInfo: {
         round: 0,
-        word: 'firetruck',
+        compound: {
+          word: 'firetruck',
+          left: 'fire',
+          right: 'truck'
+        },
         drawers: ['socketId1', 'socketId2'],
         guessers: ['socketId3', 'socketId4', 'socketId5'],
       }

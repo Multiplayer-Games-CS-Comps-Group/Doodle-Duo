@@ -97,7 +97,7 @@ function getDrawPairs(gameWords, players) {
   let pairs = [];
   for (let i = 0; i < gameWords.length; i++) {
     let currPair = {};
-    currPair.word = gameWords[i];
+    currPair.compound = gameWords[i];
     if (pStack.size() > 1) {
       otherStack.add(pStack.peek());
       currPair.drawer1 = pStack.pop();
@@ -219,7 +219,11 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
     },
     roundInfo: {
       round: -1,
-      word: '',
+      compound: {
+        word: '',
+        left: '',
+        right: ''
+      },
       drawers: [],
       guessers: [],
     }
@@ -232,9 +236,10 @@ function setUpRound(gameInstance, roundNum) {
   let curDrawPair = gameInstance.meta.drawPairs[roundNum];
   let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
   let allPlayers = Object.keys(gameInstance.players);
+  console.log(curDrawPair);
   gameInstance.roundInfo = {
     round: roundNum,
-    word: curDrawPair.word,
+    compound: curDrawPair.compound,
     drawers,
     guessers: allPlayers.filter(id => !drawers.includes(id)),
   };

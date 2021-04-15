@@ -57,7 +57,7 @@
       document.getElementById('InitialScreen').style.display = 'none';
       document.getElementById('waitingRoomforPlayer').style.display = 'none';
       document.getElementById('waitingRoomforHost').style.display = 'block';
-      gameCodeDisplay.innerHTML = data + ' .';
+      gameCodeDisplay.innerHTML = data + '.';
     });
 
     socket.on('updateusers', function (data) {
