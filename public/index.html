@@ -15,6 +15,34 @@
 </head>
 
 <body>
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <symbol id="icon-paintbrush" viewBox="0 0 20 20">
+        <path
+          d="M1.384 16.647c0 0-0.675 2.080-1.384 2.807 0 0 0.212 0.224 0.758 0.544 0 0 1.402-1.449 2.155-1.963 0 0.001-0.217-1.692-1.528-1.388z">
+        </path>
+        <path
+          d="M18.988 2.545c-2.452-4.682-6.469-1.471-6.469-1.471 5.353 1.57 4.618 8.168 4.618 8.168 4.135-2.452 1.851-6.697 1.851-6.697z">
+        </path>
+        <path
+          d="M8.832 12.031c1.27-1.632 7.594-5.629 7.602-5.634-0.274-0.744-0.592-1.355-0.933-1.858-1.752 0.738-8.301 6.189-8.301 6.189 2.329-3.11 7.583-7.055 7.592-7.061-1.702-1.73-3.61-1.417-3.61-1.417-3.204 2.925-7.31 7.898-8.855 9.809-0.195 0.223-0.404 0.483-0.627 0.781 0 0 1.788-1.477 2.372-0.756 0.585 0.722 0.412 2.166 0.412 2.166s1.169-1.477 1.857-0.722c0.687 0.756 0.24 1.788 0 2.062 0 0 0.996-0.997 1.203-0.618 0.206 0.378 0.034 1.237-0.585 2.027 0 0 0.114-0.132 0.273-0.336 4.732-5.805 9.907-7.419 9.907-7.419-0.104-0.685-0.236-1.303-0.389-1.862-2.36 0.969-7.917 4.651-7.917 4.651z">
+        </path>
+        <path
+          d="M7.148 15.589c-0.035-0.274-0.808 0-0.808 0 0.12-0.274-0.052-1.013-0.378-1.425s-1.478 0.086-1.478 0.086c0-0.345-0.464-1.22-0.979-1.581-0.514-0.36-1.805 0.172-1.805 0.172 0.224 1.942-0.316 3.808-0.316 3.808 2.736-1.033 1.528 1.39 1.528 1.39 1.805-1.064 4.046-1.039 4.046-1.039 0.516-0.878 0.19-1.41 0.19-1.41z">
+        </path>
+      </symbol>
+      <symbol id="icon-undo" viewBox="0 0 19 20">
+        <path
+          d="M11.864 16.206c-3.311 1.617-7.112 0.638-8.491-2.185-1.281-2.623-0.021-5.912 2.815-7.664 0.926 1.626 1.742 2.93 1.919 2.93 0.459 0 3.172-6.964 3.044-7.477s-7.839-2.136-8.074-1.752c-0.089 0.146 0.559 1.532 1.417 3.184-4.014 2.657-5.646 7.684-3.628 11.814 2.211 4.522 7.956 6.257 12.837 3.873 0.944-0.461 1.783-1.043 2.512-1.714l-2.049-2.731c-0.621 0.683-1.394 1.277-2.301 1.72z">
+        </path>
+        <path
+          d="M15.811 11.077c-0.082 0.596-0.263 1.186-0.531 1.752l2.574 2.45c0.608-0.935 1.049-1.957 1.3-3.012l-3.343-1.189z">
+        </path>
+      </symbol>
+    </defs>
+  </svg>
+
   <div id='initial-screen'>
     <h1>Compound Game</h1>
 
@@ -27,8 +55,6 @@
         <input type='text' placeholder='Enter Room Id' id='roomIdInput' />
         <button onclick="joinButtonClicked()">JOIN</button>
       </div>
-
-
     </div>
   </div>
 
@@ -82,7 +108,7 @@
           <div class="uk-width-1-1" style="height: 80px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <div class="uk-margin-small-left ">___</div>
+                <div class="uk-margin-small-left">___</div>
                 <div class="uk-margin-small-left">___</div>
                 <div class="uk-margin-small-left">___</div>
                 <div class="uk-margin-small-left">___</div>
@@ -124,7 +150,7 @@
   </div>
 
   <!--     Drawer's view  -->
-  <div style="display:none" id="drawer_view">
+  <div style="display:none" id="drawer-view">
     <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
       <div class="uk-container">
         <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
@@ -185,16 +211,16 @@
       </div>
     </div>
   </div>
-
   <script src="/socket.io/socket.io.js"></script>
 
   <!--initialize socket object so clients can establish connections-->
   <script>
-    //var socket = io('/my-namespcae');
-    var playerNumber = 0;
-    var socket = io();
-    var wordToGuess = '';
-    var state = {}; //not sure if this is necessary
+
+    //let socket = io('/my-namespcae');
+    let playerNumber = 0;
+    let socket = io();
+    let wordToGuess = '';
+    let state = {}; //not sure if this is necessary
     const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
     const roomInput = document.getElementById('roomIdInput');
 
@@ -281,6 +307,10 @@
 
     });
 
+    socket.on('endRoundScores', function () {
+      console.debug('endRoundScores');
+    });
+
     socket.on('errorRoomId', function () {
       console.debug('errorRoomId');
       reset();
@@ -322,20 +352,30 @@
       //display scoreboard with game/round info
     });
 
-    socket.on('drawerView', function () {
-      console.debug('drawerView');
+    socket.on('drawerView', function (scores) {
+       console.debug('drawerView', { scores });
 
       //update drawer view and show word they need to draw
     });
-    socket.on('guesserView', function (gameState) {
-      console.log(gameState.players.username);
+    socket.on('guesserView', function (scores) {
 
+        //what is gamestate here supposed to be?
+        console.log(gameState.players.username);
       // document.getElementById('guessInput').style.display = 'none';
       //put things like this in to style elements based on game logic
 
-      console.debug('guesserView');
-
+      console.debug('drawerView', { scores });
       //update drawer view and show word they need to draw
+    });
+
+    socket.on('timerUpdate', function (timeLeft) {
+      console.debug('timerUpdate', timeLeft);
+
+      //update timer
+    });
+
+    socket.on('gameOverEvent', function (scores) {
+      console.debug('gameOverEvent', { scores });
     });
 
     //TODO: checking of the guess should be moved server side
@@ -362,7 +402,7 @@
       console.debug('wrongGuess', { playerGuess, player });
 
       //update container saying '____ guessed ' + guessInput
-    })
+    });
 
     socket.on('broadcastJoined', function (username) {
       console.debug('broadcastJoined', { username });
@@ -377,7 +417,7 @@
       console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
       document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
-    })
+    });
 
     //THIS NEEDS TO BE DONE ACTUALLY!!!!!
     // socket.on('updateusers',function(data){
