@@ -50,6 +50,7 @@ lobbies = {
       },
       roundInfo: {
         round: 0,
+        doneCounter: 0,
         compound: {
           word: 'firetruck',
           left: 'fire',

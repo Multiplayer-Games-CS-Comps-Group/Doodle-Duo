@@ -374,12 +374,13 @@
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
-      if (guessInput.equals(wordToGuess)) {
+      /*if (guessInput.equals(wordToGuess)) {
         socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
       }
-      else {
-        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-      }
+      else */
+      
+      socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+      
     }
 
     socket.on('someoneGuessed', function (gameState) {
