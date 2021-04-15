@@ -124,7 +124,6 @@ function checkIfAllDone(playerArray){
 }
 
 
-
 /*=======================================================================================*/
 /* Game Logic Code - Imported due to nodeJS limitations */
 
@@ -167,7 +166,10 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
             userName: usernames[i],
             score: 0,
             isDone: 0,
-            isDrawer: 0
+            isDrawer: 0,
+            numGuesses: 0,
+            numPartialGuess: 0,
+            isCorrect: 0
         };
         playerArray.push(player);
     }
@@ -192,7 +194,8 @@ function createGameInstance(usernames, websocketID, maxplayers, roundnumber,roun
             roomID: roomId,
             totalPlayers: playerArray.length,
             drawPairs: drawPairs,
-            currRound: 0
+            currRound: 0,
+            numPlayerDone: 0
         }
     }
 
@@ -230,7 +233,7 @@ async function startGameLoop(gameInstance){
         while ((Date.now() - startTime) < roundTimer){
             //myTimer();
 
-            // test function that changes the 2 player to be set to 'isDone/1'
+            // test function that changes the 2nd player to be set to 'isDone = 1'
             test(players);
 
 
