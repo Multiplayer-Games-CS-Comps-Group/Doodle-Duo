@@ -12,7 +12,7 @@ function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
   let ld = levenshtein(guess, target);
-  if (ld == 0) {return true;}
+  if (ld == 0) { return true; }
   else {
     let newLD = levenshtein(pluralize(guess), pluralize(target));
     return newLD;
@@ -29,7 +29,7 @@ function readCSV(filePath) {
     .map(e => e.split(',').map(e => e.trim()));
 
   var out = []
-  for(var i in data[0]){
+  for (var i in data[0]) {
     var word = data[0][i];
     var spl = word.split(' ');
     var compound = {

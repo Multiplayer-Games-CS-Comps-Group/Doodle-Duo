@@ -178,20 +178,11 @@ io.on('connection', function (socket) {
     lib.setUpRound(lobbies[lobbyId].state, 0);
     startRound(lobbyId);
 
-    console.log('Current drawers: ' + lobbies[lobbyId].state.roundInfo.drawers);
-
-
-    //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
-
     //
     //players will type their guesses and events are emitted
     //
     //whenever 'correctGuess' event is emitted, check to see if all other players guessed correctly
     //if so, end round early
-
-    // if (response === 'DIE') {
-    //     console.log('mama mia!');
-    //     clearTimeout(currentCountdown);
 
     //OR
     //if timeLeft == 0 and curRound != numOfRounds
@@ -320,12 +311,14 @@ io.on('connection', function (socket) {
     let drawer2Id = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
 
     let drawer1Data = {
-      drawer : 1,
-      word : lobbies[lobbyId].state.roundInfo.compound.left
+      drawer: 1,
+      word: lobbies[lobbyId].state.roundInfo.compound.left,
+      totalRoundTime: lobbies[lobbyId].state.rules.roundTimer
     };
     let drawer2Data = {
-      drawer : 2,
-      word : lobbies[lobbyId].state.roundInfo.compound.right
+      drawer: 2,
+      word: lobbies[lobbyId].state.roundInfo.compound.right,
+      totalRoundTime: lobbies[lobbyId].state.rules.roundTimer
     };
 
     io.sockets.in(drawer1Id)
@@ -337,7 +330,8 @@ io.on('connection', function (socket) {
   function notifyGuessers(lobbyId) {
     let guesserData = {
       word1Length: lobbies[lobbyId].state.roundInfo.compound.left.length,
-      word2Length: lobbies[lobbyId].state.roundInfo.compound.right.length
+      word2Length: lobbies[lobbyId].state.roundInfo.compound.right.length,
+      totalRoundTime: lobbies[lobbyId].state.rules.roundTimer
     };
 
     for (let id of lobbies[lobbyId].state.roundInfo.guessers) {
