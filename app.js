@@ -68,7 +68,7 @@ const createScoreObject = (lobbyId) => {
     }
   }
 
-  let [drawer1, drawer2] = lobbies[lobbyId].state.roundInfo.drawers;
+  let { drawer1, drawer2 } = lobbies[lobbyId].state.roundInfo.drawers;
   scores[drawer1].drawer = 1;
   scores[drawer2].drawer = 2;
 
@@ -179,8 +179,8 @@ io.on('connection', function (socket) {
     startRound(lobbyId);
 
     console.log('Current drawers: ' + lobbies[lobbyId].state.roundInfo.drawers);
-    
-    
+
+
     //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
 
     //
@@ -316,14 +316,32 @@ io.on('connection', function (socket) {
   }
 
   function notifyDrawers(lobbyId) {
-    for (let id of lobbies[lobbyId].state.roundInfo.drawers) {
-      io.sockets.in(id).emit('drawerView', createScoreObject(lobbyId));
-    }
+    let drawer1Id = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
+    let drawer2Id = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
+
+    let drawer1Data = {
+      drawer : 1,
+      word : lobbies[lobbyId].state.roundInfo.compound.left
+    };
+    let drawer2Data = {
+      drawer : 2,
+      word : lobbies[lobbyId].state.roundInfo.compound.right
+    };
+
+    io.sockets.in(drawer1Id)
+      .emit('drawerView', createScoreObject(lobbyId), drawer1Data);
+    io.sockets.in(drawer2Id)
+      .emit('drawerView', createScoreObject(lobbyId), drawer2Data);
   };
 
   function notifyGuessers(lobbyId) {
+    let guesserData = {
+      word1Length: lobbies[lobbyId].state.roundInfo.compound.left.length,
+      word2Length: lobbies[lobbyId].state.roundInfo.compound.right.length
+    };
+
     for (let id of lobbies[lobbyId].state.roundInfo.guessers) {
-      io.sockets.in(id).emit('guesserView', createScoreObject(lobbyId));
+      io.sockets.in(id).emit('guesserView', createScoreObject(lobbyId), guesserData);
     }
   };
 

@@ -350,13 +350,13 @@
       //update scoreboard
     });
 
-    socket.on('drawerView', function (scores) {
-      console.debug('drawerView', { scores });
+    socket.on('drawerView', function (scores, data) {
+      console.debug('drawerView', { scores, data });
 
       //update drawer view and show word they need to draw
     });
-    socket.on('guesserView', function (scores) {
-      console.debug('guesserView', { scores });
+    socket.on('guesserView', function (scores, data) {
+      console.debug('guesserView', { scores, data });
 
       //update drawer view and show word they need to draw
     });

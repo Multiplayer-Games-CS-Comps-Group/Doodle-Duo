@@ -243,17 +243,20 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
 
 function setUpRound(gameInstance, roundNum) {
   let curDrawPair = gameInstance.meta.drawPairs[roundNum];
-  let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
+  let drawers = {
+    drawer1: curDrawPair.drawer1,
+    drawer2: curDrawPair.drawer2
+  };
   let allPlayers = Object.keys(gameInstance.players);
   gameInstance.roundInfo = {
     round: roundNum,
     word: curDrawPair.word,
     drawers,
-    guessers: allPlayers.filter(id => !drawers.includes(id)),
+    guessers: allPlayers.filter(id => (id !== drawers.drawer1 && id !== drawers.drawer2)),
   };
 
   for (let id of allPlayers) {
-    gameInstance.players[id].doneGuessing = drawers.includes(id);
+    gameInstance.players[id].doneGuessing = (id === drawers.drawer1 || id === drawers.drawer2);
   }
 }
 

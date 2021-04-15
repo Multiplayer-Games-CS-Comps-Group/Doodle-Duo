@@ -11,11 +11,11 @@ lobbies = {
       players: {
         socketId1: {
           score: 50,
-          doneGuessing: true //Drawers start with doneGuessing = true
+          doneGuessing: true, //Drawers start with doneGuessing = true
         },
         socketId2: {
           score: 50,
-          doneGuessing: false
+          doneGuessing: false,
         },
         //...
       },
@@ -26,8 +26,8 @@ lobbies = {
       },
       meta: {
         drawPairs: [
-          {drawer1: socketId1, drawer2: socketId2, word: 'firetruck'},
-          {drawer1: socketId3, drawer2: socketId4, word: 'racecar'},
+          { drawer1: socketId1, drawer2: socketId2, compound: { left: 'fire', right: 'truck', word: 'firetruck' } },
+          { drawer1: socketId3, drawer2: socketId4, compound: { left: 'race', right: 'car', word: 'racecar' } },
           //...
         ], //length = numRounds
         numPlayers: 5,
@@ -38,8 +38,8 @@ lobbies = {
       },
       roundInfo: {
         round: 0,
-        word: 'firetruck',
-        drawers: ['socketId1', 'socketId2'],
+        compound: { left: 'fire', right: 'truck', word: 'firetruck' },
+        drawers: { drawer1: 'socketId1', drawer2: 'socketId2' },
         guessers: ['socketId3', 'socketId4', 'socketId5'],
       }
     }
