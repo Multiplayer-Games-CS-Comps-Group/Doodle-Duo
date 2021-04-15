@@ -1,6 +1,7 @@
 'use strict';
 
 const lib = require('./lib');
+//const canv = require('./public/javascript/canvas')
 
 const express = require('express');
 const app = express();
@@ -186,8 +187,7 @@ io.on('connection', function (socket) {
     //emit 'New Round' event that gives game instance data to front end to notify players of views, correct answer, time left, current scoreboard
     // updateGameState(lobbyId, lobbies[lobbyId].state); //TODO: UNCOMMENT THIS
 
-
-
+    socket.on('drawingUpdate', (data) => socket.broadcast.emit('drawingUpdate', data))
 
     //
     //players will type their guesses and events are emitted
