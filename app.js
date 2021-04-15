@@ -235,8 +235,25 @@ io.on('connection', function (socket) {
   }
 
   socket.on('playerGuess', function (playerGuess, roomId) {
-    io.sockets.in(roomId)
-      .emit('wrongGuess', playerGuess, socket.id);
+    if(lib.getLDistance(playerGuess, state[roomId].roundInfo.compound.word) == 0){
+
+      for (let i = 0; i < gameState.players.length; i++) {
+        if (gameState.players[i].socketId.equals(socket.id)) {
+          // Currently assigns static score
+          // Will implemenent a dynamic score function here fron lib.js
+          // variable will be changed here - Gus
+          gameState.players[i].score += 10;
+          gameState.players[i].guessed = true;
+        }
+      }
+      updateGuessed(roomId, state[roomId]);
+      if (allGuessed(gameState)) {
+        clearInterval(gameState.state.timer.id);
+      }
+    } else{
+      io.sockets.in(roomId)
+        .emit('wrongGuess', playerGuess, socket.id);
+      }
   });
 
   function updateGuessed(roomId, gameState) {
