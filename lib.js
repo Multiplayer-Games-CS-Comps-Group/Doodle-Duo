@@ -39,7 +39,6 @@ function readCSV(filePath) {
     }
     out.push(compound);
   }
-
   return out;
 }
 
