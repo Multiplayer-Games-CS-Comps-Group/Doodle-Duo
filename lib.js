@@ -12,32 +12,13 @@ function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
   let ld = levenshtein(guess, target);
-  if (ld == 0) { return true; }
+  if (ld == 0) {return true;}
   else {
     let newLD = levenshtein(pluralize(guess), pluralize(target));
-    if (newLD == 0) { return true; }
-    else if (newLD <= 2) { return -1; }
-    else { return false; }
+    return newLD;
   }
 }
 
-
-function test_getLDistance() {
-  let guess = 'firETruCks'
-  let target = 'firetruck'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-  console.log('---');
-  guess = 'cars'
-  target = 'firetruck'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-  console.log('---');
-  guess = 'cat'
-  target = 'bats'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-}
 
 /* Read CSV file and turn into JSON object */
 function readCSV(filePath) {
@@ -46,13 +27,20 @@ function readCSV(filePath) {
     .split('\n')
     .map(e => e.trim())
     .map(e => e.split(',').map(e => e.trim()));
-  return data[0];
-}
 
+  var out = []
+  for(var i in data[0]){
+    var word = data[0][i];
+    var spl = word.split(' ');
+    var compound = {
+      word: spl[0],
+      left: spl[1],
+      right: spl[2]
+    }
+    out.push(compound);
+  }
 
-function test_readCSV() {
-  let a = readCSV('compounds.csv');
-  console.log(a);
+  return out;
 }
 
 
@@ -326,18 +314,6 @@ async function startGameLoop(gameInstance) {
 }
 
 
-function myTimer() {
-  let d = new Date();
-  let t = d.toLocaleTimeString();
-  //console.log(t);
-}
-
-
-function test(test) {
-  test[1].isDone = 1;
-}
-
-
 /* Export the functions */
 module.exports = {
   getLDistance, readCSV, shuffle, buckets, cloneArray,
@@ -345,3 +321,12 @@ module.exports = {
   createGameInstance, startGameLoop, getAllGuessers, setUpRound
 };
 
+
+/*
+function main(){
+  var a = readCSV('database.csv');
+  console.log(a);
+}
+
+main();
+*/
