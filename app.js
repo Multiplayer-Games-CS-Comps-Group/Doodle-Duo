@@ -156,9 +156,12 @@ io.on('connection', function (socket) {
   });
 
   socket.on('startGame', function (lobbyId, maxPlayers, numRounds, roundTimer) {
-    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
+    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS; 
+    else maxPlayers = parseInt(maxPlayers); //TODO: error handling for unparseable values
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
+    else numRounds = parseInt(numRounds);
     if (roundTimer === '') roundTimer = DEFAULT_ROUND_TIMER;
+    else roundTimer = parseInt(roundTimer);
 
     let currentRoomSize = getRoomSize(lobbyId);
 
@@ -171,7 +174,7 @@ io.on('connection', function (socket) {
 
     lobbies[lobbyId].state = lib.createGameInstance(
       currentUserIds,
-      parseInt(maxPlayers),
+      maxPlayers,
       numRounds,
       roundTimer
     );
