@@ -156,7 +156,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('startGame', function (lobbyId, maxPlayers, numRounds, roundTimer) {
-    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS; 
+    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
     else maxPlayers = parseInt(maxPlayers); //TODO: error handling for unparseable values
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
     else numRounds = parseInt(numRounds);
@@ -203,7 +203,7 @@ io.on('connection', function (socket) {
     //else emit endGame event, clear game state
   });
 
-  socket.on('correctGuess', function (gameState, roomId) {
+  socket.on('correctGuess', function (gameState, roomId) { //TODO: I think this should be deleted
     //update player's guess boolean to be true
     for (let i = 0; i < gameState.players.length; i++) {
       if (gameState.players[i].socketId.equals(socket.id)) {
@@ -234,29 +234,27 @@ io.on('connection', function (socket) {
     return true;
   }
 
-  socket.on('playerGuess', function (playerGuess, roomId) {
-    if(lib.getLDistance(playerGuess, state[roomId].roundInfo.compound.word) == 0){
+  socket.on('playerGuess', function (playerGuess) {
+    let lobbyId = socket.lobbyId;
+    if (lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word) === 0) {
 
-      for (let i = 0; i < gameState.players.length; i++) {
-        if (gameState.players[i].socketId.equals(socket.id)) {
-          // Currently assigns static score
-          // Will implemenent a dynamic score function here fron lib.js
-          // variable will be changed here - Gus
-          gameState.players[i].score += 10;
-          gameState.players[i].guessed = true;
-        }
-      }
+      // Currently assigns static score
+      // TODO: Will implemenent a dynamic score function here from lib.js
+      // variable will be changed here - Gus
+      lobbies[lobbyId].state.players[socket.id].score += 10;
+      lobbies[lobbyId].state.players[socket.id].guessed = true;
+
       updateGuessed(roomId, state[roomId]);
       if (allGuessed(gameState)) {
         clearInterval(gameState.state.timer.id);
       }
-    } else{
+    } else { // TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
       io.sockets.in(roomId)
         .emit('wrongGuess', playerGuess, socket.id);
-      }
+    }
   });
 
-  function updateGuessed(roomId, gameState) {
+  function updateGuessed(roomId, gameState) { //TODO: Needs updating, sends too much data
     io.sockets.in(roomId)
       .emit('someoneGuessed', gameState);
   };
