@@ -376,12 +376,13 @@
       //display scoreboard with game/round info
     });
 
-    socket.on('drawerView', function (scores) {
-       console.debug('drawerView', { scores });
+    socket.on('drawerView', function (scores, data) {
+      console.debug('drawerView', { scores, data });
 
       //update drawer view and show word they need to draw
     });
-    socket.on('guesserView', function (scores) {
+    socket.on('guesserView', function (scores, data) {
+      console.debug('guesserView', { scores, data });
 
         //what is gamestate here supposed to be?
         console.log(gameState.players.username);
@@ -409,9 +410,10 @@
         //put display stuff here for the person who guessed
         socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
       }
-      else {
-        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-      }
+      else */
+
+      socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+
     }
 
 

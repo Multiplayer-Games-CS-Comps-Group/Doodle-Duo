@@ -12,7 +12,7 @@ function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
   let ld = levenshtein(guess, target);
-  if (ld == 0) {return true;}
+  if (ld == 0) { return true; }
   else {
     let newLD = levenshtein(pluralize(guess), pluralize(target));
     return newLD;
@@ -29,7 +29,7 @@ function readCSV(filePath) {
     .map(e => e.split(',').map(e => e.trim()));
 
   var out = []
-  for(var i in data[0]){
+  for (var i in data[0]) {
     var word = data[0][i];
     var spl = word.split(' ');
     var compound = {
@@ -234,18 +234,21 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
 
 function setUpRound(gameInstance, roundNum) {
   let curDrawPair = gameInstance.meta.drawPairs[roundNum];
-  let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
+  let drawers = {
+    drawer1: curDrawPair.drawer1,
+    drawer2: curDrawPair.drawer2
+  };
   let allPlayers = Object.keys(gameInstance.players);
   console.log(curDrawPair);
   gameInstance.roundInfo = {
     round: roundNum,
     compound: curDrawPair.compound,
     drawers,
-    guessers: allPlayers.filter(id => !drawers.includes(id)),
+    guessers: allPlayers.filter(id => (id !== drawers.drawer1 && id !== drawers.drawer2)),
   };
 
   for (let id of allPlayers) {
-    gameInstance.players[id].doneGuessing = drawers.includes(id);
+    gameInstance.players[id].doneGuessing = (id === drawers.drawer1 || id === drawers.drawer2);
   }
 }
 
