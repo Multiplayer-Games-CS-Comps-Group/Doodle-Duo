@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 const MAX_LOBBY_SIZE = 12;
-const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4? 
+const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4?
 
 const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
@@ -39,7 +39,7 @@ const getRandBetween = (min, max) =>
 function genId(min, max, dict, prefix = null) {
   let newId = getRandBetween(min, max);
 
-  // Generate new random ID until it's not a duplicate of one in the 
+  // Generate new random ID until it's not a duplicate of one in the
   // dictionary it's being generated for
   while (newId in dict) newId = getRandBetween(min, max);
   if (prefix) newId = prefix + newId;
@@ -86,7 +86,7 @@ const createScoreObject = (lobbyId) => {
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
- * 
+ *
  * Each socket object should keep track of its lobbyId.
  */
 const lobbies = {}
@@ -101,9 +101,9 @@ function createLobby() {
   return lobbyId;
 }
 
-/* 
+/*
  * Adds a user to a lobby.
- * 
+ *
  * Adds their {socketio.id: username} pair to the users dict in lobby.
  * Also assigns the socket object the lobbyId property, and has it
  * join a room with name lobbyId.
@@ -244,19 +244,26 @@ io.on('connection', function (socket) {
       lobbies[lobbyId].state.players[socket.id].score += 10;
       lobbies[lobbyId].state.players[socket.id].guessed = true;
 
-      updateGuessed(roomId, state[roomId]);
-      if (allGuessed(gameState)) {
-        clearInterval(gameState.state.timer.id);
+      updateGuessed(lobbyId, socket);
+      if (allGuessed(lobbyId)) {
+        clearInterval(lobbies[lobbyId].state.timer.id);
+        endOfRound(lobbyId);
       }
     } else { // TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
-      io.sockets.in(roomId)
-        .emit('wrongGuess', playerGuess, socket.id);
+      io.sockets.in(lobbyId)
+          .emit('wrongGuess', playerGuess, socket.id);
     }
   });
 
-  function updateGuessed(roomId, gameState) { //TODO: Needs updating, sends too much data
-    io.sockets.in(roomId)
-      .emit('someoneGuessed', gameState);
+  function updateGuessed(lobbyId, socketObj) {
+    socketObj.emit('correctGuess'); //The view can update to make it clear they guessed
+    io.sockets.in(lobbyId)
+        .emit(
+            'someoneGuessed',
+            createScoreObject(lobbyId),
+            socketObj.id,
+            lobbies[lobbyId].users[socketObj.id]
+        );
   };
 
   function endOfRound(lobbyId) {

@@ -108,11 +108,7 @@
           <div class="uk-width-1-1" style="height: 80px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
+                <span id="spacesDisplay"></span>
               </div>
               <div>
                 <div id="timeRemaining">Time Remaining:</div>
@@ -122,7 +118,7 @@
             </div>
           </div>
           <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-            <form method="post" class="uk-form-horizontal ">
+            <form class="uk-form-horizontal ">
               <div class="uk-inline">
                 <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
                 <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
@@ -133,15 +129,12 @@
             <div class="uk-align-center">
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
                 style="width: 50vw" id="playerGuess1">
-                Other player guess
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
                 style="width: 50vw" id="playerGuess2">
-                Other player guess
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
                 style="width: 50vw" id="playerGuess3">
-                Other player guess
               </div>
             </div>
           </div>
@@ -377,25 +370,30 @@
     });
 
     socket.on('drawerView', function (scores, data) {
-      console.debug('drawerView', { scores, data });
+      switchToView('drawerView');
+      // console.debug('drawerView', { scores, data });
+      // document.getElementById('guesser-view').style.display = 'none';
+
 
       //update drawer view and show word they need to draw
     });
     socket.on('guesserView', function (scores, data) {
-      console.debug('guesserView', { scores, data });
-
-        //what is gamestate here supposed to be?
-        console.log(gameState.players.username);
-      // document.getElementById('guessInput').style.display = 'none';
-      //put things like this in to style elements based on game logic
+      switchToView('guesserView');
+      // console.debug('guesserView', { scores, data });
+      let spaces = data.word1Length + data.word2Length;
+      let spacesDisplay = ""
+      for (let i= 0; i< spaces; i++) {
+        spacesDisplay= spacesDisplay.concat(" __");
+      }
+      console.log(spacesDisplay);
+      document.getElementById('spacesDisplay').innerText = spacesDisplay;
 
       console.debug('drawerView', { scores });
-      //update drawer view and show word they need to draw
     });
 
     socket.on('timerUpdate', function (timeLeft) {
-      console.debug('timerUpdate', timeLeft);
       gameTimeDisplay.innerHTML = timeLeft + ' seconds';
+      console.debug('timerUpdate', timeLeft);
       //update timer
     });
 
@@ -419,8 +417,9 @@
 
     //prompted when user correctly guessed, sent to everyone
     socket.on('someoneGuessed', function (gameState) {
+
+      document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
       console.debug('someoneGuessed', { gameState });
-      //update container saying  '______ guessed the compound word!'
 
     });
 
