@@ -236,7 +236,7 @@ io.on('connection', function (socket) {
 
   socket.on('playerGuess', function (playerGuess) {
     let lobbyId = socket.lobbyId;
-    var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word;
+    var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld == 0) {
 
       // Calculate guesser score
