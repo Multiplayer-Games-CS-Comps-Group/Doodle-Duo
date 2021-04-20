@@ -236,19 +236,34 @@ io.on('connection', function (socket) {
 
   socket.on('playerGuess', function (playerGuess) {
     let lobbyId = socket.lobbyId;
-    if (lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word) === 0) {
+    var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word;
+    if (ld == 0) {
 
-      // Currently assigns static score
-      // TODO: Will implemenent a dynamic score function here from lib.js
-      // variable will be changed here - Gus
-      lobbies[lobbyId].state.players[socket.id].score += 10;
+      // Calculate guesser score
+      var score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
+      console.log(score);
+
+      // Update player object score
+      lobbies[lobbyId].state.players[socket.id].score += score;
       lobbies[lobbyId].state.players[socket.id].guessed = true;
+      lobbies[lobbyId].state.roundInfo.guessCount++;
+
+      // Give drawers points
+      var drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
+      lobbies[lobbyId].state.players[drawer1] += 5;
+      var drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
+      lobbies[lobbyId].state.players[drawer2] += 5;
 
       updateGuessed(roomId, state[roomId]);
       if (allGuessed(gameState)) {
         clearInterval(gameState.state.timer.id);
       }
-    } else { // TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
+    }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?) 
+    else if(ld == 1){
+      io.sockets.in(roomId)
+        .emit('wrongGuess', playerGuess, socket.id);
+    }
+    else { 
       io.sockets.in(roomId)
         .emit('wrongGuess', playerGuess, socket.id);
     }
