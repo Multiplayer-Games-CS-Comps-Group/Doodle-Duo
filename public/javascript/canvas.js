@@ -62,6 +62,7 @@ const drawAndStore = (previousX, previousY, currentX, currentY, newPoint = false
     }
   });
   drawSegment(previousX, previousY, currentX, currentY);
+  socket.emit('drawingUpdate', drawingEvents);
 }
 
 const fillAndStore = (x, y, fillColor) => {
@@ -74,6 +75,7 @@ const fillAndStore = (x, y, fillColor) => {
     }
   });
   floodFill(x, y, fillColor);
+  socket.emit('drawingUpdate', drawingEvents);
 }
 
 const undoDrawingEvents = () => {
@@ -89,6 +91,7 @@ const undoDrawingEvents = () => {
 
   updateColor();
   updateWidth();
+  socket.emit('drawingUpdate', drawingEvents);
 }
 
 const undoButton = document.getElementById("undo-button");

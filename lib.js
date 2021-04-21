@@ -15,29 +15,10 @@ function getLDistance(guess, target) {
   if (ld == 0) { return true; }
   else {
     let newLD = levenshtein(pluralize(guess), pluralize(target));
-    if (newLD == 0) { return true; }
-    else if (newLD <= 2) { return -1; }
-    else { return false; }
+    return newLD;
   }
 }
 
-
-function test_getLDistance() {
-  let guess = 'firETruCks'
-  let target = 'firetruck'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-  console.log('---');
-  guess = 'cars'
-  target = 'firetruck'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-  console.log('---');
-  guess = 'cat'
-  target = 'bats'
-  console.log(`Guess: ${guess}, Target: "${target}`)
-  console.log(getLDistance(guess, target));
-}
 
 /* Read CSV file and turn into JSON object */
 function readCSV(filePath) {
@@ -46,13 +27,19 @@ function readCSV(filePath) {
     .split('\n')
     .map(e => e.trim())
     .map(e => e.split(',').map(e => e.trim()));
-  return data[0];
-}
 
-
-function test_readCSV() {
-  let a = readCSV('compounds.csv');
-  console.log(a);
+  var out = []
+  for (var i in data[0]) {
+    var word = data[0][i];
+    var spl = word.split(' ');
+    var compound = {
+      word: spl[0],
+      left: spl[1],
+      right: spl[2]
+    }
+    out.push(compound);
+  }
+  return out;
 }
 
 
@@ -110,7 +97,7 @@ function getDrawPairs(gameWords, players) {
   let pairs = [];
   for (let i = 0; i < gameWords.length; i++) {
     let currPair = {};
-    currPair.word = gameWords[i];
+    currPair.compound = gameWords[i];
     if (pStack.size() > 1) {
       otherStack.add(pStack.peek());
       currPair.drawer1 = pStack.pop();
@@ -179,7 +166,13 @@ function getAllGuessers(playerArray, drawers) {
   }
   console.log('FINAL ARRAY: ' + updatedArray);
   return updatedArray
+}
 
+
+function calculateScore(guessCount){
+  var out = 10 - 2(guessCount);
+  if(out >= 2){return out;}
+  else{return 2;}
 }
 
 
@@ -232,7 +225,12 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
     },
     roundInfo: {
       round: -1,
-      word: '',
+      guessCount: 0,
+      compound: {
+        word: '',
+        left: '',
+        right: ''
+      },
       drawers: [],
       guessers: [],
     }
@@ -243,17 +241,21 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
 
 function setUpRound(gameInstance, roundNum) {
   let curDrawPair = gameInstance.meta.drawPairs[roundNum];
-  let drawers = [curDrawPair.drawer1, curDrawPair.drawer2];
+  let drawers = {
+    drawer1: curDrawPair.drawer1,
+    drawer2: curDrawPair.drawer2
+  };
   let allPlayers = Object.keys(gameInstance.players);
+  console.log(curDrawPair);
   gameInstance.roundInfo = {
     round: roundNum,
-    word: curDrawPair.word,
+    compound: curDrawPair.compound,
     drawers,
-    guessers: allPlayers.filter(id => !drawers.includes(id)),
+    guessers: allPlayers.filter(id => (id !== drawers.drawer1 && id !== drawers.drawer2)),
   };
 
   for (let id of allPlayers) {
-    gameInstance.players[id].doneGuessing = drawers.includes(id);
+    gameInstance.players[id].doneGuessing = (id === drawers.drawer1 || id === drawers.drawer2);
   }
 }
 
@@ -326,22 +328,11 @@ async function startGameLoop(gameInstance) {
 }
 
 
-function myTimer() {
-  let d = new Date();
-  let t = d.toLocaleTimeString();
-  //console.log(t);
-}
-
-
-function test(test) {
-  test[1].isDone = 1;
-}
-
-
 /* Export the functions */
 module.exports = {
   getLDistance, readCSV, shuffle, buckets, cloneArray,
   addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
-  createGameInstance, startGameLoop, getAllGuessers, setUpRound
+  createGameInstance, startGameLoop, getAllGuessers, setUpRound,
+  calculateScore
 };
 
