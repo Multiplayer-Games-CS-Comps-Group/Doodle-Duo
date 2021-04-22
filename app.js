@@ -195,6 +195,12 @@ io.on('connection', function (socket) {
     startRound(lobbyId);
   });
 
+  socket.on('drawingUpdate', function (drawingEvents) {
+    let lobbyId = socket.lobbyId;
+    console.log('Drawing Update Detected on Server:');
+    io.sockets.in(lobbyId).emit('drawingUpdate', drawingEvents);
+  });
+
   socket.on('playerGuess', function (playerGuess) {
     let lobbyId = socket.lobbyId;
     var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);

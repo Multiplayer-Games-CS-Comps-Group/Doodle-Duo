@@ -413,14 +413,14 @@
       document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
     });
 
-    socket.on('drawingUpdate', data => {
-      console.debug('drawingUpdate');
-      console.log('drawingUpdate');
-      drawingEvents = data;
+    socket.on('drawingUpdate', function (drawingEvents) {
+      console.log('drawingUpdate Client');
       for (let i = 0; i < drawingEvents.length; i++) {
         handleDrawingEvent(drawingEvents[i]);
       }
     });
+
+    
 
     //THIS NEEDS TO BE DONE ACTUALLY!!!!!
     // socket.on('updateusers',function(data){
@@ -430,6 +430,7 @@
     // socket.on('connect_failed', function(){
     //     document.write("sorry, issue with connection.");
     // })
+
   </script>
 
 </body>
