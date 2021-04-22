@@ -299,7 +299,7 @@
       const roundTimer = document.getElementById('RoundTimerInput').value;
       switchToView('guesserView');
 
-      socket.emit('startGame', currRoomId, maxPlayer, roundInput, roundTimer);
+      socket.emit('startGame', maxPlayer, roundInput, roundTimer);
     }
 
     function init() {
@@ -356,7 +356,7 @@
 
       console.log('players: ' + gameState.players)
       state = gameState;
-      wordToGuess = state.meta.currWord
+      wordToGuess = state.meta.currWord;
       console.log('WORD TO BE GUESSED: ' + wordToGuess);
       //update role view
       //update correct ans var

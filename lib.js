@@ -166,7 +166,13 @@ function getAllGuessers(playerArray, drawers) {
   }
   console.log('FINAL ARRAY: ' + updatedArray);
   return updatedArray
+}
 
+
+function calculateScore(guessCount){
+  var out = 10 - 2(guessCount);
+  if(out >= 2){return out;}
+  else{return 2;}
 }
 
 
@@ -219,6 +225,7 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
     },
     roundInfo: {
       round: -1,
+      guessCount: 0,
       compound: {
         word: '',
         left: '',
@@ -325,15 +332,7 @@ async function startGameLoop(gameInstance) {
 module.exports = {
   getLDistance, readCSV, shuffle, buckets, cloneArray,
   addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
-  createGameInstance, startGameLoop, getAllGuessers, setUpRound
+  createGameInstance, startGameLoop, getAllGuessers, setUpRound,
+  calculateScore
 };
 
-
-/*
-function main(){
-  var a = readCSV('database.csv');
-  console.log(a);
-}
-
-main();
-*/

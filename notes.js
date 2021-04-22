@@ -46,6 +46,7 @@ lobbies = {
       },
       roundInfo: {
         round: 0,
+        guessCount: 0,
         compound: { word: 'firetruck', left: 'fire', right: 'truck' },
         drawers: { drawer1: 'socketId1', drawer2: 'socketId2' },
         guessers: ['socketId3', 'socketId4', 'socketId5'],
