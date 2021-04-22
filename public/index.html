@@ -89,18 +89,18 @@
       <div class="uk-container">
         <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
           <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-            Compound Game
+            Doodle Duo
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas1" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 1
               </div>
             </div>
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas2" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 2
               </div>
             </div>
@@ -108,19 +108,17 @@
           <div class="uk-width-1-1" style="height: 80px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
-                <div class="uk-margin-small-left">___</div>
+                <span id="spacesDisplay"></span>
               </div>
               <div>
+                <div id="timeRemaining">Time Remaining:</div>
+                <span id="gameTimeDisplay"></span>
                 <span uk-icon="icon: clock; ratio: 3"></span>
               </div>
             </div>
           </div>
           <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-            <form method="post" class="uk-form-horizontal ">
+            <form class="uk-form-horizontal ">
               <div class="uk-inline">
                 <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
                 <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
@@ -130,16 +128,13 @@
           <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
             <div class="uk-align-center">
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
-                Other player guess
+                style="width: 50vw" id="playerGuess1">
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
-                Other player guess
+                style="width: 50vw" id="playerGuess2">
               </div>
               <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
-                Other player guess
+                style="width: 50vw" id="playerGuess3">
               </div>
             </div>
           </div>
@@ -154,19 +149,15 @@
       <div class="uk-container">
         <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
           <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
-            Compound Game
+            Doodle Duo
           </div>
           <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
             <div class="uk-flex-column uk-flex">
               <div class="undoButtonContainer center-content" aria-label="undo">
-                <svg class="icon icon-undo">
-                  <use xlink:href="#icon-undo"></use>
-                </svg>
+                <svg class="icon icon-undo"><use xlink:href="#icon-undo"></use></svg>
               </div>
               <div class="paintButtonContainer center-content" aria-label="draw">
-                <svg class="icon icon-paintbrush">
-                  <use xlink:href="#icon-paintbrush"></use>
-                </svg>
+                <svg class="icon icon-paintbrush"><use xlink:href="#icon-paintbrush"></use></svg>
               </div>
               <div class="colorPickerContainer">
                 <h2 id="color-choice"></h2>
@@ -187,27 +178,26 @@
           <div class="uk-width-1-1" style="height: 100px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <div class="uk-margin-small-left">
+                <div id="wordToDraw" class="uk-margin-small-left">
                   Draw: House
                 </div>
               </div>
               <div>
-                <span uk-icon="icon: clock; ratio: 5"></span>
+                <div>Time Remaining:</div>
+                <span id="dGameTimeDisplay"></span>
+                <span uk-icon="icon: clock; ratio: 3"></span>
               </div>
             </div>
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
-            <div class="uk-align-center uk-flex uk-flex-column">
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+            <div class="uk-align-center uk-flex uk-flex-column" >
+              <div id="dPlayerGuess1" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
                 Other player guess
               </div>
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+              <div id="dPlayerGuess2" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
                 Other player guess
               </div>
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw">
+              <div id="dPlayerGuess3" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
                 Other player guess
               </div>
             </div>
@@ -220,12 +210,35 @@
 
   <!--initialize socket object so clients can establish connections-->
   <script>
+
+    /**
+     * This function enables us to get multiple elements by id and treat them like one
+     * Particularly helpful in updating identical things in the drawer and guesser view
+     * use like this:
+     * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+     * (without this function we'd have to have 2 different assignments like this:
+     * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
+     */
+    function getElementsById(ids) {
+      const idList = ids.split(" ");
+      let results = [], item;
+      for (let i = 0; i < idList.length; i++) {
+        item = document.getElementById(idList[i]);
+        if (item) {
+          results.push(item);
+        }
+      }
+      return(results);
+    }
+
     //let socket = io('/my-namespcae');
     let playerNumber = 0;
     let socket = io();
     let wordToGuess = '';
     let state = {}; //not sure if this is necessary
-    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); // 
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
+    const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+
     const roomInput = document.getElementById('roomIdInput');
 
     const allViews = {
@@ -239,9 +252,9 @@
 
     /**
      * Use this function to switch between the different views
-     * 
+     *
      * Pass in the ID of the view to make it display, and all other views
-     * will not display. 
+     * will not display.
      */
     function switchToView(newViewName) {
       for (let [viewName, view] of Object.entries(allViews)) {
@@ -350,21 +363,40 @@
       //update scoreboard
     });
 
+    socket.on('endRoundScores', function () {
+      //called after end of each round, shows for 5 seconds
+      //set geusser view and drawer view styles display none to hide them
+      //display scoreboard with game/round info
+    });
+
     socket.on('drawerView', function (scores, data) {
-      console.debug('drawerView', { scores, data });
+      switchToView('drawerView');
+      // console.debug('drawerView', { scores, data });
+      // document.getElementById('guesser-view').style.display = 'none';
+
 
       //update drawer view and show word they need to draw
     });
     socket.on('guesserView', function (scores, data) {
-      console.debug('guesserView', { scores, data });
+      switchToView('guesserView');
+      // console.debug('guesserView', { scores, data });
+      let spaces = data.word1Length + data.word2Length;
+      let spacesDisplay = ""
+      for (let i= 0; i< spaces; i++) {
+        spacesDisplay= spacesDisplay.concat(" __");
+      }
+      console.log(spacesDisplay);
+      document.getElementById('spacesDisplay').innerText = spacesDisplay;
 
-      //update drawer view and show word they need to draw
+      console.debug('drawerView', { scores });
     });
 
-    socket.on('timerUpdate', function (timeLeft) {
-      console.debug('timerUpdate', timeLeft);
 
-      //update timer
+    socket.on('timerUpdate', function (timeLeft) {
+      for (let timerElement of gameTimeDisplay) {
+        timerElement.innerHTML = timeLeft + ' seconds';
+      }
+      console.debug('timerUpdate', timeLeft);
     });
 
     socket.on('gameOverEvent', function (scores) {
@@ -374,23 +406,28 @@
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
-      /*if (guessInput.equals(wordToGuess)) {
+      if (guessInput.equals(wordToGuess)) {
+        //put display stuff here for the person who guessed
         socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
       }
-      else */
-      
-      socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-      
+      else {
+        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+      }
+
     }
 
+
+    //prompted when user correctly guessed, sent to everyone
     socket.on('someoneGuessed', function (gameState) {
+
+      document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
       console.debug('someoneGuessed', { gameState });
-      //update container saying  '______ guessed the compound word!'
 
     });
 
     socket.on('wrongGuess', function (playerGuess, player) {
       console.debug('wrongGuess', { playerGuess, player });
+
       //update container saying '____ guessed ' + guessInput
     });
 

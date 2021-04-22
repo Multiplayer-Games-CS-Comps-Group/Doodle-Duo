@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 const MAX_LOBBY_SIZE = 12;
-const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4? 
+const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4?
 
 const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
@@ -39,7 +39,7 @@ const getRandBetween = (min, max) =>
 function genId(min, max, dict, prefix = null) {
   let newId = getRandBetween(min, max);
 
-  // Generate new random ID until it's not a duplicate of one in the 
+  // Generate new random ID until it's not a duplicate of one in the
   // dictionary it's being generated for
   while (newId in dict) newId = getRandBetween(min, max);
   if (prefix) newId = prefix + newId;
@@ -109,9 +109,9 @@ function createLobby() {
   return lobbyId;
 }
 
-/* 
+/*
  * Adds a user to a lobby.
- * 
+ *
  * Adds their {socketio.id: username} pair to the users dict in lobby.
  * Also assigns the socket object the lobbyId property, and has it
  * join a room with name lobbyId.
