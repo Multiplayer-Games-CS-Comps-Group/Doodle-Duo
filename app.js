@@ -195,6 +195,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('playerGuess', function (playerGuess) {
+    console.log("PlayerGuess function is being called!");
     let lobbyId = socket.lobbyId;
     var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld == 0) {
@@ -219,13 +220,13 @@ io.on('connection', function (socket) {
         clearInterval(lobbies[lobbyId].state.timer.id);
         endOfRound(lobbyId);
       }
-    }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?) 
+    }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
     else if(ld == 1){
-      io.sockets.in(roomId)
+      io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id);
     }
-    else { 
-      io.sockets.in(roomId)
+    else {
+      io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id);
     }
   });
