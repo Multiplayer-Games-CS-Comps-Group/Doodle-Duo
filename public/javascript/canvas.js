@@ -113,6 +113,7 @@ let [prevX, prevY] = [0, 0];
 const clearCanvas1 = () => {
   ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
   drawingEvents = []; //COULD make this be a clearCanvasEvent so it could be undone
+  socket.emit('drawingUpdate', drawingEvents);
 }
 
 const clearCanvasButton = document.getElementById("clear-canvas");

@@ -106,6 +106,7 @@
             <div class="uk-height-1-1 uk-cover-container">
               <div class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 2
+                <!-- <canvas id="canvas-2" width="200" height="400"></canvas> -->
               </div>
             </div>
           </div>
@@ -414,7 +415,7 @@
     });
 
     socket.on('drawingUpdate', function (drawingEvents) {
-      console.log('drawingUpdate Client');
+      //console.log('drawingUpdate Client');
       for (let i = 0; i < drawingEvents.length; i++) {
         handleDrawingEvent(drawingEvents[i]);
       }

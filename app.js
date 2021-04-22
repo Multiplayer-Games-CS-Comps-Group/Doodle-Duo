@@ -197,7 +197,7 @@ io.on('connection', function (socket) {
 
   socket.on('drawingUpdate', function (drawingEvents) {
     let lobbyId = socket.lobbyId;
-    console.log('Drawing Update Detected on Server:');
+    //console.log('Drawing Update Detected on Server:');
     io.sockets.in(lobbyId).emit('drawingUpdate', drawingEvents);
   });
 
