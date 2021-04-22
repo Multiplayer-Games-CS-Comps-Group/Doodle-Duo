@@ -391,10 +391,12 @@
       console.debug('drawerView', { scores });
     });
 
+
     socket.on('timerUpdate', function (timeLeft) {
-      gameTimeDisplay.innerHTML = timeLeft + ' seconds';
+      for (let timerElement of gameTimeDisplay) {
+        timerElement.innerHTML = timeLeft + ' seconds';
+      }
       console.debug('timerUpdate', timeLeft);
-      //update timer
     });
 
     socket.on('gameOverEvent', function (scores) {
