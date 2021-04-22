@@ -118,12 +118,10 @@
             </div>
           </div>
           <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-            <form class="uk-form-horizontal ">
-              <div class="uk-inline">
-                <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
-                <a class="uk-form-icon uk-form-icon-flip" href="" uk-icon="icon: pencil"></a>
-              </div>
-            </form>
+            <div class="uk-inline">
+              <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
+              <a class="uk-form-icon uk-form-icon-flip" onclick="guessInput()" uk-icon="icon: pencil"></a>
+            </div>
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
             <div class="uk-align-center">
@@ -266,6 +264,14 @@
       }
     }
 
+    const guessInputBox = document.getElementById('GuessInput');
+    function guessInputHandler() {
+      socket.emit('playerGuess', guessInputBox.value);
+    }
+    guessInputBox.onkeyup = ({ keyCode }) => {
+      if (keyCode === 13) guessInputHandler();
+    }
+
     //on connection to server, ask for user's name with an anonymous callback
     socket.on('connect', function () {
       // call the server-side function 'adduser' and send one parameter (value of prompt)
@@ -406,13 +412,15 @@
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
-      if (guessInput.equals(wordToGuess)) {
-        //put display stuff here for the person who guessed
-        socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
-      }
-      else {
-        socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-      }
+      // if (guessInput.equals(wordToGuess)) {
+      //   //put display stuff here for the person who guessed
+      //   socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
+      // }
+      // else {
+      //   socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+      // }
+      socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
+
 
     }
 
