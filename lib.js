@@ -170,7 +170,7 @@ function getAllGuessers(playerArray, drawers) {
 
 
 function calculateScore(guessCount) {
-  var out = 10 - 2(guessCount);
+  var out = 10 - 2*(guessCount);
   if (out >= 2) { return out; }
   else { return 2; }
 }

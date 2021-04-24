@@ -69,19 +69,19 @@
 
 
     <button onclick='startGameButtonClicked()'>Start Game</button>
-
+    <p id='playerJoin2'></p> <!-- TODO: Add whatever happens to playerJoin? -->
 
   </div>
 
   <div id='waiting-room-player' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id='displayRoom'></p>
+    <p id='playerJoin'></p>
   </div>
 
   <div id='example' style="display:none">
     <h3>Example</h3>
   </div>
-  <p id='playerJoin'></p> <!-- TODO: Unused <p> block? Or should it be in one of the dics? -->
 
   <!--     Guesser's view  -->
   <div id="guesser-view" style="display:none">
@@ -105,6 +105,15 @@
               </div>
             </div>
           </div>
+          <div class="uk-flex-row">
+            <div style="width: 50%">
+              <div id="nameDrawing1" class="uk-text-center"></div>
+            </div>
+            <div style="width: 50%">
+              <div id="nameDrawing2" class="uk-text-center"></div>
+            </div>
+          </div>
+
           <div class="uk-width-1-1" style="height: 80px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
@@ -190,13 +199,13 @@
           <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
             <div class="uk-align-center uk-flex uk-flex-column" >
               <div id="dPlayerGuess1" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
+
               </div>
               <div id="dPlayerGuess2" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
+
               </div>
               <div id="dPlayerGuess3" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
+
               </div>
             </div>
           </div>
@@ -264,6 +273,7 @@
       }
     }
 
+
     const guessInputBox = document.getElementById('GuessInput');
     function guessInputHandler() {
       socket.emit('playerGuess', guessInputBox.value);
@@ -285,11 +295,10 @@
       const nameInput = document.getElementById('nameInput').value;
       socket.emit('createClicked', nameInput);
       init();
-
     }
 
-
     function joinButtonClicked() {
+      switchToView('waitingRoomForPlayer')
       const joinRoomId = roomInput.value;
       const nameInput = document.getElementById('nameInput').value;
       console.log('join button clicked' + joinRoomId);
@@ -391,7 +400,11 @@
         spacesDisplay= spacesDisplay.concat(" __");
       }
       console.log(spacesDisplay);
-      document.getElementById('spacesDisplay').innerText = spacesDisplay;
+
+      let drawerNames = getDrawerNames(scores);
+
+      document.getElementById('nameDrawing1').innerText = "Doodler: " + drawerNames[0];
+      document.getElementById('nameDrawing2').innerText = "Doodler: " + drawerNames[1];
 
       console.debug('drawerView', { scores });
     });
@@ -408,6 +421,21 @@
       console.debug('gameOverEvent', { scores });
     });
 
+    function getDrawerNames(scores) {
+      let drawer1 = "Drawer 1";
+      let drawer2 = "Drawer 2";
+      for (let data of Object.values(scores)) {
+        if (data.drawer === 1) {
+          drawer1 = data.username;
+        } else if (data.drawer === 2) {
+          drawer2 = data.username;
+        }
+      }
+      return [drawer1, drawer2];
+
+    }
+
+
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
@@ -419,7 +447,6 @@
       //   socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
       // }
       socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-
 
     }
 
@@ -447,8 +474,9 @@
       console.log('player joined');
       let br = document.createElement("br");
       document.getElementById("playerJoin").appendChild(br);
-      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined!'));
-
+      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined! \n'));
+      document.getElementById("playerJoin2").appendChild(br);
+      document.getElementById("playerJoin2").appendChild(document.createTextNode(username + '  has joined! \n'));
     });
 
     socket.on('waitingRoomForPlayer', function (roomId) {
