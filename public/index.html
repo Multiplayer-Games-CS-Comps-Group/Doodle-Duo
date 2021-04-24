@@ -69,19 +69,19 @@
 
 
     <button onclick='startGameButtonClicked()'>Start Game</button>
-
+    <p id='playerJoin2'></p> <!-- TODO: Add whatever happens to playerJoin? -->
 
   </div>
 
   <div id='waiting-room-player' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id='displayRoom'></p>
+    <p id='playerJoin'></p>
   </div>
 
   <div id='example' style="display:none">
     <h3>Example</h3>
   </div>
-  <p id='playerJoin'></p> <!-- TODO: Unused <p> block? Or should it be in one of the dics? -->
 
   <!--     Guesser's view  -->
   <div id="guesser-view" style="display:none">
@@ -105,6 +105,15 @@
               </div>
             </div>
           </div>
+          <div style="width: 100%">
+            <div style="width: 50%">
+              <div id="nameDrawing1" class="uk-text-center"></div>
+            </div>
+            <div style="width: 50%">
+              <div id="nameDrawing2" class="uk-text-center"></div>
+            </div>
+          </div>
+
           <div class="uk-width-1-1" style="height: 80px">
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
@@ -264,6 +273,7 @@
       }
     }
 
+
     const guessInputBox = document.getElementById('GuessInput');
     function guessInputHandler() {
       socket.emit('playerGuess', guessInputBox.value);
@@ -285,11 +295,10 @@
       const nameInput = document.getElementById('nameInput').value;
       socket.emit('createClicked', nameInput);
       init();
-
     }
 
-
     function joinButtonClicked() {
+      switchToView('waitingRoomForPlayer')
       const joinRoomId = roomInput.value;
       const nameInput = document.getElementById('nameInput').value;
       console.log('join button clicked' + joinRoomId);
@@ -377,12 +386,11 @@
 
     socket.on('drawerView', function (scores, data) {
       switchToView('drawerView');
-      // console.debug('drawerView', { scores, data });
-      // document.getElementById('guesser-view').style.display = 'none';
-
-
+      document.getElementById('wordToDraw').innerText = data.word;
+      console.debug(data);
       //update drawer view and show word they need to draw
     });
+
     socket.on('guesserView', function (scores, data) {
       switchToView('guesserView');
       // console.debug('guesserView', { scores, data });
@@ -392,7 +400,11 @@
         spacesDisplay= spacesDisplay.concat(" __");
       }
       console.log(spacesDisplay);
-      document.getElementById('spacesDisplay').innerText = spacesDisplay;
+
+      let drawerNames = getDrawerNames(scores);
+
+      document.getElementById('nameDrawing1').innerText = "Doodler: " + drawerNames[0];
+      document.getElementById('nameDrawing2').innerText = "Doodler: " + drawerNames[1];
 
       console.debug('drawerView', { scores });
     });
@@ -409,6 +421,21 @@
       console.debug('gameOverEvent', { scores });
     });
 
+    function getDrawerNames(scores) {
+      let drawer1 = "Drawer 1";
+      let drawer2 = "Drawer 2";
+      for (let data of Object.values(scores)) {
+        if (data.drawer === 1) {
+          drawer1 = data.username;
+        } else if (data.drawer === 2) {
+          drawer2 = data.username;
+        }
+      }
+      return [drawer1, drawer2];
+
+    }
+
+
     //TODO: checking of the guess should be moved server side
     function guessInput() {
       const guessInput = document.getElementById('GuessInput').value;
@@ -421,21 +448,20 @@
       // }
       socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
 
-
     }
 
 
     //prompted when user correctly guessed, sent to everyone
-    socket.on('someoneGuessed', function (gameState) {
-
-      document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
-      console.debug('someoneGuessed', { gameState });
-
+    socket.on('someoneGuessed', function (gameState, socketId, username) {
+      postChatMessage(username + '  has correctly guessed the compound word!');
+      // console.debug('someoneGuessed', { gameState });
     });
 
-    socket.on('wrongGuess', function (playerGuess, player) {
-      console.debug('wrongGuess', { playerGuess, player });
+    socket.on('wrongGuess', function (playerGuess, socketId, username) {
+      console.debug('wrongGuess', { playerGuess, socketId });
+      postChatMessage(username + '  has guessed ' + playerGuess);
 
+      // document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
       //update container saying '____ guessed ' + guessInput
     });
 
@@ -444,8 +470,9 @@
       console.log('player joined');
       let br = document.createElement("br");
       document.getElementById("playerJoin").appendChild(br);
-      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined!'));
-
+      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined! \n'));
+      document.getElementById("playerJoin2").appendChild(br);
+      document.getElementById("playerJoin2").appendChild(document.createTextNode(username + '  has joined! \n'));
     });
 
     socket.on('waitingRoomForPlayer', function (roomId) {

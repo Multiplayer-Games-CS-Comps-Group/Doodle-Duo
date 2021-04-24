@@ -92,9 +92,9 @@ function allGuessed(lobbyId) {
 
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
- * 
+ *
  * See notes.js for the structure of lobbies
- * 
+ *
  * Each socket object should keep track of its lobbyId.
  */
 const lobbies = {}
@@ -223,11 +223,12 @@ io.on('connection', function (socket) {
     }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
     else if(ld == 1){
       io.sockets.in(lobbyId)
-        .emit('wrongGuess', playerGuess, socket.id);
+        .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]
+        );
     }
     else {
       io.sockets.in(lobbyId)
-        .emit('wrongGuess', playerGuess, socket.id);
+        .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]);
     }
   });
 
@@ -239,6 +240,7 @@ io.on('connection', function (socket) {
         createScoreObject(lobbyId),
         socketObj.id,
         lobbies[lobbyId].users[socketObj.id]
+
       );
   };
 
