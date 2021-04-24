@@ -125,14 +125,8 @@
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
             <div class="uk-align-center">
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw" id="playerGuess1">
-              </div>
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw" id="playerGuess2">
-              </div>
-              <div class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted"
-                style="width: 50vw" id="playerGuess3">
+              <div class="chat-box-container">
+                <ul id="chat-box-guesser" class="chat-box"></ul>
               </div>
             </div>
           </div>
@@ -189,14 +183,8 @@
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
             <div class="uk-align-center uk-flex uk-flex-column" >
-              <div id="dPlayerGuess1" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
-              </div>
-              <div id="dPlayerGuess2" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
-              </div>
-              <div id="dPlayerGuess3" class="uk-text-center large-text player-guess uk-border-rounded uk-margin uk-background-muted" style="width: 50vw">
-                Other player guess
+              <div class="chat-box-container">
+                <ul id="chat-box-drawer" class="chat-box"></ul>
               </div>
             </div>
           </div>
@@ -208,6 +196,18 @@
 
   <!--initialize socket object so clients can establish connections-->
   <script>
+
+    const chatBoxGuesser = document.getElementById("chat-box-guesser");
+    const chatBoxDrawer = document.getElementById("chat-box-drawer");
+    function postChatMessage(msg) {
+      const msgLiGuesser = document.createElement("li");
+      msgLiGuesser.innerText = msg;
+      chatBoxGuesser.appendChild(msgLiGuesser);
+
+      const msgLiDrawer = document.createElement("li");
+      msgLiDrawer.innerText = msg;
+      chatBoxDrawer.appendChild(msgLiDrawer);
+    }
 
     /**
      * This function enables us to get multiple elements by id and treat them like one
