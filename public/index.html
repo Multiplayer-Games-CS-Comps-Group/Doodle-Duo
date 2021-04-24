@@ -105,7 +105,7 @@
               </div>
             </div>
           </div>
-          <div class="uk-flex-row">
+          <div style="width: 100%">
             <div style="width: 50%">
               <div id="nameDrawing1" class="uk-text-center"></div>
             </div>
@@ -453,17 +453,13 @@
 
     //prompted when user correctly guessed, sent to everyone
     socket.on('someoneGuessed', function (gameState, socketId, username) {
-      document.getElementById("playerGuess1").innerText = username + '  has correctly guessed the compound word!';
-      document.getElementById("dPlayerGuess1").innerText = username + '  has correctly guessed the compound word!';
-
+      postChatMessage(username + '  has correctly guessed the compound word!');
       // console.debug('someoneGuessed', { gameState });
-
     });
 
     socket.on('wrongGuess', function (playerGuess, socketId, username) {
       console.debug('wrongGuess', { playerGuess, socketId });
-      document.getElementById("playerGuess1").innerText = username + '  has guessed ' + playerGuess;
-      document.getElementById("dPlayerGuess1").innerText = username + '  has guessed ' + playerGuess;
+      postChatMessage(username + '  has guessed ' + playerGuess);
 
       // document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
       //update container saying '____ guessed ' + guessInput
