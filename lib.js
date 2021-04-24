@@ -12,7 +12,7 @@ function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
   let ld = levenshtein(guess, target);
-  if (ld == 0) { return true; }
+  if (ld === 0) return 0;
   else {
     let newLD = levenshtein(pluralize(guess), pluralize(target));
     return newLD;
@@ -169,10 +169,10 @@ function getAllGuessers(playerArray, drawers) {
 }
 
 
-function calculateScore(guessCount){
+function calculateScore(guessCount) {
   var out = 10 - 2(guessCount);
-  if(out >= 2){return out;}
-  else{return 2;}
+  if (out >= 2) { return out; }
+  else { return 2; }
 }
 
 
