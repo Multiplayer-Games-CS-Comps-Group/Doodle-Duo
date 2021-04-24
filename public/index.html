@@ -377,12 +377,11 @@
 
     socket.on('drawerView', function (scores, data) {
       switchToView('drawerView');
-      // console.debug('drawerView', { scores, data });
-      // document.getElementById('guesser-view').style.display = 'none';
-
-
+      document.getElementById('wordToDraw').innerText = data.word;
+      console.debug(data);
       //update drawer view and show word they need to draw
     });
+
     socket.on('guesserView', function (scores, data) {
       switchToView('guesserView');
       // console.debug('guesserView', { scores, data });
@@ -426,16 +425,20 @@
 
 
     //prompted when user correctly guessed, sent to everyone
-    socket.on('someoneGuessed', function (gameState) {
+    socket.on('someoneGuessed', function (gameState, socketId, username) {
+      document.getElementById("playerGuess1").innerText = username + '  has correctly guessed the compound word!';
+      document.getElementById("dPlayerGuess1").innerText = username + '  has correctly guessed the compound word!';
 
-      document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
-      console.debug('someoneGuessed', { gameState });
+      // console.debug('someoneGuessed', { gameState });
 
     });
 
-    socket.on('wrongGuess', function (playerGuess, player) {
-      console.debug('wrongGuess', { playerGuess, player });
+    socket.on('wrongGuess', function (playerGuess, socketId, username) {
+      console.debug('wrongGuess', { playerGuess, socketId });
+      document.getElementById("playerGuess1").innerText = username + '  has guessed ' + playerGuess;
+      document.getElementById("dPlayerGuess1").innerText = username + '  has guessed ' + playerGuess;
 
+      // document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
       //update container saying '____ guessed ' + guessInput
     });
 
