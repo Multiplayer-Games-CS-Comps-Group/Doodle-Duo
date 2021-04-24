@@ -61,7 +61,7 @@
   <div id='waiting-room-host' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id="gameId"> </p>
-    <h2> The game room Id is <span id="gameCodeDisplay"></span></h2>
+    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly"></input><button id="copy-room-code" onclick="copyLobbyId()">Click to copy</button></h2>
     <p id='userJoin'> </p>
     <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
     <input type='text' placeholder='Number of Rounds' id='RoundInput' />
@@ -209,6 +209,8 @@
       chatBoxDrawer.appendChild(msgLiDrawer);
     }
 
+
+
     /**
      * This function enables us to get multiple elements by id and treat them like one
      * Particularly helpful in updating identical things in the drawer and guesser view
@@ -264,6 +266,17 @@
       }
     }
 
+    const copyRoomCodeButton = document.getElementById("copy-room-code");
+    function copyLobbyId() {
+      gameCodeDisplay.select();
+      gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
+
+      document.execCommand("copy");
+
+      copyRoomCodeButton.innerText = "Copied!";
+    }
+
+
     const guessInputBox = document.getElementById('GuessInput');
     function guessInputHandler() {
       socket.emit('playerGuess', guessInputBox.value);
@@ -318,14 +331,14 @@
     function reset() {
       playerNumber = null;
       roomInput.value = '';
-      gameCodeDisplay.innerText = '';
+      gameCodeDisplay.value = '';
       switchToView('initialScreen');
     }
 
     socket.on('gameRoomNo', function (data) {
       console.debug('gameRoomNo', { data });
       switchToView('waitingRoomForHost');
-      gameCodeDisplay.innerHTML = data + ' .';
+      gameCodeDisplay.value = data;
       globalThis.currRoomId = data;
 
     });
