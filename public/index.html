@@ -392,11 +392,15 @@
 
     /**
      * onclick function for join lobby button
+     * onkeyup(enter) for lobby code input
      */
     function joinButtonClicked() {
       switchToView('waitingRoomForPlayer');
       console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
       socket.emit('joinClicked', roomInput.value, nameInput.value);
+    }
+    roomInput.onkeyup = ({ keyCode }) => {
+      if (keyCode === 13) joinButtonClicked();
     }
 
     /**
