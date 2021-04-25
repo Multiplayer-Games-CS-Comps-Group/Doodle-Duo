@@ -212,20 +212,28 @@
 
   <!--initialize socket object so clients can establish connections-->
   <script>
+    const isScrolledToBottom = el =>
+      el.scrollTop >= el.scrollHeight - el.clientHeight
     const scrollToBottom = el =>
       el.scrollTop = el.scrollHeight - el.clientHeight
 
     const chatContainers = document.getElementsByClassName("chat-box-container");
     const chatBoxes = document.getElementsByClassName("chat-box");
     function postChatMessage(msg) {
+      const elementsToScroll = [];
+      for (chatContainer of chatContainers) {
+        if (isScrolledToBottom(chatContainer)) elementsToScroll.push(chatContainer);
+      }
+
       for (chatBox of chatBoxes) {
         const msgLi = document.createElement("li");
         msgLi.innerText = msg;
         chatBox.appendChild(msgLi);
       }
 
-      for (chatContainer of chatContainers) {
-        scrollToBottom(chatContainer);
+      for (el of elementsToScroll) {
+        console.log(el);
+        scrollToBottom(el);
       }
     }
 
