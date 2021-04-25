@@ -21,11 +21,11 @@ app.get('/', function (req, res) {
 
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 const MAX_LOBBY_SIZE = 12;
-const MIN_PLAYERS = 2; //TODO: Min players should probably be 3 or 4?
+const MIN_PLAYERS = 3;
 
 const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
-const DEFAULT_ROUND_TIMER = 3; //TODO: set this back to 45
+const DEFAULT_ROUND_TIMER = 45;
 
 const SCORE_DISPLAY_TIMER = 5;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -139,13 +139,12 @@ io.on('connection', function (socket) {
     }
     addUserToLobby(newLobbyId, socket, newUsername);
 
-    socket.emit('gameRoomNo', newLobbyId); //TODO: Rename to 'succesfullyJoinedLobby'/'joinedLobbyEvent' or something?
-    socket.emit('init', 1); //TODO: Replace with 'succesfullyJoinedLobby'?
+    socket.emit('succesfullyCreatedLobby', newLobbyId);
   });
 
   socket.on('joinClicked', function (lobbyId, username) {
     lobbyId = lobbyId.trim();
-    if (lobbyId.slice(0, 5) !== "lobby") lobbyId = "lobby" + lobbyId;
+    if (lobbyId.slice(0, 5) !== 'lobby') lobbyId = 'lobby' + lobbyId;
 
     if (checkRoomExists(lobbyId) && getRoomSize(lobbyId) > 0) {
       if (getRoomSize(lobbyId) >= MAX_LOBBY_SIZE) {
@@ -195,14 +194,14 @@ io.on('connection', function (socket) {
   });
 
   socket.on('playerGuess', function (playerGuess) {
-    console.log("PlayerGuess function is being called!");
+    console.log('PlayerGuess function is being called!');
     let lobbyId = socket.lobbyId;
-    var ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
+    let ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld === 0) {
 
       // Calculate guesser score
-      var score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
-      console.log(score);
+      let score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
+      console.log("Calculated score: ", score);
 
       // Update player object score
       lobbies[lobbyId].state.players[socket.id].score += score;
@@ -210,17 +209,17 @@ io.on('connection', function (socket) {
       lobbies[lobbyId].state.roundInfo.guessCount++;
 
       // Give drawers points
-      var drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
-      lobbies[lobbyId].state.players[drawer1] += 5;
-      var drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
-      lobbies[lobbyId].state.players[drawer2] += 5;
+      let drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
+      lobbies[lobbyId].state.players[drawer1].score += 5;
+      let drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
+      lobbies[lobbyId].state.players[drawer2].score += 5;
 
       updateGuessed(lobbyId, socket);
       if (allGuessed(lobbyId)) {
         clearInterval(lobbies[lobbyId].state.timer.id);
         endOfRound(lobbyId);
       }
-    }// TODO: Needs a case for when distance = 1? (Returns "you were close!" or something?)
+    }// TODO: Needs a case for when distance = 1? (Returns 'you were close!' or something?)
     else if (ld === 1) {
       io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]
@@ -240,7 +239,6 @@ io.on('connection', function (socket) {
         createScoreObject(lobbyId),
         socketObj.id,
         lobbies[lobbyId].users[socketObj.id]
-
       );
   };
 
@@ -251,7 +249,7 @@ io.on('connection', function (socket) {
       console.log('End of the round! Displaying scores now'); //TODO: TEMP
       console.log(`Next round will start in ${SCORE_DISPLAY_TIMER} seconds`); //TODO: TEMP
       io.sockets.in(lobbyId)
-        .emit('endRoundScores', lobbies[lobbyId].state);
+        .emit('endRoundScores', createScoreObject(lobbyId));
 
       setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }
@@ -322,7 +320,7 @@ io.on('connection', function (socket) {
   };
 
   function endOfGame(lobbyId) {
-    console.log("Ending the game!");
+    console.log('Ending the game!');
     io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId));
   };
 

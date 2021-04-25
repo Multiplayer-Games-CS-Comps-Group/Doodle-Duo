@@ -132,7 +132,7 @@
           <div class="uk-width-1-2 uk-align-center" style="height: 80px">
             <div class="uk-inline">
               <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
-              <a class="uk-form-icon uk-form-icon-flip" onclick="guessInput()" uk-icon="icon: pencil"></a>
+              <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: pencil"></a>
             </div>
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
@@ -212,60 +212,19 @@
 
   <!--initialize socket object so clients can establish connections-->
   <script>
-    const isScrolledToBottom = el =>
-      el.scrollTop >= el.scrollHeight - el.clientHeight
-    const scrollToBottom = el =>
-      el.scrollTop = el.scrollHeight - el.clientHeight
-
-    const chatContainers = document.getElementsByClassName("chat-box-container");
-    const chatBoxes = document.getElementsByClassName("chat-box");
-    function postChatMessage(msg) {
-      const elementsToScroll = [];
-      for (chatContainer of chatContainers) {
-        if (isScrolledToBottom(chatContainer)) elementsToScroll.push(chatContainer);
-      }
-
-      for (chatBox of chatBoxes) {
-        const msgLi = document.createElement("li");
-        msgLi.innerText = msg;
-        chatBox.appendChild(msgLi);
-      }
-
-      for (el of elementsToScroll) {
-        console.log(el);
-        scrollToBottom(el);
-      }
-    }
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+    const socket = io();
 
 
 
-    /**
-     * This function enables us to get multiple elements by id and treat them like one
-     * Particularly helpful in updating identical things in the drawer and guesser view
-     * use like this:
-     * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
-     * (without this function we'd have to have 2 different assignments like this:
-     * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
-     */
-    function getElementsById(ids) {
-      const idList = ids.split(" ");
-      let results = [], item;
-      for (let i = 0; i < idList.length; i++) {
-        item = document.getElementById(idList[i]);
-        if (item) {
-          results.push(item);
-        }
-      }
-      return (results);
-    }
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+    const chatContainers = document.getElementsByClassName('chat-box-container');
+    const chatBoxes = document.getElementsByClassName('chat-box');
 
-    //let socket = io('/my-namespcae');
-    let playerNumber = 0;
-    let socket = io();
-    let wordToGuess = '';
-    let state = {}; //not sure if this is necessary
-    const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
-    const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const copyRoomCodeButton = document.getElementById('copy-room-code');
+
+    const gameTimeDisplays = getElementsById('gameTimeDisplay dGameTimeDisplay');
 
     const roomInput = document.getElementById('roomIdInput');
 
@@ -276,10 +235,83 @@
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
+    };
+
+    const guessInputBox = document.getElementById('GuessInput');
+
+    const nameInput = document.getElementById('nameInput');
+
+    const maxPlayer = document.getElementById('MaxPlayerInput');
+    const roundInput = document.getElementById('RoundInput');
+    const roundTimer = document.getElementById('RoundTimerInput');
+
+    const wordToDraw = document.getElementById('wordToDraw');
+
+    const nameDrawing1 = document.getElementById('nameDrawing1');
+    const nameDrawing2 = document.getElementById('nameDrawing2');
+
+    const playerJoinNotifications = getElementsById('playerJoin playerJoin2');
+
+    const displayRoom = document.getElementById('displayRoom');
+
+
+
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+    /**
+     * Returns whether a given HTML element is scrolled to the bottom
+     */
+    const isScrolledToBottom = el =>
+      el.scrollTop >= el.scrollHeight - el.clientHeight;
+
+    /**
+     * Scrolls given HTML element to the bottom
+     */
+    const scrollToBottom = el =>
+      el.scrollTop = el.scrollHeight - el.clientHeight;
+
+    /**
+     * This function enables us to get multiple elements by id and treat them like one
+     * Particularly helpful in updating identical things in the drawer and guesser view
+     * use like this:
+     * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+     * (without this function we'd have to have 2 different assignments like this:
+     * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
+     */
+    function getElementsById(ids) {
+      const idList = ids.split(' ');
+      let results = [], item;
+      for (let i = 0; i < idList.length; i++) {
+        item = document.getElementById(idList[i]);
+        if (item) {
+          results.push(item);
+        }
+      }
+      return (results);
     }
 
     /**
-     * Use this function to switch between the different views
+     * Posts a message to all chatboxes, and scrolls them if they are already scrolled
+     * all the way down.
+     */
+    function postChatMessage(msg) {
+      const elementsToScroll = [];
+      for (chatContainer of chatContainers) {
+        if (isScrolledToBottom(chatContainer)) elementsToScroll.push(chatContainer);
+      }
+
+      for (chatBox of chatBoxes) {
+        const msgLi = document.createElement('li');
+        msgLi.innerText = msg;
+        chatBox.appendChild(msgLi);
+      }
+
+      for (el of elementsToScroll) {
+        scrollToBottom(el);
+      }
+    }
+
+    /**
+     * Switches between the different views
      *
      * Pass in the ID of the view to make it display, and all other views
      * will not display.
@@ -294,84 +326,97 @@
       }
     }
 
-    const copyRoomCodeButton = document.getElementById("copy-room-code");
-    function copyLobbyId() {
-      gameCodeDisplay.select();
-      gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
-
-      document.execCommand("copy");
-
-      copyRoomCodeButton.innerText = "Copied!";
+    /**
+     * Gets the usernames of the two drawers for the current round
+     * Takes as input the scores object defined in notes.js
+     */
+    function getDrawerNames(scores) {
+      let drawer1 = 'Drawer 1';
+      let drawer2 = 'Drawer 2';
+      for (let data of Object.values(scores)) {
+        if (data.drawer === 1) {
+          drawer1 = data.username;
+        } else if (data.drawer === 2) {
+          drawer2 = data.username;
+        }
+      }
+      return [drawer1, drawer2];
     }
 
-
-    const guessInputBox = document.getElementById('GuessInput');
-    function guessInputHandler() {
-      socket.emit('playerGuess', guessInputBox.value);
-    }
-    guessInputBox.onkeyup = ({ keyCode }) => {
-      if (keyCode === 13) guessInputHandler();
-    }
-
-    //on connection to server, ask for user's name with an anonymous callback
-    socket.on('connect', function () {
-      // call the server-side function 'adduser' and send one parameter (value of prompt)
-
-      switchToView('initialScreen');
-      //socket.emit('adduser', prompt("What's your name?"));
-    });
-
-    function createButtonClicked() {
-      console.log('create button clicked');
-      const nameInput = document.getElementById('nameInput').value;
-      socket.emit('createClicked', nameInput);
-      init();
-    }
-
-    function joinButtonClicked() {
-      switchToView('waitingRoomForPlayer')
-      const joinRoomId = roomInput.value;
-      const nameInput = document.getElementById('nameInput').value;
-      console.log('join button clicked' + joinRoomId);
-      socket.emit('joinClicked', joinRoomId, nameInput);
-      init();
-    }
-
-    function startGameButtonClicked() {
-      //all the changes in divs and display should be moved to a new event call according
-      //to number of players and the role of the player (drawer/guesser)
-      const maxPlayer = document.getElementById('MaxPlayerInput').value;
-      const roundInput = document.getElementById('RoundInput').value;
-      const roundTimer = document.getElementById('RoundTimerInput').value;
-      switchToView('guesserView');
-
-      socket.emit('startGame', maxPlayer, roundInput, roundTimer);
-    }
-
-    function init() {
-      console.log('button clicked');
-      // document.getElementById('initial-screen').style.display = 'none';
-      // document.getElementById('waiting-room-host').style.display = 'block';
-
-    }
-
+    /**
+     * Resets the values of certain inputs, and sets the view to the initial screen
+     */
     function reset() {
-      playerNumber = null;
       roomInput.value = '';
       gameCodeDisplay.value = '';
       switchToView('initialScreen');
     }
 
-    socket.on('gameRoomNo', function (data) {
-      console.debug('gameRoomNo', { data });
-      switchToView('waitingRoomForHost');
-      gameCodeDisplay.value = data;
-      globalThis.currRoomId = data;
 
+
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+    /**
+     * onclick function for lobby code copy button
+     */
+    function copyLobbyId() {
+      gameCodeDisplay.select();
+      gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
+
+      document.execCommand('copy');
+
+      copyRoomCodeButton.innerText = 'Copied!';
+    }
+
+    /**
+     * onclick function for guess input pencil icon
+     * onkeyup(enter) for the guess input
+     */
+    function guessInputHandler() {
+      socket.emit('playerGuess', guessInputBox.value);
+      guessInputBox.value = '';
+    }
+    guessInputBox.onkeyup = ({ keyCode }) => {
+      if (keyCode === 13) guessInputHandler();
+    }
+
+    /**
+     * onclick function for create lobby button
+     */
+    function createButtonClicked() {
+      socket.emit('createClicked', nameInput.value);
+    }
+
+    /**
+     * onclick function for join lobby button
+     */
+    function joinButtonClicked() {
+      switchToView('waitingRoomForPlayer');
+      console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
+      socket.emit('joinClicked', roomInput.value, nameInput.value);
+    }
+
+    /**
+     * onclick function for start game button
+     */
+    function startGameButtonClicked() {
+      socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
+    }
+
+
+
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO Events ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
+    socket.on('connect', function () {
+      switchToView('initialScreen');
     });
 
-    socket.on('endRoundScores', function () {
-      console.debug('endRoundScores');
+    socket.on('succesfullyCreatedLobby', function (lobbyId) {
+      console.debug('succesfullyCreatedLobby', { lobbyId });
+      switchToView('waitingRoomForHost');
+      gameCodeDisplay.value = lobbyId;
+    });
+
+    socket.on('endRoundScores', function (scoresObj) {
+      console.debug('endRoundScores', { scoresObj });
     });
 
     socket.on('errorRoomId', function () {
@@ -392,134 +437,74 @@
       alert('We recommend a minimum of four players to play this game');
     });
 
-    socket.on('init', function (number) {
-      console.debug('init');
-      playerNumber = number;
-    });
-
-    socket.on('gameState', function (gameState) {
-      console.debug('gameState', { gameState });
-
-      console.log('players: ' + gameState.players)
-      state = gameState;
-      wordToGuess = state.meta.currWord;
-      console.log('WORD TO BE GUESSED: ' + wordToGuess);
-      //update role view
-      //update correct ans var
-      //update scoreboard
-    });
-
     socket.on('endRoundScores', function () {
       //called after end of each round, shows for 5 seconds
-      //set geusser view and drawer view styles display none to hide them
+      //set guesser view and drawer view styles display none to hide them
       //display scoreboard with game/round info
     });
 
     socket.on('drawerView', function (scores, data) {
+      console.debug('drawerView', { data });
       switchToView('drawerView');
-      document.getElementById('wordToDraw').innerText = data.word;
-      console.debug(data);
-      //update drawer view and show word they need to draw
+      wordToDraw.innerText = data.word;
     });
 
     socket.on('guesserView', function (scores, data) {
+      console.debug('guesserView', { scores, data });
       switchToView('guesserView');
-      // console.debug('guesserView', { scores, data });
       let spaces = data.word1Length + data.word2Length;
-      let spacesDisplay = ""
-      for (let i = 0; i < spaces; i++) {
-        spacesDisplay = spacesDisplay.concat(" __");
-      }
+      let spacesDisplay = ' __'.repeat(spaces).slice(1); //slice(1) cuts off the leading space
       console.log(spacesDisplay);
 
       let drawerNames = getDrawerNames(scores);
 
-      document.getElementById('nameDrawing1').innerText = "Doodler: " + drawerNames[0];
-      document.getElementById('nameDrawing2').innerText = "Doodler: " + drawerNames[1];
+      nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+      nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
 
       console.debug('drawerView', { scores });
     });
 
-
     socket.on('timerUpdate', function (timeLeft) {
-      for (let timerElement of gameTimeDisplay) {
+      console.debug('timerUpdate', timeLeft);
+      for (let timerElement of gameTimeDisplays) {
         timerElement.innerHTML = timeLeft + ' seconds';
       }
-      console.debug('timerUpdate', timeLeft);
     });
 
     socket.on('gameOverEvent', function (scores) {
       console.debug('gameOverEvent', { scores });
     });
 
-    function getDrawerNames(scores) {
-      let drawer1 = "Drawer 1";
-      let drawer2 = "Drawer 2";
-      for (let data of Object.values(scores)) {
-        if (data.drawer === 1) {
-          drawer1 = data.username;
-        } else if (data.drawer === 2) {
-          drawer2 = data.username;
-        }
-      }
-      return [drawer1, drawer2];
+    //sent to the specific user when they guess right
+    socket.on('correctGuess', function () {
+      console.debug('correctGuess');
+      postChatMessage('You guessed it!');
+    });
 
-    }
-
-
-    //TODO: checking of the guess should be moved server side
-    function guessInput() {
-      const guessInput = document.getElementById('GuessInput').value;
-      // if (guessInput.equals(wordToGuess)) {
-      //   //put display stuff here for the person who guessed
-      //   socket.emit('correctGuess', state, roomInput.value); //updates the player's guessed boolean to true, score changed
-      // }
-      // else {
-      //   socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-      // }
-      socket.emit('playerGuess', guessInput, roomInput.value) //socket.emit('playerGuess',guessInput,socketId)
-
-    }
-
-
-    //prompted when user correctly guessed, sent to everyone
     socket.on('someoneGuessed', function (gameState, socketId, username) {
-      postChatMessage(username + '  has correctly guessed the compound word!');
       // console.debug('someoneGuessed', { gameState });
+      postChatMessage(username + '  has correctly guessed the compound word!');
     });
 
     socket.on('wrongGuess', function (playerGuess, socketId, username) {
       console.debug('wrongGuess', { playerGuess, socketId });
       postChatMessage(username + '  has guessed ' + playerGuess);
-
-      // document.getElementById("playerGuess1").appendChild(document.createTextNode(username + '  has correctly guessed the compound word!'));
-      //update container saying '____ guessed ' + guessInput
     });
 
     socket.on('broadcastJoined', function (username) {
       console.debug('broadcastJoined', { username });
-      console.log('player joined');
-      let br = document.createElement("br");
-      document.getElementById("playerJoin").appendChild(br);
-      document.getElementById("playerJoin").appendChild(document.createTextNode(username + '  has joined! \n'));
-      document.getElementById("playerJoin2").appendChild(br);
-      document.getElementById("playerJoin2").appendChild(document.createTextNode(username + '  has joined! \n'));
+
+      for (el of playerJoinNotifications) {
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(username + '  has joined! \n'));
+      }
     });
 
     socket.on('waitingRoomForPlayer', function (roomId) {
       console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
-      document.getElementById('displayRoom').innerText = 'You are in room ' + roomId + '! Waiting for host to start game...'
+      displayRoom.innerText = 'You are in room ' + roomId + '! Waiting for host to start game...';
     });
-
-    //THIS NEEDS TO BE DONE ACTUALLY!!!!!
-    // socket.on('updateusers',function(data){
-    //     //document.getElementById("userJoin").innerHTML = data + ' has joined.';
-    // });
-
-    // socket.on('connect_failed', function(){
-    //     document.write("sorry, issue with connection.");
-    // })
   </script>
 
 </body>
