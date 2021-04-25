@@ -218,16 +218,7 @@
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    const chatContainers = document.getElementsByClassName('chat-box-container');
-    const chatBoxes = document.getElementsByClassName('chat-box');
-
-    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
-    const copyRoomCodeButton = document.getElementById('copy-room-code');
-
-    const gameTimeDisplays = getElementsById('gameTimeDisplay dGameTimeDisplay');
-
-    const roomInput = document.getElementById('roomIdInput');
-
+    // Object containing all possible views
     const allViews = {
       initialScreen: document.getElementById('initial-screen'),
       waitingRoomForHost: document.getElementById('waiting-room-host'),
@@ -237,22 +228,35 @@
       drawerView: document.getElementById('drawer-view'),
     };
 
-    const guessInputBox = document.getElementById('GuessInput');
-
+    // Initial screen room input
+    const roomInput = document.getElementById('roomIdInput');
+    // Initial screen name input
     const nameInput = document.getElementById('nameInput');
 
+    // Game code display and copy button from host waiting room
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const copyRoomCodeButton = document.getElementById('copy-room-code');
+    // Lobby number display from player waiting room
+    const displayRoom = document.getElementById('displayRoom');
+    // Game rule inputs from host waiting room
     const maxPlayer = document.getElementById('MaxPlayerInput');
     const roundInput = document.getElementById('RoundInput');
     const roundTimer = document.getElementById('RoundTimerInput');
-
-    const wordToDraw = document.getElementById('wordToDraw');
-
-    const nameDrawing1 = document.getElementById('nameDrawing1');
-    const nameDrawing2 = document.getElementById('nameDrawing2');
-
+    // Player join notification divs from waiting rooms
     const playerJoinNotifications = getElementsById('playerJoin playerJoin2');
 
-    const displayRoom = document.getElementById('displayRoom');
+    // Chat boxes from guesser and drawer views
+    const chatContainers = document.getElementsByClassName('chat-box-container');
+    const chatBoxes = document.getElementsByClassName('chat-box');
+    // Game time displays from guesser and drawer views
+    const gameTimeDisplays = getElementsById('gameTimeDisplay dGameTimeDisplay');
+    // Chat input box from guesser view
+    const guessInputBox = document.getElementById('GuessInput');
+    // Canvas username tags from drawer view
+    const nameDrawing1 = document.getElementById('nameDrawing1');
+    const nameDrawing2 = document.getElementById('nameDrawing2');
+    // Word to draw div from drawer view
+    const wordToDraw = document.getElementById('wordToDraw');
 
 
 
@@ -444,7 +448,7 @@
     });
 
     socket.on('drawerView', function (scores, data) {
-      console.debug('drawerView', { data });
+      console.debug('drawerView', { scores, data });
       switchToView('drawerView');
       wordToDraw.innerText = data.word;
     });
@@ -460,8 +464,6 @@
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
-
-      console.debug('drawerView', { scores });
     });
 
     socket.on('timerUpdate', function (timeLeft) {
