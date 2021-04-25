@@ -61,7 +61,8 @@
   <div id='waiting-room-host' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id="gameId"> </p>
-    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly"></input><button id="copy-room-code" onclick="copyLobbyId()">Click to copy</button></h2>
+    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly"></input><button id="copy-room-code"
+        onclick="copyLobbyId()">Click to copy</button></h2>
     <p id='userJoin'> </p>
     <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
     <input type='text' placeholder='Number of Rounds' id='RoundInput' />
@@ -93,14 +94,16 @@
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div id="guesserCanvas1" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas1"
+                class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 1
               </div>
             </div>
           </div>
           <div class="uk-width-1-2" style="height: 100vw">
             <div class="uk-height-1-1 uk-cover-container">
-              <div id="guesserCanvas2" class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              <div id="guesserCanvas2"
+                class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 2
               </div>
             </div>
@@ -155,10 +158,14 @@
           <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
             <div class="uk-flex-column uk-flex">
               <div class="undoButtonContainer center-content" aria-label="undo">
-                <svg class="icon icon-undo"><use xlink:href="#icon-undo"></use></svg>
+                <svg class="icon icon-undo">
+                  <use xlink:href="#icon-undo"></use>
+                </svg>
               </div>
               <div class="paintButtonContainer center-content" aria-label="draw">
-                <svg class="icon icon-paintbrush"><use xlink:href="#icon-paintbrush"></use></svg>
+                <svg class="icon icon-paintbrush">
+                  <use xlink:href="#icon-paintbrush"></use>
+                </svg>
               </div>
               <div class="colorPickerContainer">
                 <h2 id="color-choice"></h2>
@@ -191,7 +198,7 @@
             </div>
           </div>
           <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
-            <div class="uk-align-center uk-flex uk-flex-column" >
+            <div class="uk-align-center uk-flex uk-flex-column">
               <div class="chat-box-container">
                 <ul id="chat-box-drawer" class="chat-box"></ul>
               </div>
@@ -205,17 +212,21 @@
 
   <!--initialize socket object so clients can establish connections-->
   <script>
+    const scrollToBottom = el =>
+      el.scrollTop = el.scrollHeight - el.clientHeight
 
-    const chatBoxGuesser = document.getElementById("chat-box-guesser");
-    const chatBoxDrawer = document.getElementById("chat-box-drawer");
+    const chatContainers = document.getElementsByClassName("chat-box-container");
+    const chatBoxes = document.getElementsByClassName("chat-box");
     function postChatMessage(msg) {
-      const msgLiGuesser = document.createElement("li");
-      msgLiGuesser.innerText = msg;
-      chatBoxGuesser.appendChild(msgLiGuesser);
+      for (chatBox of chatBoxes) {
+        const msgLi = document.createElement("li");
+        msgLi.innerText = msg;
+        chatBox.appendChild(msgLi);
+      }
 
-      const msgLiDrawer = document.createElement("li");
-      msgLiDrawer.innerText = msg;
-      chatBoxDrawer.appendChild(msgLiDrawer);
+      for (chatContainer of chatContainers) {
+        scrollToBottom(chatContainer);
+      }
     }
 
 
@@ -237,7 +248,7 @@
           results.push(item);
         }
       }
-      return(results);
+      return (results);
     }
 
     //let socket = io('/my-namespcae');
@@ -408,8 +419,8 @@
       // console.debug('guesserView', { scores, data });
       let spaces = data.word1Length + data.word2Length;
       let spacesDisplay = ""
-      for (let i= 0; i< spaces; i++) {
-        spacesDisplay= spacesDisplay.concat(" __");
+      for (let i = 0; i < spaces; i++) {
+        spacesDisplay = spacesDisplay.concat(" __");
       }
       console.log(spacesDisplay);
 

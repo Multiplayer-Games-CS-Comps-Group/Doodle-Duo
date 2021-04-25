@@ -104,13 +104,13 @@ function getDrawPairs(gameWords, players) {
       otherStack.add(pStack.peek());
       currPair.drawer2 = pStack.pop();
     } else {
-      if (pStack.size() == 1) {
+      if (pStack.size() === 1) {
         currPair.drawer1 = pStack.pop();
         let temp = otherStack.toArray();
         currPair.drawer2 = temp[Math.floor(Math.random() * temp.length)];
       } else {
         shuffle(playerPool);
-        while (playerPool == players) { //TODO: == doesn't work on arrays
+        while (playerPool === players) { //TODO: == doesn't work on arrays
           shuffle(playerPool);
         }
         addArraytoStack(playerPool, pStack);
@@ -143,7 +143,7 @@ function testGetDrawPairs() { //TODO: delete this function
 
 function checkIfAllDone(playerArray) {
   for (let i = 0; i < playerArray.length; i++) {
-    if (playerArray[i].isDone == 0) {
+    if (playerArray[i].isDone === 0) {
       return false;
     }
   }
@@ -312,7 +312,7 @@ async function startGameLoop(gameInstance) {
       test(players);
 
 
-      if (checkIfAllDone(players) == true) {
+      if (checkIfAllDone(players)) {
         console.log('Done with round early');
         break;
       }
