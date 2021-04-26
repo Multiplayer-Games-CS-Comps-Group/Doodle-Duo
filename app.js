@@ -64,7 +64,7 @@ const createScoreObject = (lobbyId) => {
       username,
       score: lobbies[lobbyId].state.players[socketId].score,
       drawer: 0,
-      gained: 0,
+      gained: lobbies[lobbyId].state.players[socketId].gained,
       doneGuessing: lobbies[lobbyId].state.players[socketId].doneGuessing,
     }
   }
@@ -259,7 +259,7 @@ io.on('connection', function (socket) {
     for (var i = 0; i<allScores.length;i++){
       for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)){
         if(createScoreObject(lobbyId)[socketId].score == allScores[i] && !(found.includes(createScoreObject(lobbyId)[socketId].username)) ){
-          scoreBoard += (i+1)+'. '+createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"\n";
+          scoreBoard += (i+1)+'. '+createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"(+"+createScoreObject(lobbyId)[socketId].gained+"points)\n";
           found.push(createScoreObject(lobbyId)[socketId].username);
           if (globalThis.winner == ''){
             globalThis.winner += createScoreObject(lobbyId)[socketId].username;

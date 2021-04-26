@@ -438,6 +438,7 @@
 
     socket.on('endRoundScores', function (scoresObj) {
       scores.innerText=scoresObj;
+      console.log(scoresObj)
       switchToView('scoreboard');
       console.debug('endRoundScores', { scoresObj });
     });
