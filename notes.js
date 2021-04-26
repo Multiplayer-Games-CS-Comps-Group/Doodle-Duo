@@ -91,7 +91,7 @@ scores = {
  *  - Users needs to exist before the state has been generated
  *  - We could add to it after the round has started and keep track of everything
  *    in users, but it makes sense to keep game data in the state object I think.
- * 
+ *
  * Since we have the guesser and drawer arrays, we shouldn't need to keep
  * track of that in players.
  */

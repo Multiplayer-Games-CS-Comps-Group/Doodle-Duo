@@ -207,7 +207,6 @@ io.on('connection', function (socket) {
       // Update player object score
       lobbies[lobbyId].state.players[socket.id].score += score;
       lobbies[lobbyId].state.players[socket.id].gained += score;
-      //lobbies[lobbyId].state.players[socket.id].guessed = true;
       lobbies[lobbyId].state.players[socket.id].doneGuessing = true;
       lobbies[lobbyId].state.roundInfo.guessCount++;
 
@@ -247,22 +246,22 @@ io.on('connection', function (socket) {
       );
   };
 
-  function createScoreBoard(lobbyId){
-    let scoreBoard = 'The correct word is: '+ lobbies[lobbyId].state.roundInfo.compound.word +'\n'+'Current Rankings: \n';
-    let allScores=[];
-    for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)){
+  function createScoreBoard(lobbyId) {
+    let scoreBoard = 'The correct word is: ' + lobbies[lobbyId].state.roundInfo.compound.word + '\n' + 'Current Rankings: \n';
+    let allScores = [];
+    for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)) {
       allScores.push(createScoreObject(lobbyId)[socketId].score);
       //scoreBoard+=createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"\n";
     }
-    allScores.sort(function(a, b){return b-a});
+    allScores.sort(function (a, b) { return b - a });
     let found = [];
     globalThis.winner = '';
-    for (var i = 0; i<allScores.length;i++){
-      for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)){
-        if(createScoreObject(lobbyId)[socketId].score == allScores[i] && !(found.includes(createScoreObject(lobbyId)[socketId].username)) ){
-          scoreBoard += (i+1)+'. '+createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"(+"+createScoreObject(lobbyId)[socketId].gained+"points)\n";
+    for (var i = 0; i < allScores.length; i++) {
+      for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)) {
+        if (createScoreObject(lobbyId)[socketId].score == allScores[i] && !(found.includes(createScoreObject(lobbyId)[socketId].username))) {
+          scoreBoard += (i + 1) + '. ' + createScoreObject(lobbyId)[socketId].username + ": " + createScoreObject(lobbyId)[socketId].score + "(+" + createScoreObject(lobbyId)[socketId].gained + "points)\n";
           found.push(createScoreObject(lobbyId)[socketId].username);
-          if (globalThis.winner == ''){
+          if (globalThis.winner == '') {
             globalThis.winner += createScoreObject(lobbyId)[socketId].username;
           }
           break
@@ -271,7 +270,7 @@ io.on('connection', function (socket) {
     }
     return scoreBoard
   }
-  
+
 
   function endOfRound(lobbyId) {
     if (lobbies[lobbyId].state.roundInfo.round + 1 >= lobbies[lobbyId].state.rules.numRounds) {
@@ -288,7 +287,7 @@ io.on('connection', function (socket) {
   };
 
   function countdown(lobbyId) {
-    console.log('Time left in a game: ', lobbies[lobbyId].state.timer.timeLeft)
+    // console.log('Time left in a game: ', lobbies[lobbyId].state.timer.timeLeft)
 
     if (lobbies[lobbyId].state.timer.timeLeft <= 0) {
       clearInterval(lobbies[lobbyId].state.timer.id);
@@ -354,7 +353,7 @@ io.on('connection', function (socket) {
   function endOfGame(lobbyId) {
     console.log('Ending the game!');
     let scoreboard = createScoreBoard(lobbyId);
-    scoreboard += 'THE WINNER IS:'+globalThis.winner+'!';
+    scoreboard += 'THE WINNER IS:' + globalThis.winner + '!';
     io.sockets.in(lobbyId).emit('gameOverEvent', scoreboard);
   };
 
