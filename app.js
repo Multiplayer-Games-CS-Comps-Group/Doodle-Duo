@@ -207,7 +207,8 @@ io.on('connection', function (socket) {
       // Update player object score
       lobbies[lobbyId].state.players[socket.id].score += score;
       lobbies[lobbyId].state.players[socket.id].gained += score;
-      lobbies[lobbyId].state.players[socket.id].guessed = true;
+      //lobbies[lobbyId].state.players[socket.id].guessed = true;
+      lobbies[lobbyId].state.players[socket.id].doneGuessing = true;
       lobbies[lobbyId].state.roundInfo.guessCount++;
 
       // Give drawers points
