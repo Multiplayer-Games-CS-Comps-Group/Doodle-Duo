@@ -269,6 +269,8 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
+
+    //ul which stores scoreboard information
     const scores = document.getElementById('score');
 
 
@@ -310,7 +312,7 @@
      * Posts a message to all chatboxes, and scrolls them if they are already scrolled
      * all the way down.
      */
-    function postChatMessage(msg) {
+    function postChatMessage(msg, username = null) {
       const elementsToScroll = [];
       for (chatContainer of chatContainers) {
         if (isScrolledToBottom(chatContainer)) elementsToScroll.push(chatContainer);
@@ -318,7 +320,17 @@
 
       for (chatBox of chatBoxes) {
         const msgLi = document.createElement('li');
-        msgLi.innerText = msg;
+
+        if (username) {
+          const usernameB = document.createElement('b');
+          usernameB.innerText = username + ": ";
+          msgLi.appendChild(usernameB);
+        }
+
+        const msgSpan = document.createElement('span');
+        msgSpan.innerText = msg;
+        msgLi.appendChild(msgSpan);
+
         chatBox.appendChild(msgLi);
       }
 
@@ -340,6 +352,14 @@
         } else {
           view.style.display = 'none';
         }
+      }
+
+      // Specialized view behaviors
+      switch (newViewName) {
+        case "guesserView":
+        case "drawerView":
+          for (chatContainer of chatContainers) scrollToBottom(chatContainer);
+          break;
       }
     }
 
@@ -437,7 +457,7 @@
     });
 
     socket.on('endRoundScores', function (scoresObj) {
-      scores.innerText=scoresObj;
+      scores.innerText = scoresObj;
       console.log(scoresObj)
       switchToView('scoreboard');
       console.debug('endRoundScores', { scoresObj });
@@ -483,13 +503,13 @@
     socket.on('timerUpdate', function (timeLeft) {
       console.debug('timerUpdate', timeLeft);
       for (let timerElement of gameTimeDisplays) {
-        timerElement.innerHTML = timeLeft + ' seconds';
+        timerElement.innerText = timeLeft + ' seconds';
       }
     });
 
     socket.on('gameOverEvent', function (scoresObj) {
       switchToView('scoreboard');
-      scores.innerText= scoresObj;
+      scores.innerText = scoresObj;
       console.debug('gameOverEvent', { scoresObj });
     });
 
@@ -500,13 +520,18 @@
     });
 
     socket.on('someoneGuessed', function (gameState, socketId, username) {
-      // console.debug('someoneGuessed', { gameState });
+      console.debug('someoneGuessed', { gameState, socketId, username });
       postChatMessage(username + '  has correctly guessed the compound word!');
+    });
+
+    socket.on('closeGuess', function () {
+      console.debug('closeGuess');
+      postChatMessage('Your guess was close...');
     });
 
     socket.on('wrongGuess', function (playerGuess, socketId, username) {
       console.debug('wrongGuess', { playerGuess, socketId });
-      postChatMessage(username + '  has guessed ' + playerGuess);
+      postChatMessage(playerGuess, username);
     });
 
     socket.on('broadcastJoined', function (username) {
