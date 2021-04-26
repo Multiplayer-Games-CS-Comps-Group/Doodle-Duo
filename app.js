@@ -64,6 +64,7 @@ const createScoreObject = (lobbyId) => {
       username,
       score: lobbies[lobbyId].state.players[socketId].score,
       drawer: 0,
+      gained: 0,
       doneGuessing: lobbies[lobbyId].state.players[socketId].doneGuessing,
     }
   }
@@ -205,14 +206,17 @@ io.on('connection', function (socket) {
 
       // Update player object score
       lobbies[lobbyId].state.players[socket.id].score += score;
+      lobbies[lobbyId].state.players[socket.id].gained += score;
       lobbies[lobbyId].state.players[socket.id].guessed = true;
       lobbies[lobbyId].state.roundInfo.guessCount++;
 
       // Give drawers points
       let drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
       lobbies[lobbyId].state.players[drawer1].score += 5;
+      lobbies[lobbyId].state.players[drawer1].gained += 5;
       let drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
       lobbies[lobbyId].state.players[drawer2].score += 5;
+      lobbies[lobbyId].state.players[drawer2].gained += 5;
 
       updateGuessed(lobbyId, socket);
       if (allGuessed(lobbyId)) {

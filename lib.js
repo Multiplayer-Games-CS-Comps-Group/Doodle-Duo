@@ -256,6 +256,8 @@ function setUpRound(gameInstance, roundNum) {
 
   for (let id of allPlayers) {
     gameInstance.players[id].doneGuessing = (id === drawers.drawer1 || id === drawers.drawer2);
+    //Reset their gained score for the round
+    gameInstance.players[id].gained = 0;
   }
 }
 
@@ -275,6 +277,8 @@ function testCreateGameInstance() { //TODO: delete this function
   console.log("newGameInstance.meta.drawPairs round 0", newGameInstance.meta.drawPairs);
 }
 
+
+/* DEPRECATED
 async function startGameLoop(gameInstance) {
   // Easier access for variables in game instance
   let roundTimer = gameInstance.rules.roundTimer;
@@ -326,13 +330,12 @@ async function startGameLoop(gameInstance) {
   console.log('GAME DONE');
   return [3, 2, 4, 5, 1, 6, 7];
 }
-
+*/
 
 /* Export the functions */
 module.exports = {
-  getLDistance, readCSV, shuffle, buckets, cloneArray,
-  addArraytoStack, getDrawPairs, getGameWords, checkIfAllDone,
-  createGameInstance, startGameLoop, getAllGuessers, setUpRound,
+  getLDistance, checkIfAllDone,
+  createGameInstance, getAllGuessers, setUpRound,
   calculateScore
 };
 

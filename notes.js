@@ -11,10 +11,12 @@ lobbies = {
       players: {
         socketId1: {
           score: 50,
+          gained: 0,
           doneGuessing: true, //Drawers start with doneGuessing = true
         },
         socketId2: {
           score: 50,
+          gained: 0,
           doneGuessing: false,
         },
         //...
@@ -66,12 +68,14 @@ scores = {
   socketId1: {
     username: 'username1',
     score: 55,
+    gained: 8, // number of points gained in the current round, resets each round
     drawer: 0, //0 = not drawer, 1 = left drawer, 2 = right drawer
     doneGuessing: true,
   },
   socketId2: {
     username: 'username2',
     score: 37,
+    gained: 0, // number of points gained in the current round, resests each round
     drawer: 0, //0 = not drawer, 1 = left drawer, 2 = right drawer
     doneGuessing: false
   },
