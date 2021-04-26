@@ -512,8 +512,13 @@
     });
 
     socket.on('someoneGuessed', function (gameState, socketId, username) {
-      // console.debug('someoneGuessed', { gameState });
+      console.debug('someoneGuessed', { gameState, socketId, username });
       postChatMessage(username + '  has correctly guessed the compound word!');
+    });
+
+    socket.on('closeGuess', function () {
+      console.debug('closeGuess');
+      postChatMessage('Your guess was close...');
     });
 
     socket.on('wrongGuess', function (playerGuess, socketId, username) {

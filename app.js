@@ -223,13 +223,9 @@ io.on('connection', function (socket) {
         clearInterval(lobbies[lobbyId].state.timer.id);
         endOfRound(lobbyId);
       }
-    }// TODO: Needs a case for when distance = 1? (Returns 'you were close!' or something?)
-    else if (ld === 1) {
-      io.sockets.in(lobbyId)
-        .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]
-        );
-    }
-    else {
+    } else if (ld <= 2) {
+      socket.emit('closeGuess');
+    } else {
       io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]);
     }
