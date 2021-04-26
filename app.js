@@ -242,6 +242,32 @@ io.on('connection', function (socket) {
       );
   };
 
+  function createScoreBoard(lobbyId){
+    let scoreBoard = 'The correct word is: '+ lobbies[lobbyId].state.roundInfo.compound.word +'\n'+'Current Rankings: \n';
+    let allScores=[];
+    for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)){
+      allScores.push(createScoreObject(lobbyId)[socketId].score);
+      //scoreBoard+=createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"\n";
+    }
+    allScores.sort(function(a, b){return b-a});
+    let found = [];
+    globalThis.winner = '';
+    for (var i = 0; i<allScores.length;i++){
+      for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)){
+        if(createScoreObject(lobbyId)[socketId].score == allScores[i] && !(found.includes(createScoreObject(lobbyId)[socketId].username)) ){
+          scoreBoard += (i+1)+'. '+createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"\n";
+          found.push(createScoreObject(lobbyId)[socketId].username);
+          if (globalThis.winner == ''){
+            globalThis.winner += createScoreObject(lobbyId)[socketId].username;
+          }
+          break
+        }
+      }
+    }
+    return scoreBoard
+  }
+  
+
   function endOfRound(lobbyId) {
     if (lobbies[lobbyId].state.roundInfo.round + 1 >= lobbies[lobbyId].state.rules.numRounds) {
       endOfGame(lobbyId);
@@ -249,7 +275,8 @@ io.on('connection', function (socket) {
       console.log('End of the round! Displaying scores now'); //TODO: TEMP
       console.log(`Next round will start in ${SCORE_DISPLAY_TIMER} seconds`); //TODO: TEMP
       io.sockets.in(lobbyId)
-        .emit('endRoundScores', createScoreObject(lobbyId));
+        //.emit('endRoundScores', createScoreObject(lobbyId));
+        .emit('endRoundScores', createScoreBoard(lobbyId));
 
       setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }
@@ -321,7 +348,9 @@ io.on('connection', function (socket) {
 
   function endOfGame(lobbyId) {
     console.log('Ending the game!');
-    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId));
+    let scoreboard = createScoreBoard(lobbyId);
+    scoreboard += 'THE WINNER IS:'+globalThis.winner+'!';
+    io.sockets.in(lobbyId).emit('gameOverEvent', scoreboard);
   };
 
   function startGameTimer(lobbyId) {

@@ -208,6 +208,17 @@
       </div>
     </div>
   </div>
+  <!--    Scoreboard    -->
+  <div style="display:none" id="scoreboard">
+    <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
+      <div class="uk-align-center">
+        <div class="chat-box-container">
+          <ul id="score" class="chat-box"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="/socket.io/socket.io.js"></script>
 
   <!--initialize socket object so clients can establish connections-->
@@ -226,6 +237,7 @@
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
+      scoreboard: document.getElementById('scoreboard')
     };
 
     // Initial screen room input
@@ -257,6 +269,7 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
+    const scores = document.getElementById('score');
 
 
 
@@ -424,6 +437,8 @@
     });
 
     socket.on('endRoundScores', function (scoresObj) {
+      scores.innerText=scoresObj;
+      switchToView('scoreboard');
       console.debug('endRoundScores', { scoresObj });
     });
 
@@ -443,12 +458,6 @@
       console.debug('tooFewPlayers');
       //reset();
       alert('We recommend a minimum of four players to play this game');
-    });
-
-    socket.on('endRoundScores', function () {
-      //called after end of each round, shows for 5 seconds
-      //set guesser view and drawer view styles display none to hide them
-      //display scoreboard with game/round info
     });
 
     socket.on('drawerView', function (scores, data) {
@@ -477,8 +486,10 @@
       }
     });
 
-    socket.on('gameOverEvent', function (scores) {
-      console.debug('gameOverEvent', { scores });
+    socket.on('gameOverEvent', function (scoresObj) {
+      switchToView('scoreboard');
+      scores.innerText= scoresObj;
+      console.debug('gameOverEvent', { scoresObj });
     });
 
     //sent to the specific user when they guess right
