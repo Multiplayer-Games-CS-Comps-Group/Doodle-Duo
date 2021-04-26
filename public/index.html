@@ -269,7 +269,7 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
-    
+
     //ul which stores scoreboard information
     const scores = document.getElementById('score');
 
@@ -320,7 +320,7 @@
 
       for (chatBox of chatBoxes) {
         const msgLi = document.createElement('li');
-        
+
         if (username) {
           const usernameB = document.createElement('b');
           usernameB.innerText = username + ": ";
@@ -352,6 +352,14 @@
         } else {
           view.style.display = 'none';
         }
+      }
+
+      // Specialized view behaviors
+      switch (newViewName) {
+        case "guesserView":
+        case "drawerView":
+          for (chatContainer of chatContainers) scrollToBottom(chatContainer);
+          break;
       }
     }
 
