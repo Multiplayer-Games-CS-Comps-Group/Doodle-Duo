@@ -7,7 +7,7 @@ const buckets = require('buckets-js');
 const fs = require('fs');
 
 /* Levenshtein function to check guess to answer */
-/* Correct guess: true, Incorrect: false, Close: -1*/
+/* Returns the distance difference between guess and target*/
 function getLDistance(guess, target) {
   guess = guess.toLowerCase();
   target = target.toLowerCase();
@@ -126,20 +126,6 @@ function getDrawPairs(gameWords, players) {
   return pairs;
 }
 
-function testGetDrawPairs() { //TODO: delete this function
-  console.log(
-    getDrawPairs(
-      ["word1", "word2", "word3", "word4", "word5", "word6"],
-      ["p1", "p2", "p3", "p4", "p5"]
-    )
-  )
-  console.log(
-    getDrawPairs(
-      ["word1", "word2", "word3", "word4", "word5", "word6"],
-      ["p1", "p2", "p3"]
-    )
-  )
-}
 
 function checkIfAllDone(playerArray) {
   for (let i = 0; i < playerArray.length; i++) {
@@ -149,6 +135,7 @@ function checkIfAllDone(playerArray) {
   }
   return true;
 }
+
 
 function getAllGuessers(playerArray, drawers) {
   let updatedArray = [];
@@ -170,7 +157,8 @@ function getAllGuessers(playerArray, drawers) {
 
 
 function calculateScore(guessCount) {
-  var out = 10 - 2*(guessCount);
+  var out = 10 - (2*parseInt(guessCount));
+  console.log(`Calculate Score: out=${out}, guessCount=${guessCount}`);
   if (out >= 2) { return out; }
   else { return 2; }
 }
@@ -249,6 +237,7 @@ function setUpRound(gameInstance, roundNum) {
   console.log(curDrawPair);
   gameInstance.roundInfo = {
     round: roundNum,
+    guessCount: 0,
     compound: curDrawPair.compound,
     drawers,
     guessers: allPlayers.filter(id => (id !== drawers.drawer1 && id !== drawers.drawer2)),
@@ -277,60 +266,6 @@ function testCreateGameInstance() { //TODO: delete this function
   console.log("newGameInstance.meta.drawPairs round 0", newGameInstance.meta.drawPairs);
 }
 
-
-/* DEPRECATED
-async function startGameLoop(gameInstance) {
-  // Easier access for variables in game instance
-  let roundTimer = gameInstance.rules.roundTimer;
-  let players = gameInstance.players;
-  let drawPairs = gameInstance.meta.drawPairs;
-
-  // Set game round to 1
-  gameInstance.meta.currRound += 1;
-
-  for (let i = 0; i < drawPairs.length; i++) {
-    let currWord = drawPairs[i][0];
-    let drawer1 = drawPairs[i][1];
-    //emit event to players who r drawers that they are the drawer
-    let drawer2 = drawPairs[i][2];
-    console.log(`${currWord}: ${drawer1.userName}, ${drawer2.userName}`);
-
-    for (let i = 0; i < players.length; i++) {
-      if (players[i].websocketID === drawer1.websocketID || players[i].websocketID === drawer2.websocketID) {
-        players[i].isDone = 1;
-        players[i].isDrawer = 1;
-      }
-      else {
-        players[i].isDone = 0;
-        players[i].isDrawer = 0;
-      }
-    }
-    console.log(players);
-
-    let startTime = Date.now();
-    while ((Date.now() - startTime) < roundTimer) {
-      //myTimer();
-
-
-      // test function that changes the 2 player to be set to 'done/1'
-      test(players);
-
-
-      if (checkIfAllDone(players)) {
-        console.log('Done with round early');
-        break;
-      }
-    }
-
-    //After everyone guesses, or time runs out
-    //Increment game round
-    gameInstance.meta.currRound += 1;
-    console.log('Current round end!\n\n');
-  }
-  console.log('GAME DONE');
-  return [3, 2, 4, 5, 1, 6, 7];
-}
-*/
 
 /* Export the functions */
 module.exports = {

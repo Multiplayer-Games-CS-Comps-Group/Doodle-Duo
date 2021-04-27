@@ -202,13 +202,12 @@ io.on('connection', function (socket) {
 
       // Calculate guesser score
       let score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
-      console.log("Calculated score: ", score);
 
       // Update player object score
       lobbies[lobbyId].state.players[socket.id].score += score;
       lobbies[lobbyId].state.players[socket.id].gained += score;
       lobbies[lobbyId].state.players[socket.id].doneGuessing = true;
-      lobbies[lobbyId].state.roundInfo.guessCount++;
+      lobbies[lobbyId].state.roundInfo.guessCount += 1;
 
       // Give drawers points
       let drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
