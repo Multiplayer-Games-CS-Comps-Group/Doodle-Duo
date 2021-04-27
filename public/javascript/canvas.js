@@ -11,12 +11,37 @@ const canvas1 = document.getElementById("canvas-1");
 canvas1.width = 200;
 canvas1.height = 400;
 
+const guesscanvas1 = document.getElementById("guesscanvas-1");
+guesscanvas1.width = 200;
+guesscanvas1.height = 400;
+
+const guesscanvas2 = document.getElementById("guesscanvas-2");
+guesscanvas1.width = 200;
+guesscanvas1.height = 400;
+
+
 const ctx1 = canvas1.getContext("2d");
 ctx1.lineCap = "round";
+
+const gctx1 = guesscanvas1.getContext("2d");
+gctx1.lineCap = "round";
+
+const gctx2 = guesscanvas2.getContext("2d");
+gctx2.lineCap = "round";
 
 const offsetPosToCanvasPos = (x, y) => [
   x / canvas1.offsetWidth * canvas1.width,
   y / canvas1.offsetHeight * canvas1.height
+]
+
+const offsetPosToCanvasPos1 = (x, y) => [
+  x / guesscanvas1.offsetWidth * guesscanvas1.width,
+  y / guesscanvas1.offsetHeight * guesscanvas1.height
+]
+
+const offsetPosToCanvasPos2 = (x, y) => [
+  x / guesscanvas2.offsetWidth * guesscanvas2.width,
+  y / guesscanvas2.offsetHeight * guesscanvas2.height
 ]
 
 
@@ -62,6 +87,7 @@ const drawAndStore = (previousX, previousY, currentX, currentY, newPoint = false
     }
   });
   drawSegment(previousX, previousY, currentX, currentY);
+  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
 }
 
 const fillAndStore = (x, y, fillColor) => {
@@ -74,6 +100,7 @@ const fillAndStore = (x, y, fillColor) => {
     }
   });
   floodFill(x, y, fillColor);
+  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
 }
 
 const undoDrawingEvents = () => {
@@ -95,6 +122,7 @@ const undoButton = document.getElementById("undo-button");
 undoButton.onclick = e => {
   e.preventDefault();
   undoDrawingEvents();
+  socket.emit('undoEvent', drawingEvents, drawerNumber);
 }
 
 const drawSegment = (previousX, previousY, currentX, currentY) => {
@@ -110,6 +138,7 @@ let [prevX, prevY] = [0, 0];
 const clearCanvas1 = () => {
   ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
   drawingEvents = []; //COULD make this be a clearCanvasEvent so it could be undone
+  socket.emit('clearEvent', drawingEvents, drawerNumber);
 }
 
 const clearCanvasButton = document.getElementById("clear-canvas");
@@ -346,5 +375,150 @@ const floodFill = (startX, startY, fillColor) => {
   ctx1.putImageData(imgData, 0, 0);
 }
 
+/* ~~~~~~ Updating Guessers ~~~~~~ */
+
+const handleDrawingEvent1 = e => {
+  switch (e.type) {
+    case "draw":
+      gctx1.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
+      gctx1.lineWidth = e.data.size;
+      drawSegment1(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
+      break;
+    case "fill":
+      floodFill1(e.data.x, e.data.y, e.data.color);
+      break;
+    default:
+      break;
+  }
+}
 
 
+const drawSegment1 = (previousX, previousY, currentX, currentY) => {
+  gctx1.beginPath(); // This empties the list of things to be drawn by stroke()
+  gctx1.moveTo(previousX, previousY);
+  gctx1.lineTo(currentX, currentY);
+  gctx1.stroke();
+}
+
+const floodFill1 = (startX, startY, fillColor) => {
+  const spreadColor = gctx1.getImageData(startX, startY, 1, 1).data;
+  const w = guesscanvas1.width;
+  const h = guesscanvas1.height;
+  const imgData = gctx1.getImageData(0, 0, w, h);
+
+  const pixelStack = [];
+
+  let curX = startX;
+  let curY = startY;
+
+  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
+
+  pixelStack.push([curX, curY]);
+
+  while (pixelStack.length > 0) {
+    let topAdd = true;
+    let bottomAdd = true;
+    [curX, curY] = pixelStack.pop();
+
+    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
+
+    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
+      setColor(fillColor, imgData, curX, curY, w);
+
+      if (topAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
+          pixelStack.push([curX, curY - 1]);
+          topAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
+      }
+
+      if (bottomAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
+          pixelStack.push([curX, curY + 1]);
+          bottomAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
+      }
+
+      curX += 1;
+    }
+  }
+
+  gctx1.putImageData(imgData, 0, 0);
+}
+
+const handleDrawingEvent2 = e => {
+  switch (e.type) {
+    case "draw":
+      gctx2.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
+      gctx2.lineWidth = e.data.size;
+      drawSegment2(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
+      break;
+    case "fill":
+      floodFill2(e.data.x, e.data.y, e.data.color);
+      break;
+    default:
+      break;
+  }
+}
+
+
+const drawSegment2 = (previousX, previousY, currentX, currentY) => {
+  gctx2.beginPath(); // This empties the list of things to be drawn by stroke()
+  gctx2.moveTo(previousX, previousY);
+  gctx2.lineTo(currentX, currentY);
+  gctx2.stroke();
+}
+
+const floodFill2 = (startX, startY, fillColor) => {
+  const spreadColor = gctx2.getImageData(startX, startY, 1, 1).data;
+  const w = guesscanvas2.width;
+  const h = guesscanvas2.height;
+  const imgData = gctx2.getImageData(0, 0, w, h);
+
+  const pixelStack = [];
+
+  let curX = startX;
+  let curY = startY;
+
+  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
+
+  pixelStack.push([curX, curY]);
+
+  while (pixelStack.length > 0) {
+    let topAdd = true;
+    let bottomAdd = true;
+    [curX, curY] = pixelStack.pop();
+
+    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
+
+    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
+      setColor(fillColor, imgData, curX, curY, w);
+
+      if (topAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
+          pixelStack.push([curX, curY - 1]);
+          topAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
+      }
+
+      if (bottomAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
+          pixelStack.push([curX, curY + 1]);
+          bottomAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
+      }
+
+      curX += 1;
+    }
+  }
+
+  gctx2.putImageData(imgData, 0, 0);
+}

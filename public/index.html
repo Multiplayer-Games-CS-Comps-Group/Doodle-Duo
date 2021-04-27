@@ -12,6 +12,9 @@
   <!-- UIkit JS -->
   <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+
+  <script src="./javascript/colorPicker.js" defer></script>
+  <script src="./javascript/canvas.js" defer></script>
 </head>
 
 <body>
@@ -97,6 +100,7 @@
               <div id="guesserCanvas1"
                 class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 1
+                <canvas id="guesscanvas-1" width="200" height="400"></canvas>
               </div>
             </div>
           </div>
@@ -105,6 +109,7 @@
               <div id="guesserCanvas2"
                 class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 Canvas 2
+                <canvas id="guesscanvas-2" width="200" height="400"></canvas>
               </div>
             </div>
           </div>
@@ -225,7 +230,7 @@
   <script>
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     const socket = io();
-
+    var drawerNumber = 0;
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -483,6 +488,7 @@
 
     socket.on('drawerView', function (scores, data) {
       console.debug('drawerView', { scores, data });
+      drawerNumber = data.drawer;
       switchToView('drawerView');
       wordToDraw.innerText = data.word;
     });
@@ -547,6 +553,58 @@
       console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
       displayRoom.innerText = 'You are in room ' + roomId + '! Waiting for host to start game...';
+    });
+
+    socket.on('drawingUpdate', function (drawingEvents, drawNum) {
+      //console.log('drawingUpdate Client');
+      if(drawNum == 1){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent1(drawingEvents[i]);
+        }
+      }
+      else if(drawNum == 2){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent2(drawingEvents[i]);
+        }
+      }
+      
+    });
+    socket.on('undoEvent', function (drawingEvents, drawNum) {
+      //console.log('drawingUpdate Client');
+      if(drawNum == 1){
+        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+        gctx1.beginPath();
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent1(drawingEvents[i]);
+        }
+        gctx1.stroke();
+
+        updateColor();
+        updateWidth();
+      }
+      else if(drawNum == 2){
+        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+        gctx2.beginPath();
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent2(drawingEvents[i]);
+        }
+        gctx2.stroke();
+
+        updateColor();
+        updateWidth();
+      }
+      
+    });
+
+    socket.on('clearEvent', function (drawingEvents, drawNum) {
+      //console.log('drawingUpdate Client');
+      if(drawNum == 1){
+        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+      }
+      else if(drawNum == 2){
+        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+      }
+      
     });
   </script>
 

@@ -194,6 +194,22 @@ io.on('connection', function (socket) {
     startRound(lobbyId);
   });
 
+  socket.on('drawingUpdate', function (drawingEvents, drawNum) {
+    let lobbyId = socket.lobbyId;
+    //console.log('Drawing Update Detected on Server:');
+    io.sockets.in(lobbyId).emit('drawingUpdate', drawingEvents, drawNum);
+  });
+  socket.on('undoEvent', function (drawingEvents, drawNum) {
+    let lobbyId = socket.lobbyId;
+    //console.log('Drawing Update Detected on Server:');
+    io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
+  });
+  socket.on('clearEvent', function (drawingEvents, drawNum) {
+    let lobbyId = socket.lobbyId;
+    //console.log('Drawing Update Detected on Server:');
+    io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
+  });
+
   socket.on('playerGuess', function (playerGuess) {
     console.log('PlayerGuess function is being called!');
     let lobbyId = socket.lobbyId;
