@@ -1,32 +1,43 @@
-// TODO:
-// Finish adding all needed canvas control buttons
-// Make flood-fill work in mobile mode
-// Make flood fill distinguish between transparent black and nontransparent black
-//  - Or just make the default canvas not be transparent black
-// Make cursor change on-hover
-// Animated (on-hover, on-click) svg buttons?
+'use strict';
 
-/* ~~~~~~~~~~~~ General Setup ~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~ */
+let drawMode = 0;
+let currentSize = 5;
+let currentRGB = [0, 0, 0];
+
+let drawingEvents = [];
+let [prevX, prevY] = [0, 0];
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ HTML Elements ~~~~~~~~~~~~~~~~~~~~~~~~ */
 const canvas1 = document.getElementById("canvas-1");
+const guesscanvas1 = document.getElementById("guesscanvas-1");
+const guesscanvas2 = document.getElementById("guesscanvas-2");
+
+const ctx1 = canvas1.getContext("2d");
+const gctx1 = guesscanvas1.getContext("2d");
+const gctx2 = guesscanvas2.getContext("2d");
+
+const undoButton = document.getElementById("undo-button");
+const clearCanvasButton = document.getElementById("clear-button");
+const brushSize = document.getElementById("brush-size");
+const colorSelect = document.querySelector('.color-range')
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ General Setup ~~~~~~~~~~~~~~~~~~~~~~~~ */
 canvas1.width = 200;
 canvas1.height = 400;
 
-const guesscanvas1 = document.getElementById("guesscanvas-1");
 guesscanvas1.width = 200;
 guesscanvas1.height = 400;
 
-const guesscanvas2 = document.getElementById("guesscanvas-2");
 guesscanvas1.width = 200;
 guesscanvas1.height = 400;
 
-
-const ctx1 = canvas1.getContext("2d");
 ctx1.lineCap = "round";
-
-const gctx1 = guesscanvas1.getContext("2d");
 gctx1.lineCap = "round";
-
-const gctx2 = guesscanvas2.getContext("2d");
 gctx2.lineCap = "round";
 
 const offsetPosToCanvasPos = (x, y) => [
@@ -45,17 +56,86 @@ const offsetPosToCanvasPos2 = (x, y) => [
 ]
 
 
-/* ~~~~~~~~~~~~ Drawing Events ~~~~~~~~~~~~ */
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Custom Canvas Cursor ~~~~~~~~~~~~~~~~~~~~~~~~ */
+// Unfortunately, browsers do not give access to user zoom level:
+// https://css-tricks.com/can-javascript-detect-the-browsers-zoom-level/
+// The best I could do is use the original value of this and assume it means 100%.
+
+const updateCursor = () => {
+  if (drawMode === 0) {
+    const canvasWidth = canvas1.getBoundingClientRect().width;
+    const radius = Math.round(currentSize / 2 * canvasWidth / canvas1.width);
+
+    const newStyle = `url(\"data:image/svg+xml;utf8, \
+      <svg xmlns=\\"http://www.w3.org/2000/svg\\" version=\\"1.1\\" width=\\"${radius * 2 + 2}\\" height=\\"${radius * 2 + 2}\\">\
+      <circle cx=\\"${radius}\\" cy=\\"${radius}\\" r=\\"${radius}\\" \
+      style=\\"fill: rgb(${currentRGB[0]},${currentRGB[1]},${currentRGB[2]}); stroke: rgb(0,0,0);\\"/>\
+      </svg>\") ${radius + 1} ${radius + 1}, auto`
+    canvas1.style.cursor = newStyle;
+  } else if (drawMode === 1) {
+    canvas1.style.cursor = 'url(paintbucket.svg) 24 24, auto';
+  }
+}
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Control Panel Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~ */
+/**
+ * Modes can be: 0 = draw; 1 = fill
+ * 
+ * Called from index.html
+ */
+const setDrawMode = (newMode) => {
+  drawMode = newMode;
+  updateCursor();
+}
+
+/* ------------ Undo Button ------------ */
+undoButton.onclick = e => {
+  e.preventDefault();
+  undoDrawingEvents();
+  socket.emit('undoEvent', drawingEvents, drawerNumber);
+}
+
+/* ------------ Clear Canvas Button ------------ */
+clearCanvasButton.onclick = e => {
+  e.preventDefault();
+  clearCanvas1();
+}
+
+/* ------------ Color Select Slider ------------ */
+const updateColor = () => {
+  let hue = ((colorSelect.value / 100) * 360).toFixed(0);
+  currentRGB = hsl2Rgb(hue, 100, 50);
+  ctx1.strokeStyle = rgb2Hex(currentRGB[0], currentRGB[1], currentRGB[2]);
+
+  updateCursor();
+}
+colorSelect.addEventListener('change', updateColor);
+updateColor();
+
+/* ------------ Brush Size Slider ------------ */
+const updateWidth = () => {
+  currentSize = brushSize.value;
+  ctx1.lineWidth = currentSize;
+
+  updateCursor();
+}
+brushSize.onchange = updateWidth;
+updateWidth();
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Drawing Events ~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ------------ Draw and Fill ------------ */
 const findLastIndex = (list, fxn) => {
-  for (let i = list.length-1; i >=0; i--) {
+  for (let i = list.length - 1; i >= 0; i--) {
     if (fxn(list[i])) return i;
   }
 
   return -1;
 }
-
-var drawingEvents = [];
 
 const handleDrawingEvent = e => {
   switch (e.type) {
@@ -74,7 +154,7 @@ const handleDrawingEvent = e => {
 
 const storeBreakpointEvent = () => drawingEvents.push({ type: "breakpoint", data: {} });
 
-const drawAndStore = (previousX, previousY, currentX, currentY, newPoint = false) => {
+const drawAndStore = (previousX, previousY, currentX, currentY) => {
   drawingEvents.push({
     type: "draw",
     data: {
@@ -103,6 +183,14 @@ const fillAndStore = (x, y, fillColor) => {
   socket.emit('drawingUpdate', drawingEvents, drawerNumber);
 }
 
+const drawSegment = (previousX, previousY, currentX, currentY) => {
+  ctx1.beginPath(); // This empties the list of things to be drawn by stroke()
+  ctx1.moveTo(previousX, previousY);
+  ctx1.lineTo(currentX, currentY);
+  ctx1.stroke();
+}
+
+/* ------------ Undo ------------ */
 const undoDrawingEvents = () => {
   const lastIndex = Math.max(0, findLastIndex(drawingEvents, obj => obj.type === "breakpoint"));
   drawingEvents = drawingEvents.slice(0, lastIndex);
@@ -118,33 +206,11 @@ const undoDrawingEvents = () => {
   updateWidth();
 }
 
-const undoButton = document.getElementById("undo-button");
-undoButton.onclick = e => {
-  e.preventDefault();
-  undoDrawingEvents();
-  socket.emit('undoEvent', drawingEvents, drawerNumber);
-}
-
-const drawSegment = (previousX, previousY, currentX, currentY) => {
-  ctx1.beginPath(); // This empties the list of things to be drawn by stroke()
-  ctx1.moveTo(previousX, previousY);
-  ctx1.lineTo(currentX, currentY);
-  ctx1.stroke();
-}
-
-let [prevX, prevY] = [0, 0];
-
-/* ~~~~~~~~~~~~ Clear Canvas ~~~~~~~~~~~~ */
+/* ------------ Clear Canvas ------------ */
 const clearCanvas1 = () => {
   ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
   drawingEvents = []; //COULD make this be a clearCanvasEvent so it could be undone
   socket.emit('clearEvent', drawingEvents, drawerNumber);
-}
-
-const clearCanvasButton = document.getElementById("clear-canvas");
-clearCanvasButton.onclick = e => {
-  e.preventDefault();
-  clearCanvas1();
 }
 
 // drawingEvent = {
@@ -171,55 +237,10 @@ clearCanvasButton.onclick = e => {
 //   data: {}
 // }
 
-/* ~~~~~~~~~~~~ Custom Canvas Cursor ~~~~~~~~~~~~ */
-// Unfortunately, browsers do not give access to user zoom level:
-// https://css-tricks.com/can-javascript-detect-the-browsers-zoom-level/
-// The best I could do is use the original value of this and assume it means 100%.
-const updateCursor = () => {
-  const canvasWidth = canvas1.getBoundingClientRect().width;
-  const radius = Math.round(currentSize/2 * canvasWidth/canvas1.width);
 
-  const newStyle = `url(\"data:image/svg+xml;utf8, \
-    <svg xmlns=\\"http://www.w3.org/2000/svg\\" version=\\"1.1\\" width=\\"${radius*2+2}\\" height=\\"${radius*2+2}\\">\
-    <circle cx=\\"${radius}\\" cy=\\"${radius}\\" r=\\"${radius}\\" \
-    style=\\"fill: rgb(${currentRGB[0]},${currentRGB[1]},${currentRGB[2]}); stroke: rgb(0,0,0);\\"/>\
-    </svg>\") ${radius+1} ${radius+1}, auto`
-  canvas1.style.cursor = newStyle;
-}
 
-/* ~~~~~~~~~~~~ Color Selection ~~~~~~~~~~~~ */
-const colorSelect = document.querySelector('.color-range')
-var currentRGB = [0, 0, 0];
-
-const updateColor = () => {
-  var hue = ((colorSelect.value / 100) * 360).toFixed(0);
-  currentRGB = hsl2Rgb(hue, 100, 50);
-  ctx1.strokeStyle = rgb2Hex(currentRGB[0], currentRGB[1], currentRGB[2]);
-
-  updateCursor();
-}
-
-colorSelect.addEventListener('input', updateColor);
-
-updateColor();
-
-/* ~~~~~~~~~~~~ Brush Size ~~~~~~~~~~~~ */
-const brushSize = document.getElementById("brush-size");
-var currentSize = 5;
-
-const updateWidth = () => {
-  currentSize = brushSize.value;
-  ctx1.lineWidth = currentSize;
-
-  updateCursor();
-}
-
-brushSize.onchange = updateWidth;
-
-updateWidth();
-
-/* ~~~~~~~~~~~~ Tracking User Inputs ~~~~~~~~~~~~ */
-/* ~~~~~~ Mouse Inputs ~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Tracking User Inputs ~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ------------ Mouse Inputs ------------ */
 const updatePreviousPositions = (x, y) => {
   [prevX, prevY] = [x, y];
 }
@@ -256,16 +277,18 @@ canvas1.onmousedown = ({ offsetX, offsetY, buttons }) => {
 
   if (buttons === 1) {
     storeBreakpointEvent();
-    drawAndStore(canvasX, canvasY, canvasX, canvasY, newPoint = true);
-  } else if (buttons === 2) {
-    storeBreakpointEvent();
-    fillAndStore(...[canvasX, canvasY].map(Math.round), fillColor = [...currentRGB, 255]);
+
+    if (drawMode === 0) {
+      drawAndStore(canvasX, canvasY, canvasX, canvasY);
+    } else if (drawMode === 1) {
+      fillAndStore(...[canvasX, canvasY].map(Math.round), [...currentRGB, 255]);
+    }
   }
 }
 
 canvas1.oncontextmenu = () => false;
 
-/* ~~~~~~ Touchscreen Inputs ~~~~~~ */
+/* ------------ Touchscreen Inputs ------------ */
 const getOffsetFromTouchEvent = ev => {
   let { targetTouches: { 0: { pageX, pageY } } } = ev;
   return {
@@ -276,28 +299,34 @@ const getOffsetFromTouchEvent = ev => {
 
 canvas1.ontouchstart = ev => {
   ev.preventDefault();
+  storeBreakpointEvent();
 
   let { offsetX, offsetY } = getOffsetFromTouchEvent(ev);
   let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
-
-  storeBreakpointEvent();
-  drawAndStore(canvasX, canvasY, canvasX, canvasY);
-  updatePreviousPositions(canvasX, canvasY);
+  
+  if (drawMode === 0) {
+    drawAndStore(canvasX, canvasY, canvasX, canvasY);
+    updatePreviousPositions(canvasX, canvasY);
+  } else if (drawMode === 1) {
+    fillAndStore(...[canvasX, canvasY].map(Math.round), [...currentRGB, 255]);
+  }
 }
 
 canvas1.ontouchmove = ev => {
   ev.preventDefault();
-
-  let { offsetX, offsetY } = getOffsetFromTouchEvent(ev);
-  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
-
-  drawAndStore(prevX, prevY, canvasX, canvasY);
-  updatePreviousPositions(canvasX, canvasY);
+  
+  if (drawMode === 0) {
+    let { offsetX, offsetY } = getOffsetFromTouchEvent(ev);
+    let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+    
+    drawAndStore(prevX, prevY, canvasX, canvasY);
+    updatePreviousPositions(canvasX, canvasY);
+  }
 }
 
 
 
-/* ~~~~~~ Flood Fill ~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Flood Fill Algorithm ~~~~~~~~~~~~~~~~~~~~~~~~ */
 const pixelPos = (x, y, w) => (y * w + x) * 4;
 
 const closeTo = (x1, x2, dist = 7) =>
@@ -324,7 +353,7 @@ const setColor = (fillColor, imgData, x, y, w) => {
 }
 
 // Adapted from: http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-// Will we have problems with pixels starting out as transparent?
+// ( Will we have problems with pixels starting out as transparent? )
 const floodFill = (startX, startY, fillColor) => {
   const spreadColor = ctx1.getImageData(startX, startY, 1, 1).data;
   const w = canvas1.width;
@@ -375,8 +404,9 @@ const floodFill = (startX, startY, fillColor) => {
   ctx1.putImageData(imgData, 0, 0);
 }
 
-/* ~~~~~~ Updating Guessers ~~~~~~ */
 
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Updating Guessers ~~~~~~~~~~~~~~~~~~~~~~~~ */
 const handleDrawingEvent1 = e => {
   switch (e.type) {
     case "draw":
