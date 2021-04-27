@@ -490,12 +490,16 @@
       console.debug('drawerView', { scores, data });
       drawerNumber = data.drawer;
       switchToView('drawerView');
+      drawingEvents = []
+      ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
       wordToDraw.innerText = data.word;
     });
 
     socket.on('guesserView', function (scores, data) {
       console.debug('guesserView', { scores, data });
       switchToView('guesserView');
+      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
       let spaces = data.word1Length + data.word2Length;
       let spacesDisplay = ' __'.repeat(spaces).slice(1); //slice(1) cuts off the leading space
       console.log(spacesDisplay);
