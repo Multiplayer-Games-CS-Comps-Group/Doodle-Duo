@@ -283,10 +283,10 @@
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     /**
-     * Returns whether a given HTML element is scrolled to the bottom
+     * Returns whether a given HTML element is scrolled to within 10px of the bottom
      */
-    const isScrolledToBottom = el =>
-      el.scrollTop >= el.scrollHeight - el.clientHeight;
+    const isScrolledNearBottom = el =>
+      el.scrollTop + 10 >= el.scrollHeight - el.clientHeight;
 
     /**
      * Scrolls given HTML element to the bottom
@@ -321,7 +321,7 @@
     function postChatMessage(msg, username = null) {
       const elementsToScroll = [];
       for (chatContainer of chatContainers) {
-        if (isScrolledToBottom(chatContainer)) elementsToScroll.push(chatContainer);
+        if (isScrolledNearBottom(chatContainer)) elementsToScroll.push(chatContainer);
       }
 
       for (chatBox of chatBoxes) {
