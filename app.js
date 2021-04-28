@@ -290,8 +290,8 @@ io.on('connection', function (socket) {
       console.log('End of the round! Displaying scores now'); //TODO: TEMP
       console.log(`Next round will start in ${SCORE_DISPLAY_TIMER} seconds`); //TODO: TEMP
       io.sockets.in(lobbyId)
-        //.emit('endRoundScores', createScoreObject(lobbyId));
-        .emit('endRoundScores', createScoreBoard(lobbyId));
+        .emit('endRoundScores', createScoreObject(lobbyId),lobbies[lobbyId].state.roundInfo.compound.word);
+        //.emit('endRoundScores', createScoreBoard(lobbyId));
 
       setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }

@@ -217,8 +217,9 @@
   <div style="display:none" id="scoreboard">
     <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
       <div class="uk-align-center">
-        <div class="chat-box-container">
-          <ul id="score" class="chat-box"></ul>
+        <div class="score-container">
+          <ul id="score" class="score-box"></ul>
+          <b id='correct-ans'></b>
         </div>
       </div>
     </div>
@@ -276,7 +277,7 @@
     const wordToDraw = document.getElementById('wordToDraw');
 
     //ul which stores scoreboard information
-    const scores = document.getElementById('score');
+    const correctAns = document.getElementById('correct-ans');
 
 
 
@@ -461,10 +462,13 @@
       gameCodeDisplay.value = lobbyId;
     });
 
-    socket.on('endRoundScores', function (scoresObj) {
-      scores.innerText = scoresObj;
-      console.log(scoresObj)
+    socket.on('endRoundScores', function (scoresObj, ans) {
+      
       switchToView('scoreboard');
+      correctAns.innerText = 'The correct answer is: '+ ans; 
+      //myScoreList.sort(function (a,b) {return a.score - b.score} )
+      scoresObj.sort(function(b-a){return b.score - a.score});
+      console.log(scoresObj)
       console.debug('endRoundScores', { scoresObj });
     });
 
