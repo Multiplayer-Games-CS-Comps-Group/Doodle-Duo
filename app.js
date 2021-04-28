@@ -363,9 +363,9 @@ io.on('connection', function (socket) {
 
   function endOfGame(lobbyId) {
     console.log('Ending the game!');
-    let scoreboard = createScoreBoard(lobbyId);
-    scoreboard += 'THE WINNER IS:' + globalThis.winner + '!';
-    io.sockets.in(lobbyId).emit('gameOverEvent', scoreboard);
+    //let scoreboard = createScoreBoard(lobbyId);
+    //scoreboard += 'THE WINNER IS:' + globalThis.winner + '!';
+    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId),lobbies[lobbyId].state.roundInfo.compound.word);
   };
 
   function startGameTimer(lobbyId) {

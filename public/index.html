@@ -220,6 +220,17 @@
         <div class="score-container">
           <ul id="score" class="score-box"></ul>
           <b id='correct-ans'></b>
+          <table id='score-table'>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Points</th>
+            </tr>
+            <tbody id= 'tbody'>
+  
+            </tbody>
+          </table>
+          <b id='winner'></b>
         </div>
       </div>
     </div>
@@ -277,8 +288,12 @@
     const wordToDraw = document.getElementById('wordToDraw');
 
     //ul which stores scoreboard information
+    const scores=document.getElementById('score');
+    const scoreBoard = document.getElementById('score-box');
     const correctAns = document.getElementById('correct-ans');
-
+    const scoreTable = document.getElementById('score-table');
+    const winner = document.getElementById('winner');
+    const tableBody = document.getElementById('tbody');
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -463,12 +478,38 @@
     });
 
     socket.on('endRoundScores', function (scoresObj, ans) {
-      
+      console.log(scoresObj)
       switchToView('scoreboard');
       correctAns.innerText = 'The correct answer is: '+ ans; 
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
-      scoresObj.sort(function(b-a){return b.score - a.score});
-      console.log(scoresObj)
+
+      ranklist = [];
+      for (var player in scoresObj){
+        var playerObj = scoresObj[player];
+        ranklist.push(playerObj);
+      }
+ 
+      ranklist.sort(function (a,b) {return b.score - a.score});
+
+      console.log(ranklist);
+      console.log('ranklist: '+ ranklist.sort(function (a,b) {return b.score - a.score} )[0].score);
+      tableBody.innerHTML = '';
+      for (var i = 0; i<ranklist.length; i++){
+        const addCell = document.createElement('tr');
+        tableBody.appendChild(addCell);
+
+        const rank = document.createElement('td');
+        rank.innerText = (i+1);
+        const playerUsername = document.createElement('td');
+        playerUsername.innerText = ranklist[i].username;
+        const points = document.createElement('tr');
+        points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
+        
+        addCell.appendChild(rank);
+        addCell.appendChild(playerUsername);
+        addCell.appendChild(points);
+      }
+      
       console.debug('endRoundScores', { scoresObj });
     });
 
@@ -521,9 +562,38 @@
       }
     });
 
-    socket.on('gameOverEvent', function (scoresObj) {
+    socket.on('gameOverEvent', function (scoresObj,ans) {
       switchToView('scoreboard');
-      scores.innerText = scoresObj;
+      correctAns.innerText = 'The correct answer is: '+ ans; 
+      //myScoreList.sort(function (a,b) {return a.score - b.score} )
+
+      ranklist = [];
+      for (var player in scoresObj){
+        var playerObj = scoresObj[player];
+        ranklist.push(playerObj);
+      }
+ 
+      ranklist.sort(function (a,b) {return b.score - a.score});
+
+      console.log(ranklist);
+      console.log('ranklist: '+ ranklist.sort(function (a,b) {return b.score - a.score} )[0].score);
+      tableBody.innerHTML = '';
+      for (var i = 0; i<ranklist.length; i++){
+        const addCell = document.createElement('tr');
+        tableBody.appendChild(addCell);
+
+        const rank = document.createElement('td');
+        rank.innerText = (i+1);
+        const playerUsername = document.createElement('td');
+        playerUsername.innerText = ranklist[i].username;
+        const points = document.createElement('tr');
+        points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
+        
+        addCell.appendChild(rank);
+        addCell.appendChild(playerUsername);
+        addCell.appendChild(points);
+      }
+      winner.innerText = 'THE WINNER IS '+ ranklist[0].username+'!!!'
       console.debug('gameOverEvent', { scoresObj });
     });
 
