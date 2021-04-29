@@ -262,7 +262,7 @@
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     const socket = io();
     var drawerNumber = 0;
-
+    document.body.style.zoom="90%"
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     // Object containing all possible views
@@ -500,7 +500,7 @@
     });
 
     socket.on('endRoundScores', function (scoresObj, ans) {
-      console.debug('endRoundScores', {scoresObj, ans});
+
       console.log(scoresObj)
       switchToView('guesserView');
       chatBoxes.style.display = 'none';
@@ -594,7 +594,7 @@
     });
 
     socket.on('gameOverEvent', function (scoresObj,ans) {
-      switchToView('drawerView');
+      switchToView('guesserView');
       // maybe we don't need this?
       if (chatContainers) {
         chatContainers.style.display = 'none';
