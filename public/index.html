@@ -113,7 +113,7 @@
               </div>
             </div>
           </div>
-          <div style="width: 100%">
+          <div style="width: 100%; display: flex; flex-direction: row">
             <div style="width: 50%">
               <div id="nameDrawing1" class="uk-text-center"></div>
             </div>
@@ -130,7 +130,6 @@
               <div>
                 <div id="timeRemaining">Time Remaining:</div>
                 <span id="gameTimeDisplay"></span>
-                <span uk-icon="icon: clock; ratio: 3"></span>
               </div>
             </div>
           </div>
@@ -147,7 +146,8 @@
               </div>
 
               <!--    Scoreboard    -->
-              <div style="display:none" class="scoreboard-container" id="scoreboard">
+<!--              style="display:none" -->
+              <div class="scoreboard-container" id="scoreboard">
                 <div class="score-container">
                   <ul id="score" class="score-box"></ul>
                   <b id='correct-ans'></b>
@@ -200,7 +200,8 @@
               <button id="undo-button">Undo button</button>
             </div>
           </div>
-          <div class="uk-width-2-3" style="height: 120vw">
+<!--          id="gCanvas-wrapper"-->
+          <div class="uk-width-2-3"  style="height: 120vw" >
             <div class="uk-height-1-1 uk-cover-container">
               <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
                 <canvas id="canvas-1" width="200" height="400"></canvas>
@@ -211,13 +212,12 @@
             <div class="uk-height-1-1 uk-cover-container uk-align-center">
               <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
                 <div id="wordToDraw" class="uk-margin-small-left">
-                  Draw: House
+                  ERROR
                 </div>
               </div>
               <div>
                 <div>Time Remaining:</div>
                 <span id="dGameTimeDisplay"></span>
-                <span uk-icon="icon: clock; ratio: 3"></span>
               </div>
             </div>
           </div>
@@ -293,6 +293,7 @@
     // Player join notification divs from waiting rooms
     const playerJoinNotifications = getElementsById('playerJoin playerJoin2');
 
+    const spaces = document.getElementById('spacesDisplay');
     // Chat boxes from guesser and drawer views
     const chatContainers = document.getElementsByClassName('chat-box-container');
     const chatBoxes = document.getElementsByClassName('chat-box');
@@ -433,7 +434,6 @@
     }
 
 
-
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     /**
      * onclick function for lobby code copy button
@@ -500,6 +500,7 @@
     });
 
     socket.on('endRoundScores', function (scoresObj, ans) {
+      console.debug('endRoundScores', {scoresObj, ans});
       console.log(scoresObj)
       switchToView('guesserView');
       chatBoxes.style.display = 'none';
@@ -561,6 +562,9 @@
       console.debug('drawerView', { scores, data });
       drawerNumber = data.drawer;
       switchToView('drawerView');
+      // let height = document.getElementById('gCanvas-wrapper').offsetHeight;
+      // document.getElementById('gCanvas-wrapper').style.width = (height/2).toString();
+
       drawingEvents = []
       ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
       wordToDraw.innerText = data.word;
@@ -569,12 +573,13 @@
     socket.on('guesserView', function (scores, data) {
       console.debug('guesserView', { scores, data });
       switchToView('guesserView');
+      scoreboard.style.display = 'none';
       gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
       gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      let spaces = data.word1Length + data.word2Length;
-      let spacesDisplay = ' __'.repeat(spaces).slice(1); //slice(1) cuts off the leading space
+      let spacesLength = data.word1Length + data.word2Length;
+      let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
       console.log(spacesDisplay);
-
+      spaces.innerText = spacesDisplay;
       let drawerNames = getDrawerNames(scores);
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
@@ -589,7 +594,14 @@
     });
 
     socket.on('gameOverEvent', function (scoresObj,ans) {
-      switchToView('scoreboard');
+      switchToView('drawerView');
+      // maybe we don't need this?
+      if (chatContainers) {
+        chatContainers.style.display = 'none';
+      }
+      scoreboard.style.display = 'block';
+      // chatBoxes.style.display = 'none';
+      spaces.innerText = ans;
       correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
@@ -624,8 +636,10 @@
     });
 
     //sent to the specific user when they guess right
-    socket.on('correctGuess', function () {
+    socket.on('correctGuess', function (word) {
       console.debug('correctGuess');
+      spaces.innerText = word; // reveal the word
+
       postChatMessage('You guessed it!');
     });
 
