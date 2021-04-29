@@ -145,6 +145,25 @@
               <div class="chat-box-container">
                 <ul id="chat-box-guesser" class="chat-box"></ul>
               </div>
+
+              <!--    Scoreboard    -->
+              <div style="display:none" class="scoreboard-container" id="scoreboard">
+                <div class="score-container">
+                  <ul id="score" class="score-box"></ul>
+                  <b id='correct-ans'></b>
+                  <table id='score-table'>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Player</th>
+                      <th>Points</th>
+                    </tr>
+                    <tbody id= 'tbody'>
+
+                    </tbody>
+                  </table>
+                  <b id='winner'></b>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -213,28 +232,28 @@
       </div>
     </div>
   </div>
-  <!--    Scoreboard    -->
-  <div style="display:none" id="scoreboard">
-    <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-      <div class="uk-align-center">
-        <div class="score-container">
-          <ul id="score" class="score-box"></ul>
-          <b id='correct-ans'></b>
-          <table id='score-table'>
-            <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Points</th>
-            </tr>
-            <tbody id= 'tbody'>
-  
-            </tbody>
-          </table>
-          <b id='winner'></b>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  &lt;!&ndash;    Scoreboard    &ndash;&gt;-->
+<!--  <div style="display:none" id="scoreboard">-->
+<!--    <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">-->
+<!--      <div class="uk-align-center">-->
+<!--        <div class="score-container">-->
+<!--          <ul id="score" class="score-box"></ul>-->
+<!--          <b id='correct-ans'></b>-->
+<!--          <table id='score-table'>-->
+<!--            <tr>-->
+<!--              <th>Rank</th>-->
+<!--              <th>Player</th>-->
+<!--              <th>Points</th>-->
+<!--            </tr>-->
+<!--            <tbody id= 'tbody'>-->
+<!--  -->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--          <b id='winner'></b>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
   <script src="/socket.io/socket.io.js"></script>
 
@@ -254,7 +273,7 @@
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
-      scoreboard: document.getElementById('scoreboard')
+      // scoreboard: document.getElementById('scoreboard')
     };
 
     // Initial screen room input
@@ -288,12 +307,15 @@
     const wordToDraw = document.getElementById('wordToDraw');
 
     //ul which stores scoreboard information
-    const scores=document.getElementById('score');
+    const scores = document.getElementById('score');
     const scoreBoard = document.getElementById('score-box');
     const correctAns = document.getElementById('correct-ans');
     const scoreTable = document.getElementById('score-table');
     const winner = document.getElementById('winner');
     const tableBody = document.getElementById('tbody');
+
+    // scoreboard wrapper that replaces the chatbox at the end of the round
+    const scoreboard = document.getElementById('scoreboard');
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -479,8 +501,12 @@
 
     socket.on('endRoundScores', function (scoresObj, ans) {
       console.log(scoresObj)
-      switchToView('scoreboard');
-      correctAns.innerText = 'The correct answer is: '+ ans; 
+      switchToView('guesserView');
+      chatBoxes.style.display = 'none';
+      scoreboard.style.display = 'block';
+
+
+      correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
       ranklist = [];
@@ -488,7 +514,7 @@
         var playerObj = scoresObj[player];
         ranklist.push(playerObj);
       }
- 
+
       ranklist.sort(function (a,b) {return b.score - a.score});
 
       console.log(ranklist);
@@ -504,12 +530,12 @@
         playerUsername.innerText = ranklist[i].username;
         const points = document.createElement('tr');
         points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
-        
+
         addCell.appendChild(rank);
         addCell.appendChild(playerUsername);
         addCell.appendChild(points);
       }
-      
+
       console.debug('endRoundScores', { scoresObj });
     });
 
@@ -564,7 +590,7 @@
 
     socket.on('gameOverEvent', function (scoresObj,ans) {
       switchToView('scoreboard');
-      correctAns.innerText = 'The correct answer is: '+ ans; 
+      correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
       ranklist = [];
@@ -572,7 +598,7 @@
         var playerObj = scoresObj[player];
         ranklist.push(playerObj);
       }
- 
+
       ranklist.sort(function (a,b) {return b.score - a.score});
 
       console.log(ranklist);
@@ -588,7 +614,7 @@
         playerUsername.innerText = ranklist[i].username;
         const points = document.createElement('tr');
         points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
-        
+
         addCell.appendChild(rank);
         addCell.appendChild(playerUsername);
         addCell.appendChild(points);
@@ -645,7 +671,7 @@
           handleDrawingEvent2(drawingEvents[i]);
         }
       }
-      
+
     });
     socket.on('undoEvent', function (drawingEvents, drawNum) {
       //console.log('drawingUpdate Client');
@@ -671,7 +697,7 @@
         updateColor();
         updateWidth();
       }
-      
+
     });
 
     socket.on('clearEvent', function (drawingEvents, drawNum) {
@@ -682,7 +708,7 @@
       else if(drawNum == 2){
         gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
       }
-      
+
     });
   </script>
 
