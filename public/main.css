@@ -28,24 +28,18 @@
   align-items: center;
 }
 
-.button-container {
+.drawer-button {
   width: 6vh;
   height: 6vh;
   position: relative;
-  margin-bottom: 12px;
-}
 
-.drawer-button {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
   border-radius: 10px;
   -moz-box-shadow:    1px 6px 10px 2px #ccc;
   -webkit-box-shadow: 1px 6px 10px 2px #ccc;
   box-shadow:         1px 6px 10px 2px #ccc;
+
   margin: 0px;
+  margin-bottom: 12px;
   padding: 6px;
 }
 
@@ -71,7 +65,7 @@
 
 .drawer-button svg {
   width: 80%;
-  height: auto;  
+  height: 80%;  
 }
 
 .paintButtonContainer {
