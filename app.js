@@ -27,7 +27,7 @@ const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 10;
+const SCORE_DISPLAY_TIMER = 20;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -209,6 +209,12 @@ io.on('connection', function (socket) {
     //console.log('Drawing Update Detected on Server:');
     io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
   });
+
+  socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+    let lobbyId = socket.lobbyId;
+    io.sockets.in(lobbyId).emit('scoreBoardCanvas', drawingEvents, drawNum);
+  });
+
 
   socket.on('playerGuess', function (playerGuess) {
     console.log('PlayerGuess function is being called!');

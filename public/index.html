@@ -166,26 +166,6 @@
               <div class="chat-box-container">
                 <ul id="chat-box-guesser" class="chat-box"></ul>
               </div>
-
-              <!--    Scoreboard    -->
-<!--              style="display:none" -->
-              <div class="scoreboard-container" id="scoreboard">
-                <div class="score-container">
-                  <ul id="score" class="score-box"></ul>
-                  <b id='correct-ans'></b>
-                  <table id='score-table'>
-                    <tr>
-                      <th>Rank</th>
-                      <th>Player</th>
-                      <th>Points</th>
-                    </tr>
-                    <tbody id= 'tbody'>
-
-                    </tbody>
-                  </table>
-                  <b id='winner'></b>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -262,28 +242,76 @@
       </div>
     </div>
   </div>
-<!--  &lt;!&ndash;    Scoreboard    &ndash;&gt;-->
-<!--  <div style="display:none" id="scoreboard">-->
-<!--    <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">-->
-<!--      <div class="uk-align-center">-->
-<!--        <div class="score-container">-->
-<!--          <ul id="score" class="score-box"></ul>-->
-<!--          <b id='correct-ans'></b>-->
-<!--          <table id='score-table'>-->
-<!--            <tr>-->
-<!--              <th>Rank</th>-->
-<!--              <th>Player</th>-->
-<!--              <th>Points</th>-->
-<!--            </tr>-->
-<!--            <tbody id= 'tbody'>-->
-<!--  -->
-<!--            </tbody>-->
-<!--          </table>-->
-<!--          <b id='winner'></b>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+
+
+  <!-- Scoreboard View -->
+  <div id="scoreboard" style="display:none">
+    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
+      <div class="uk-container">
+        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
+          <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
+            Doodle Duo
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div id="scoreboardCanvas1"
+                   class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 1
+                <canvas id="scorecanvas-1" width="200" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="uk-width-1-2" style="height: 100vw">
+            <div class="uk-height-1-1 uk-cover-container">
+              <div id="scoreboardCanvas2"
+                   class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+                Canvas 2
+                <canvas id="scorecanvas-2" width="200" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+          <div style="width: 100%; display: flex; flex-direction: row">
+            <div style="width: 50%">
+              <div id="scorenameDrawing1" class="uk-text-center"></div>
+            </div>
+            <div style="width: 50%">
+              <div id="scorenameDrawing2" class="uk-text-center"></div>
+            </div>
+          </div>
+
+          <div class="uk-width-1-1" style="height: 80px">
+            <div class="uk-height-1-1 uk-cover-container uk-align-center">
+              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
+                <span id="wordDisplay"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
+            <div class="uk-align-center">
+              <div class="scoreboard-container">
+                <div class="score-container">
+                  <ul id="score" class="score-box"></ul>
+                  <b id='correct-ans'></b>
+                  <table id='score-table'>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Player</th>
+                      <th>Points</th>
+                    </tr>
+                    <tbody id= 'tbody'>
+
+                    </tbody>
+                  </table>
+                  <b id='winner'></b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
 
@@ -292,7 +320,6 @@
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     const socket = io();
     var drawerNumber = 0;
-    document.body.style.zoom="90%"
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     // Object containing all possible views
@@ -303,7 +330,7 @@
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
-      // scoreboard: document.getElementById('scoreboard')
+      scoreboard: document.getElementById('scoreboard')
     };
 
     // Initial screen room input
@@ -347,9 +374,6 @@
     const scoreTable = document.getElementById('score-table');
     const winner = document.getElementById('winner');
     const tableBody = document.getElementById('tbody');
-
-    // scoreboard wrapper that replaces the chatbox at the end of the round
-    const scoreboard = document.getElementById('scoreboard');
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -527,7 +551,7 @@
       paintbrushButton.classList.add("drawer-button-selected");
       fillButton.classList.remove("drawer-button-selected");
     }
-    
+
     function fillButtonClicked() {
       setDrawMode(1);
       fillButton.classList.add("drawer-button-selected");
@@ -550,17 +574,25 @@
     socket.on('endRoundScores', function (scoresObj, ans) {
 
       console.log(scoresObj)
-      switchToView('guesserView');
-      chatBoxes.style.display = 'none';
-      scoreboard.style.display = 'block';
+      switchToView('scoreboard');
+      document.getElementById('wordDisplay').innerText = ans;
 
+      // clears canvases before updated version
+      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+
+
+      // if you are a drawer, you are re-emitting canvas data
+      if(drawerNumber != 0){
+        socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+      }
 
       correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
       ranklist = [];
-      for (var player in scoresObj){
-        var playerObj = scoresObj[player];
+      for (let player in scoresObj){
+        let playerObj = scoresObj[player];
         ranklist.push(playerObj);
       }
 
@@ -588,6 +620,20 @@
       console.debug('endRoundScores', { scoresObj });
     });
 
+
+    socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+      if(drawNum == 1){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent1(drawingEvents[i]);
+       }
+      }
+      else if(drawNum == 2){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent2(drawingEvents[i]);
+        }
+      }
+    });
+
     socket.on('errorRoomId', function () {
       console.debug('errorRoomId');
       reset();
@@ -610,8 +656,6 @@
       console.debug('drawerView', { scores, data });
       drawerNumber = data.drawer;
       switchToView('drawerView');
-      // let height = document.getElementById('gCanvas-wrapper').offsetHeight;
-      // document.getElementById('gCanvas-wrapper').style.width = (height/2).toString();
 
       drawingEvents = []
       ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
@@ -621,7 +665,7 @@
     socket.on('guesserView', function (scores, data) {
       console.debug('guesserView', { scores, data });
       switchToView('guesserView');
-      scoreboard.style.display = 'none';
+
       gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
       gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
       let spacesLength = data.word1Length + data.word2Length;
@@ -629,6 +673,7 @@
       console.log(spacesDisplay);
       spaces.innerText = spacesDisplay;
       let drawerNames = getDrawerNames(scores);
+      drawerNumber = 0;
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
@@ -642,14 +687,10 @@
     });
 
     socket.on('gameOverEvent', function (scoresObj,ans) {
-      switchToView('guesserView');
+      switchToView('scoreboard');
       // maybe we don't need this?
-      if (chatContainers) {
-        chatContainers.style.display = 'none';
-      }
-      scoreboard.style.display = 'block';
-      // chatBoxes.style.display = 'none';
-      spaces.innerText = ans;
+
+      document.getElementById('wordDisplay').innerText = ans;
       correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
