@@ -624,12 +624,12 @@
     socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
       if(drawNum == 1){
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
+          handleDrawingEvent3(drawingEvents[i]);
        }
       }
       else if(drawNum == 2){
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
+          handleDrawingEvent4(drawingEvents[i]);
         }
       }
     });
