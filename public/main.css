@@ -80,6 +80,10 @@
   transform: rotate(90deg);
 }
 
+.big-input {
+  font-size: 40px;
+}
+
 .icon {
   display: inline-block;
   width: 100%;

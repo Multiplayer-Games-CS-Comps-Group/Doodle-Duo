@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+<!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><head>-->
   <title>Compound Game</title>
 
   <!-- UIkit CSS -->
@@ -72,12 +71,12 @@
     <h1>Compound Game</h1>
 
     <div class="buttons">
-      <input type='text' placeholder="Enter Player Name" id='nameInput' />
+      <input class="big-input" type='text' placeholder="Enter Player Name" id='nameInput' />
       <br><br>
       <button onclick="createButtonClicked()">CREATE</button>
       <div>OR</div>
       <div>
-        <input type='text' placeholder='Enter Room Id' id='roomIdInput' />
+        <input type='text' class="big-input" placeholder='Enter Room Id' id='roomIdInput' />
         <button onclick="joinButtonClicked()">JOIN</button>
       </div>
     </div>
@@ -157,7 +156,7 @@
           </div>
           <div class="uk-width-1-2 uk-align-center" style="height: 80px">
             <div class="uk-inline">
-              <input class="uk-input uk-box-shadow" placeholder="Input your Guess" id="GuessInput">
+              <input class="uk-input uk-box-shadow big-input" placeholder="Input your Guess" id="GuessInput">
               <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: pencil"></a>
             </div>
           </div>
@@ -701,7 +700,7 @@
       if(drawerNumber != 0){
         socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
       }
-      
+
       document.getElementById('wordDisplay').innerText = ans;
       correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
