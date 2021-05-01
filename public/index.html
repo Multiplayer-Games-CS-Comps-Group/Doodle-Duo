@@ -580,6 +580,8 @@
       // clears canvases before updated version
       gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
       gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+      sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+      sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
 
 
       // if you are a drawer, you are re-emitting canvas data
@@ -690,6 +692,16 @@
       switchToView('scoreboard');
       // maybe we don't need this?
 
+      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+      sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+      sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+
+      // if you are a drawer, you are re-emitting canvas data
+      if(drawerNumber != 0){
+        socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+      }
+      
       document.getElementById('wordDisplay').innerText = ans;
       correctAns.innerText = 'The correct answer is: '+ ans;
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
