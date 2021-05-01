@@ -45,6 +45,35 @@ const offsetPosToCanvasPos2 = (x, y) => [
 ]
 
 
+
+/* ~~~~~~~~~~~~ Scoreboard Setup ~~~~~~~~~~~~*/
+
+const scorecanvas1 = document.getElementById("scorecanvas-1");
+scorecanvas1.width = 200;
+scorecanvas1.height = 400;
+
+const scorecanvas2 = document.getElementById("scorecanvas-2");
+scorecanvas1.width = 200;
+scorecanvas1.height = 400;
+
+
+const sctx1 = scorecanvas1.getContext("2d");
+sctx1.lineCap = "round";
+
+const sctx2 = scorecanvas2.getContext("2d");
+sctx2.lineCap = "round";
+
+
+const offsetPosToCanvasPos3 = (x, y) => [
+  x / scorecanvas1.offsetWidth * scorecanvas1.width,
+  y / scorecanvas1.offsetHeight * scorecanvas1.height
+]
+
+const offsetPosToCanvasPos4 = (x, y) => [
+  x / scorecanvas2.offsetWidth * scorecanvas2.width,
+  y / scorecanvas2.offsetHeight * scorecanvas2.height
+]
+
 /* ~~~~~~~~~~~~ Drawing Events ~~~~~~~~~~~~ */
 
 const findLastIndex = (list, fxn) => {
@@ -521,4 +550,154 @@ const floodFill2 = (startX, startY, fillColor) => {
   }
 
   gctx2.putImageData(imgData, 0, 0);
+}
+
+
+/* ~~~~~~~~~~~ Updating Scoreboard ~~~~~~~~~~~*/
+
+
+const handleDrawingEvent3 = e => {
+  switch (e.type) {
+    case "draw":
+      sctx1.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
+      sctx1.lineWidth = e.data.size;
+      drawSegment3(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
+      break;
+    case "fill":
+      floodFill3(e.data.x, e.data.y, e.data.color);
+      break;
+    default:
+      break;
+  }
+}
+
+
+const drawSegment3 = (previousX, previousY, currentX, currentY) => {
+  sctx1.beginPath(); // This empties the list of things to be drawn by stroke()
+  sctx1.moveTo(previousX, previousY);
+  sctx1.lineTo(currentX, currentY);
+  sctx1.stroke();
+}
+
+const floodFill3 = (startX, startY, fillColor) => {
+  const spreadColor = sctx1.getImageData(startX, startY, 1, 1).data;
+  const w = scorecanvas1.width;
+  const h = scorecanvas1.height;
+  const imgData = sctx1.getImageData(0, 0, w, h);
+
+  const pixelStack = [];
+
+  let curX = startX;
+  let curY = startY;
+
+  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
+
+  pixelStack.push([curX, curY]);
+
+  while (pixelStack.length > 0) {
+    let topAdd = true;
+    let bottomAdd = true;
+    [curX, curY] = pixelStack.pop();
+
+    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
+
+    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
+      setColor(fillColor, imgData, curX, curY, w);
+
+      if (topAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
+          pixelStack.push([curX, curY - 1]);
+          topAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
+      }
+
+      if (bottomAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
+          pixelStack.push([curX, curY + 1]);
+          bottomAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
+      }
+
+      curX += 1;
+    }
+  }
+
+  sctx1.putImageData(imgData, 0, 0);
+}
+
+const handleDrawingEvent4 = e => {
+  switch (e.type) {
+    case "draw":
+      sctx2.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
+      sctx2.lineWidth = e.data.size;
+      drawSegment4(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
+      break;
+    case "fill":
+      floodFill4(e.data.x, e.data.y, e.data.color);
+      break;
+    default:
+      break;
+  }
+}
+
+
+const drawSegment4 = (previousX, previousY, currentX, currentY) => {
+  sctx2.beginPath(); // This empties the list of things to be drawn by stroke()
+  sctx2.moveTo(previousX, previousY);
+  sctx2.lineTo(currentX, currentY);
+  sctx2.stroke();
+}
+
+const floodFill4 = (startX, startY, fillColor) => {
+  const spreadColor = sctx2.getImageData(startX, startY, 1, 1).data;
+  const w = scorecanvas2.width;
+  const h = scorecanvas2.height;
+  const imgData = sctx2.getImageData(0, 0, w, h);
+
+  const pixelStack = [];
+
+  let curX = startX;
+  let curY = startY;
+
+  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
+
+  pixelStack.push([curX, curY]);
+
+  while (pixelStack.length > 0) {
+    let topAdd = true;
+    let bottomAdd = true;
+    [curX, curY] = pixelStack.pop();
+
+    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
+
+    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
+      setColor(fillColor, imgData, curX, curY, w);
+
+      if (topAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
+          pixelStack.push([curX, curY - 1]);
+          topAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
+      }
+
+      if (bottomAdd) {
+        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
+          pixelStack.push([curX, curY + 1]);
+          bottomAdd = false;
+        }
+      } else {
+        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
+      }
+
+      curX += 1;
+    }
+  }
+
+  sctx2.putImageData(imgData, 0, 0);
 }

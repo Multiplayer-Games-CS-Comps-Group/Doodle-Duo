@@ -181,6 +181,7 @@
               <button id="undo-button">Undo button</button>
             </div>
           </div>
+          
           <div class="uk-width-2-3" style="height: 120vw">
             <div class="uk-height-1-1 uk-cover-container">
               <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
@@ -202,6 +203,7 @@
               </div>
             </div>
           </div>
+          
           <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 50vw">
             <div class="uk-align-center uk-flex uk-flex-column">
               <div class="chat-box-container">
@@ -231,6 +233,24 @@
             </tbody>
           </table>
           <b id='winner'></b>
+        </div>
+        <div class="uk-width-1-2" style="height: 100vw">
+          <div class="uk-height-1-1 uk-cover-container">
+            <div id="guesserCanvas1"
+              class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              Canvas 1
+              <canvas id="scorecanvas-1" width="200" height="400"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="uk-width-1-2" style="height: 100vw">
+          <div class="uk-height-1-1 uk-cover-container">
+            <div id="guesserCanvas2"
+              class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
+              Canvas 2
+              <canvas id="scorecanvas-2" width="200" height="400"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -483,6 +503,13 @@
       correctAns.innerText = 'The correct answer is: '+ ans; 
       //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
+      sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+      sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+
+      if(drawerNumber != 0){
+        socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+      }
+
       ranklist = [];
       for (var player in scoresObj){
         var playerObj = scoresObj[player];
@@ -511,6 +538,19 @@
       }
       
       console.debug('endRoundScores', { scoresObj });
+    });
+
+    socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+      if(drawNum == 1){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent3(drawingEvents[i]);
+        }
+      }
+      else if(drawNum == 2){
+        for (let i = 0; i < drawingEvents.length; i++) {
+          handleDrawingEvent4(drawingEvents[i]);
+        }
+      }
     });
 
     socket.on('errorRoomId', function () {
@@ -542,6 +582,7 @@
 
     socket.on('guesserView', function (scores, data) {
       console.debug('guesserView', { scores, data });
+      drawerNumber = 0;
       switchToView('guesserView');
       gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
       gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);

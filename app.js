@@ -207,7 +207,12 @@ io.on('connection', function (socket) {
   socket.on('clearEvent', function (drawingEvents, drawNum) {
     let lobbyId = socket.lobbyId;
     //console.log('Drawing Update Detected on Server:');
-    io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
+    io.sockets.in(lobbyId).emit('clearEvent', drawingEvents, drawNum);
+  });
+
+  socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+    let lobbyId = socket.lobbyId;
+    io.sockets.in(lobbyId).emit('scoreBoardCanvas', drawingEvents, drawNum);
   });
 
   socket.on('playerGuess', function (playerGuess) {
