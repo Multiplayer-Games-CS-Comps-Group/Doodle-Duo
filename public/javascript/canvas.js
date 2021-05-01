@@ -22,7 +22,7 @@ const gctx2 = guesscanvas2.getContext("2d");
 const undoButton = document.getElementById("undo-button");
 const clearCanvasButton = document.getElementById("clear-button");
 const brushSize = document.getElementById("brush-size");
-const colorSelect = document.querySelector('.color-range')
+const colorSelect = document.getElementById('color-select')
 
 
 
@@ -134,9 +134,13 @@ clearCanvasButton.onclick = e => {
 
 /* ------------ Color Select Slider ------------ */
 const updateColor = () => {
-  let hue = ((colorSelect.value / 100) * 360).toFixed(0);
-  currentRGB = hsl2Rgb(hue, 100, 50);
-  ctx1.strokeStyle = rgb2Hex(currentRGB[0], currentRGB[1], currentRGB[2]);
+  let newColor = colorSelect.value;
+  currentRGB = [
+    parseInt(newColor.slice(1,3), 16),
+    parseInt(newColor.slice(3,5), 16),
+    parseInt(newColor.slice(5,7), 16)
+  ];
+  ctx1.strokeStyle = newColor;
 
   updateCursor();
 }
