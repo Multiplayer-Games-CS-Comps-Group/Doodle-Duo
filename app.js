@@ -27,7 +27,7 @@ const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 5;
+const SCORE_DISPLAY_TIMER = 20;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -210,6 +210,12 @@ io.on('connection', function (socket) {
     io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
   });
 
+  socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+    let lobbyId = socket.lobbyId;
+    io.sockets.in(lobbyId).emit('scoreBoardCanvas', drawingEvents, drawNum);
+  });
+
+
   socket.on('playerGuess', function (playerGuess) {
     console.log('PlayerGuess function is being called!');
     let lobbyId = socket.lobbyId;
@@ -247,7 +253,7 @@ io.on('connection', function (socket) {
   });
 
   function updateGuessed(lobbyId, socketObj) {
-    socketObj.emit('correctGuess'); //The view can update to make it clear they guessed
+    socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word); //The view can update to make it clear they guessed
     io.sockets.in(lobbyId)
       .emit(
         'someoneGuessed',

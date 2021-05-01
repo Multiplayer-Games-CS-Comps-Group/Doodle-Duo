@@ -195,10 +195,15 @@ canvas {
 	padding: 0;
   height: 100%;
 }
-.chat-box li { 
+.chat-box li {
 	padding: 5px 10px;
 }
 .chat-box li:nth-child(odd) {
 	background: #eee;
+}
+
+.scoreboard-container {
+  height: 200px; /*CHANGE THIS EVENTUALLY*/
+  overflow-y: scroll;
 }
 
