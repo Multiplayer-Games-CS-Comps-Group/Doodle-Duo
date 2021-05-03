@@ -187,44 +187,46 @@
       Doodle Duo
     </div> -->
     <div id="dv-canvas-controls">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <input id="color-select" type="color">
-        <input type="range" min=1 max=50 id="brush-size" value="5">
-        <button id="paintbrush-button" class="drawer-button drawer-button-selected center-content" onclick="paintbrushButtonClicked()" aria-label="draw">
-          <svg class="icon icon-paintbrush">
-            <use xlink:href="#icon-paintbrush"></use>
-          </svg>
-        </button>
-        <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()" aria-label="fill">
-          <svg class="icon icon-fill">
-            <use xlink:href="#icon-fill"></use>
-          </svg>
-        </button>
-        <button id="undo-button" class="drawer-button center-content" aria-label="undo">
-          <svg class="icon icon-undo">
-            <use xlink:href="#icon-undo"></use>
-          </svg>
-        </button>
-        <button id="clear-button" class="drawer-button center-content" aria-label="clear canvas">
-          <svg class="icon icon-clear">
-            <use xlink:href="#icon-clear"></use>
-          </svg>
-        </button>
-        <button id="small-brush" class="drawer-button center-content" aria-label="small brush">
-          <svg class="icon icon-size-small">
-            <use xlink:href="#size-small"></use>
-          </svg>
-        </button>
-        <button id="medium-brush" class="drawer-button center-content" aria-label="medium brush">
-          <svg class="icon icon-size-medium">
-            <use xlink:href="#size-medium"></use>
-          </svg>
-        </button>
-        <button id="large-brush" class="drawer-button center-content" aria-label="large brush">
-          <svg class="icon icon-size-large">
-            <use xlink:href="#size-large"></use>
-          </svg>
-        </button>
+      <div id="dv-controls-outer-container">
+        <div id="dv-controls-inner-container">
+          <input id="color-select" type="color">
+          <input type="range" min=1 max=50 id="brush-size" value="5">
+          <button id="paintbrush-button" class="drawer-button drawer-button-selected center-content" onclick="paintbrushButtonClicked()" aria-label="draw">
+            <svg class="icon icon-paintbrush">
+              <use xlink:href="#icon-paintbrush"></use>
+            </svg>
+          </button>
+          <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()" aria-label="fill">
+            <svg class="icon icon-fill">
+              <use xlink:href="#icon-fill"></use>
+            </svg>
+          </button>
+          <button id="undo-button" class="drawer-button center-content" aria-label="undo">
+            <svg class="icon icon-undo">
+              <use xlink:href="#icon-undo"></use>
+            </svg>
+          </button>
+          <button id="clear-button" class="drawer-button center-content" aria-label="clear canvas">
+            <svg class="icon icon-clear">
+              <use xlink:href="#icon-clear"></use>
+            </svg>
+          </button>
+          <button id="small-brush" class="drawer-button center-content" aria-label="small brush">
+            <svg class="icon icon-size-small">
+              <use xlink:href="#size-small"></use>
+            </svg>
+          </button>
+          <button id="medium-brush" class="drawer-button center-content" aria-label="medium brush">
+            <svg class="icon icon-size-medium">
+              <use xlink:href="#size-medium"></use>
+            </svg>
+          </button>
+          <button id="large-brush" class="drawer-button center-content" aria-label="large brush">
+            <svg class="icon icon-size-large">
+              <use xlink:href="#size-large"></use>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
     <div id="dv-canvas">

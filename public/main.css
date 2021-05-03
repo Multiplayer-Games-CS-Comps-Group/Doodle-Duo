@@ -29,8 +29,8 @@
 }
 
 .drawer-button {
-  width: 6vh;
-  height: 6vh;
+  width: 5vh;
+  height: 5vh;
   position: relative;
 
   border-radius: 10px;
@@ -231,7 +231,33 @@ canvas {
 #dv-canvas-controls {
   grid-column-start: 2;
   grid-column-end: 3;
+  background-color: rgb(218, 218, 154);
+  text-align: right;
+}
+
+#dv-controls-outer-container {
+  display: inline-block;
+}
+
+#dv-controls-inner-container {
   background-color: #ff0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#color-select {
+  width: 4vh;
+  height: 4vh;
+  padding: .5vh;
+
+  border-radius: 10px;
+  -moz-box-shadow:    1px 6px 10px 2px #ccc;
+  -webkit-box-shadow: 1px 6px 10px 2px #ccc;
+  box-shadow:         1px 6px 10px 2px #ccc;
+
+  margin: 0px;
+  margin-bottom: 12px;
 }
 
 #dv-canvas {
@@ -244,13 +270,6 @@ canvas {
   height: 60vh;
   width: 30vh;
   background-color: #A0A0A0;
-}
-
-@media screen and (max-height: 1000px) {
-  #dv-canvas canvas {
-    height: 80vh;
-    width: 40vh;
-  }
 }
 
 #dv-info {
@@ -268,4 +287,19 @@ canvas {
   background-color: #aaa;
 }
 
+@media screen and (max-height: 1000px) {
+  #dv-canvas canvas {
+    height: 80vh;
+    width: 40vh;
+  }
+
+  #dv-chatbox {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    background-color: #aaa;
+    grid-row-start: 1;
+    grid-row-end: 3;
+  }
+  
+}
 
