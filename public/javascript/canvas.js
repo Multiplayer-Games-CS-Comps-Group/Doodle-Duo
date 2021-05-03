@@ -2,7 +2,7 @@
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~ */
 let drawMode = 0;
-let currentSize = 5;
+let currentSize = 3;
 let currentRGB = [0, 0, 0];
 
 let drawingEvents = [];
@@ -21,7 +21,6 @@ const gctx2 = guesscanvas2.getContext("2d");
 
 const undoButton = document.getElementById("undo-button");
 const clearCanvasButton = document.getElementById("clear-button");
-const brushSize = document.getElementById("brush-size");
 const colorSelect = document.getElementById('color-select')
 
 
@@ -148,14 +147,13 @@ colorSelect.addEventListener('change', updateColor);
 updateColor();
 
 /* ------------ Brush Size Slider ------------ */
-const updateWidth = () => {
-  currentSize = brushSize.value;
+const setBrushSize = (newSize) => {
+  currentSize = newSize;
   ctx1.lineWidth = currentSize;
 
   updateCursor();
 }
-brushSize.onchange = updateWidth;
-updateWidth();
+setBrushSize(3);
 
 
 
@@ -235,7 +233,7 @@ const undoDrawingEvents = () => {
   ctx1.stroke();
 
   updateColor();
-  updateWidth();
+  setBrushSize(currentSize);
 }
 
 /* ------------ Clear Canvas ------------ */
@@ -290,7 +288,7 @@ document.onmousemove = ({ pageX, pageY }) => {
 
 canvas1.onmouseleave = ({ offsetX, offsetY, buttons }) => {
   let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
-  if (buttons === 1) {
+  if (buttons === 1 && drawMode === 0) {
     drawAndStore(prevX, prevY, canvasX, canvasY);
   }
 }
@@ -298,7 +296,7 @@ canvas1.onmouseleave = ({ offsetX, offsetY, buttons }) => {
 canvas1.onmousemove = ({ offsetX, offsetY, buttons }) => {
   let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
 
-  if (buttons === 1) {
+  if (buttons === 1 && drawMode === 0) {
     drawAndStore(prevX, prevY, canvasX, canvasY);
   }
 }

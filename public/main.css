@@ -241,6 +241,7 @@ canvas {
 
 #dv-controls-inner-container {
   background-color: #ff0;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;

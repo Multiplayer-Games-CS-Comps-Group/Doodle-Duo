@@ -191,11 +191,28 @@
       <div id="dv-controls-outer-container">
         <div id="dv-controls-inner-container">
           <input id="color-select" type="color">
-          <input type="range" min=1 max=50 id="brush-size" value="5">
           <button id="paintbrush-button" class="drawer-button drawer-button-selected center-content"
             onclick="paintbrushButtonClicked()" aria-label="draw">
             <svg class="icon icon-paintbrush">
               <use xlink:href="#icon-paintbrush"></use>
+            </svg>
+          </button>
+          <button id="small-brush" class="drawer-button drawer-button-selected center-content"
+            onclick="smallSizeButtonClicked()" aria-label="small brush">
+            <svg class="icon icon-size-small">
+              <use xlink:href="#size-small"></use>
+            </svg>
+          </button>
+          <button id="medium-brush" class="drawer-button center-content" onclick="mediumSizeButtonClicked()"
+            aria-label="medium brush">
+            <svg class="icon icon-size-medium">
+              <use xlink:href="#size-medium"></use>
+            </svg>
+          </button>
+          <button id="large-brush" class="drawer-button center-content" onclick="largeSizeButtonClicked()"
+            aria-label="large brush">
+            <svg class="icon icon-size-large">
+              <use xlink:href="#size-large"></use>
             </svg>
           </button>
           <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()" aria-label="fill">
@@ -211,21 +228,6 @@
           <button id="clear-button" class="drawer-button center-content" aria-label="clear canvas">
             <svg class="icon icon-clear">
               <use xlink:href="#icon-clear"></use>
-            </svg>
-          </button>
-          <button id="small-brush" class="drawer-button center-content" aria-label="small brush">
-            <svg class="icon icon-size-small">
-              <use xlink:href="#size-small"></use>
-            </svg>
-          </button>
-          <button id="medium-brush" class="drawer-button center-content" aria-label="medium brush">
-            <svg class="icon icon-size-medium">
-              <use xlink:href="#size-medium"></use>
-            </svg>
-          </button>
-          <button id="large-brush" class="drawer-button center-content" aria-label="large brush">
-            <svg class="icon icon-size-large">
-              <use xlink:href="#size-large"></use>
             </svg>
           </button>
         </div>
@@ -369,9 +371,13 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
-    //buttons for contrlling drawer view
+    //buttons for controlling drawer view draw mode
     const paintbrushButton = document.getElementById('paintbrush-button');
     const fillButton = document.getElementById('fill-button');
+    //buttons for controlling drawer view paintbrush size
+    const smallSizeButton = document.getElementById('small-brush');
+    const mediumSizeButton = document.getElementById('medium-brush');
+    const largeSizeButton = document.getElementById('large-brush');
 
     //ul which stores scoreboard information
     const scores = document.getElementById('score');
@@ -562,6 +568,25 @@
       setDrawMode(1);
       fillButton.classList.add("drawer-button-selected");
       paintbrushButton.classList.remove("drawer-button-selected");
+    }
+
+    function smallSizeButtonClicked() {
+      setBrushSize(3);
+      smallSizeButton.classList.add("drawer-button-selected");
+      mediumSizeButton.classList.remove("drawer-button-selected");
+      largeSizeButton.classList.remove("drawer-button-selected");
+    }
+    function mediumSizeButtonClicked() {
+      setBrushSize(7);
+      smallSizeButton.classList.remove("drawer-button-selected");
+      mediumSizeButton.classList.add("drawer-button-selected");
+      largeSizeButton.classList.remove("drawer-button-selected");
+    }
+    function largeSizeButtonClicked() {
+      setBrushSize(15);
+      smallSizeButton.classList.remove("drawer-button-selected");
+      mediumSizeButton.classList.remove("drawer-button-selected");
+      largeSizeButton.classList.add("drawer-button-selected");
     }
 
 
