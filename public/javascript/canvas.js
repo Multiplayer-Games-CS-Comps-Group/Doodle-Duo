@@ -286,7 +286,7 @@ document.onmousemove = ({ pageX, pageY }) => {
 
 canvas1.onmouseleave = ({ offsetX, offsetY, buttons }) => {
   let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
-  if (buttons === 1) {
+  if (buttons === 1 && drawMode === 0) {
     drawAndStore(prevX, prevY, canvasX, canvasY);
   }
 }
