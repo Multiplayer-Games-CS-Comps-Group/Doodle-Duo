@@ -371,7 +371,8 @@ const compareColor = (spreadColor, imgData, x, y, w, h) => {
     y >= 0 && y < h &&
     closeTo(spreadColor[0], imgData.data[startPos + 0]) &&
     closeTo(spreadColor[1], imgData.data[startPos + 1]) &&
-    closeTo(spreadColor[2], imgData.data[startPos + 2])
+    closeTo(spreadColor[2], imgData.data[startPos + 2]) &&
+    closeTo(spreadColor[3], imgData.data[startPos + 3])
   );
 }
 
