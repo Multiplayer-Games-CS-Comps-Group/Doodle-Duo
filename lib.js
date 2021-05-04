@@ -27,15 +27,13 @@ function readCSV(filePath) {
     .split('\n')
     .map(e => e.trim())
     .map(e => e.split(',').map(e => e.trim()));
-
-  var out = []
-  for (var i in data[0]) {
-    var word = data[0][i];
-    var spl = word.split(' ');
+  
+  var out = [];
+  for(var i in data) {
     var compound = {
-      word: spl[0],
-      left: spl[1],
-      right: spl[2]
+      word: data[i][0],
+      left: data[i][1],
+      right: data[i][2]
     }
     out.push(compound);
   }
