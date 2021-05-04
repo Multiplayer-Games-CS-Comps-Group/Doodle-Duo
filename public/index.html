@@ -167,6 +167,25 @@
               </div>
             </div>
           </div>
+
+          <div class="uk-width-1-1 uk-align-left uk-height-large" style="width: 50vw">
+            <div class="uk-align-left">
+              
+                <div class="players-container">
+                  <b>Current Players</b>
+                  <table id='players-table'>
+                    <tr>
+                      <th>Player</th>
+                      <th>Score</th>
+                    </tr>
+                    <tbody id= 'pbody'>
+
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -373,6 +392,8 @@
     const scoreTable = document.getElementById('score-table');
     const winner = document.getElementById('winner');
     const tableBody = document.getElementById('tbody');
+    const playerBody = document.getElementById('pbody');
+    const playerTable = document.getElementById('players-table');
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -678,6 +699,28 @@
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+      playerBody.innerHTML = '';
+
+      playerList = [];
+      for (let player in scores){
+        let playerObj = scores[player];
+        playerList.push(playerObj);
+      }
+      console.log(playerList);
+
+      for (var i = 0; i<playerList.length; i++){
+        const addCell = document.createElement('tr');
+        playerBody.appendChild(addCell);
+
+        const player = document.createElement('td');
+        player.innerText = playerList[i].username;
+        const score = document.createElement('td');
+        score.innerText = playerList[i].score;
+        score.setAttribute("id", playerList[i].username);
+
+        addCell.appendChild(player);
+        addCell.appendChild(score);
+      }
     });
 
     socket.on('timerUpdate', function (timeLeft) {
@@ -736,16 +779,41 @@
     });
 
     //sent to the specific user when they guess right
-    socket.on('correctGuess', function (word) {
+    socket.on('correctGuess', function (word,gameState,username) {
       console.debug('correctGuess');
       spaces.innerText = word; // reveal the word
 
       postChatMessage('You guessed it!');
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('correctGuess');
+          document.getElementById(username).innerText = playerList[i].score;
+        }
+      }
     });
 
     socket.on('someoneGuessed', function (gameState, socketId, username) {
       console.debug('someoneGuessed', { gameState, socketId, username });
       postChatMessage(username + '  has correctly guessed the compound word!');
+
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username).innerText = playerList[i].score;
+        }
+      }
+      
     });
 
     socket.on('closeGuess', function () {

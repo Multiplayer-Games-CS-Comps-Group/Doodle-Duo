@@ -211,3 +211,7 @@ canvas {
   overflow-y: scroll;
 }
 
+td {
+  text-align: center;
+}
+

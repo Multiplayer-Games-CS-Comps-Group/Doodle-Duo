@@ -253,7 +253,8 @@ io.on('connection', function (socket) {
   });
 
   function updateGuessed(lobbyId, socketObj) {
-    socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word); //The view can update to make it clear they guessed
+    //TO DO: ALSO UPDATE 
+    socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word,createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]); //The view can update to make it clear they guessed
     io.sockets.in(lobbyId)
       .emit(
         'someoneGuessed',
