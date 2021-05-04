@@ -828,9 +828,6 @@
           handleDrawingEvent1(drawingEvents[i]);
         }
         gctx1.stroke();
-
-        updateColor();
-        updateWidth();
       }
       else if (drawNum == 2) {
         gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
@@ -839,9 +836,6 @@
           handleDrawingEvent2(drawingEvents[i]);
         }
         gctx2.stroke();
-
-        updateColor();
-        updateWidth();
       }
 
     });
