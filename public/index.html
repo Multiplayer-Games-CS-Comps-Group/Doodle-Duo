@@ -127,9 +127,6 @@
         <div id="nameDrawing1" class="uk-text-center">Doodler 1</div>
         <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
         <div id="gv-info">
-            <div class="guesserWordSpaces">
-                <span id="spacesDisplay">_</span>
-            </div>
             <div class="players-container">
                 <b>Current Players</b>
                 <table id='players-table'>
@@ -141,9 +138,14 @@
                     </tbody>
                 </table>
             </div>
+            <div class="guesserWordSpaces">
+                <span class="center-content" id="spacesDisplay">_</span>
+            </div>
             <div class="guessInput">
                 <input type="text" class="big-input" placeholder="Input your Guess" id="GuessInput">
-                <input type="submit" class="submitGuess" onclick="guessInputHandler()" uk-icon="icon: arrow-right">
+                <button type="submit" class="submitGuess" onclick="guessInputHandler()">
+                    <i class="cap-icon ci-plane-paper submitIcon"></i>
+                </button>
             </div>
             <div class="timeDisplay">
                 <div id="timeRemaining">Time Remaining:</div>
@@ -159,8 +161,9 @@
 </div>
 
 <!--     Drawer's view  -->
-<div class="drawer-view" >
-    <div id="drawer-view">
+
+<div id="drawer-view" style="display: none">
+    <div class="drawer-view">
         <div class="header title" style="height: 80px">
             Doodle Duo
         </div>
@@ -192,7 +195,8 @@
                             <use xlink:href="#size-large"></use>
                         </svg>
                     </button>
-                    <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()" aria-label="fill">
+                    <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()"
+                            aria-label="fill">
                         <svg class="icon icon-fill">
                             <use xlink:href="#icon-fill"></use>
                         </svg>
