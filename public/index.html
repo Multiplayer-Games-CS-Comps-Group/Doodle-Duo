@@ -226,6 +226,24 @@
                   <use xlink:href="#icon-clear"></use>
                 </svg>
               </button>
+              <div class="uk-width-1-1 uk-align-left uk-height-large" style="width: 50vw">
+                <div class="uk-align-left">
+                  
+                    <div class="players2-container">
+                      <b>Current Players</b>
+                      <table id='players2-table'>
+                        <tr>
+                          <th>Player</th>
+                          <th>Score</th>
+                        </tr>
+                        <tbody id= 'p2body'>
+    
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+              </div>
+
             </div>
           </div>
 <!--          id="gCanvas-wrapper"-->
@@ -394,6 +412,8 @@
     const tableBody = document.getElementById('tbody');
     const playerBody = document.getElementById('pbody');
     const playerTable = document.getElementById('players-table');
+    const playerBody2 = document.getElementById('p2body')
+    
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -682,6 +702,28 @@
       drawingEvents = []
       ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
       wordToDraw.innerText = data.word;
+      playerBody2.innerHTML = '';
+
+      playerList = [];
+      for (let player in scores){
+        let playerObj = scores[player];
+        playerList.push(playerObj);
+      }
+      console.log(playerList);
+
+      for (var i = 0; i<playerList.length; i++){
+        const addCell = document.createElement('tr');
+        playerBody2.appendChild(addCell);
+
+        const player = document.createElement('td');
+        player.innerText = playerList[i].username;
+        const score = document.createElement('td');
+        score.innerText = playerList[i].score;
+        score.setAttribute("id", playerList[i].username+'2');
+
+        addCell.appendChild(player);
+        addCell.appendChild(score);
+      }
     });
 
     socket.on('guesserView', function (scores, data) {
@@ -714,9 +756,10 @@
 
         const player = document.createElement('td');
         player.innerText = playerList[i].username;
+        player.setAttribute('id',playerList[i].username)
         const score = document.createElement('td');
         score.innerText = playerList[i].score;
-        score.setAttribute("id", playerList[i].username);
+        score.setAttribute("id", playerList[i].username+'score');
 
         addCell.appendChild(player);
         addCell.appendChild(score);
@@ -792,7 +835,9 @@
       for (var i = 0; i<playerList.length; i++){
         if (playerList[i].username === username){
           console.log('correctGuess');
-          document.getElementById(username).innerText = playerList[i].score;
+          document.getElementById(username+'score').innerText = playerList[i].score;
+          //document.getElementById(username+'2').innerText = playerList[i].score;
+
         }
       }
     });
@@ -800,7 +845,6 @@
     socket.on('someoneGuessed', function (gameState, socketId, username) {
       console.debug('someoneGuessed', { gameState, socketId, username });
       postChatMessage(username + '  has correctly guessed the compound word!');
-
       playerList = [];
       for (let player in gameState){
         let playerObj = gameState[player];
@@ -810,10 +854,40 @@
       for (var i = 0; i<playerList.length; i++){
         if (playerList[i].username === username){
           console.log('someoneGuessed');
-          document.getElementById(username).innerText = playerList[i].score;
+          document.getElementById(username+'score').innerText = playerList[i].score;
+          //document.getElementById(username+'2').innerText = playerList[i].score;
         }
       }
-      
+    });
+
+    socket.on('updateScore',function(gameState,username){
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username+'2').innerText = playerList[i].score;
+        }
+      }
+    });
+
+    socket.on('updateScore2',function(gameState,username){
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username+'score').innerText = playerList[i].score;
+        }
+      }
     });
 
     socket.on('closeGuess', function () {
