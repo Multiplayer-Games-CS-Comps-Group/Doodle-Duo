@@ -12,8 +12,7 @@
 }
 
 .title {
-  grid-column-start: 2;
-  grid-column-end: 5;
+  grid-column: 1/-1;
   background-color: #79adae;
   color: #f8f8f8;
   text-align: center;
@@ -21,8 +20,7 @@
 }
 
 .titleImage {
-  width: 50%;
-  height: 100%;
+  height: 100px;
 }
 
 .timer {
@@ -81,24 +79,20 @@
   background-color: var(--red);
 }
 
-#nameDrawing1 {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  text-align: center;
-}
-
-#nameDrawing2 {
-  grid-column-start: 4;
-  grid-column-end: 5;
-  text-align: center;
-
-}
-
 .guessInput {
-  grid-column-start: 2;
-  grid-column-end: 4;
-  grid-row-start: 2;
-  grid-row-end: 4;
+  height: 40px;
+  width: calc(100% - 4px);
+  padding: 0;
+}
+#chat-box-guesser-wrapper {
+  height: calc(100% - 44px);
+  position: relative;
+}
+#chat-box-guesser {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 
 .drawerWordContainer {
@@ -165,13 +159,18 @@ text {
 }
 
 .drawer-button {
-  margin: 10px;
-  width: 50px;
-  height: 50px;
+  width: 5vh;
+  height: 5vh;
+  position: relative;
+
   border-radius: 10px;
   -moz-box-shadow:    1px 6px 10px 2px #ccc;
   -webkit-box-shadow: 1px 6px 10px 2px #ccc;
   box-shadow:         1px 6px 10px 2px #ccc;
+
+  margin: 0px;
+  margin-bottom: 12px;
+  padding: 6px;
 }
 
 .drawer-button:hover {
@@ -192,6 +191,11 @@ text {
 
 .drawer-button-selected:active {
   background-color: #e3b0d9;
+}
+
+.drawer-button svg {
+  width: 80%;
+  height: 80%;  
 }
 
 .paintButtonContainer {
@@ -245,14 +249,22 @@ canvas {
 }
 
 .chat-box-container {
-  height: 200px; /*CHANGE THIS EVENTUALLY*/
-  overflow-y: scroll;
+  height: 100%;
+}
+.chat-box-wrapper {
+  height: 100%;
+  position: relative;
 }
 .chat-box {
+  overflow-y: scroll;
   list-style-type: none;
 	margin: 0;
 	padding: 0;
   height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 .chat-box li {
 	padding: 5px 10px;
@@ -262,7 +274,7 @@ canvas {
 }
 
 .scoreboard-container {
-  height: 200px; /*CHANGE THIS EVENTUALLY*/
+  height: 100%;
   overflow-y: scroll;
 }
 
@@ -275,14 +287,14 @@ td {
   height: 90vh;
   gap:5px;
   grid-template-columns: 10% 1fr auto 1fr 10%;
-  grid-template-rows: 150px auto 10% 20%;
+  grid-template-rows: auto auto 10% 20%;
 }
 
 .guesser-view {
   display: grid;
   height: 90vh;
   grid-template-columns: 1fr auto 0.2fr auto 1fr;
-  grid-template-rows: 130px auto 10px 10% 20% 1fr;
+  grid-template-rows: auto auto 10px 10% 20% 1fr;
   gap: 5px;
 }
 
@@ -290,7 +302,7 @@ td {
   display: grid;
   height: 90vh;
   grid-template-columns: 1fr auto 0.2fr auto 1fr;
-  grid-template-rows: 130px auto 20% 10% 1fr;
+  grid-template-rows: auto auto 20% 10% 1fr;
   gap: 5px;
 }
 
@@ -313,21 +325,20 @@ td {
 }
 
 #dv-controls-outer-container {
-  width: 100%;
-  height: 100%;
   display: inline-block;
-}
-
-#dv-controls-inner-container {
   background-color: #efe0ab;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border-radius: 10px; /* https://stackoverflow.com/a/31617496 - Absolute units are important for border-radius */
   -moz-box-shadow:    1px 6px 10px 2px #ccc;
   -webkit-box-shadow: 1px 6px 10px 2px #ccc;
   box-shadow:         1px 6px 10px 2px #ccc;
-  border-radius: 5%;
+}
+
+#dv-controls-inner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: -12px;
 }
 
 #color-select {
@@ -351,18 +362,21 @@ td {
   padding: 10px;
 }
 
+.gv-canvas {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .gv-canvas-left {
   grid-column-start: 2;
   grid-column-end: 3;
-  text-align: center;
-  padding: 10px;
 }
 
 .gv-canvas-right {
   grid-column-start: 4;
   grid-column-end: 5;
-  text-align: center;
-  padding: 10px;
 }
 
 #dv-canvas canvas {
@@ -380,10 +394,10 @@ td {
 }
 
 #dv-info {
-  grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-start: 3;
+  grid-column-end: 4;
   background-color: #b6d4cf;
-  border-radius: 5%;
+  border-radius: 5px;
   display: inline-grid;
   grid-template-columns: 1fr auto 1fr;
 }
@@ -391,8 +405,9 @@ td {
 #gv-info {
   grid-column-start: 2;
   grid-column-end: 5;
+  grid-row-start: 4;
   background-color: #b6d4cf;
-  border-radius: 5%;
+  border-radius: 5px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 20% 20% auto;
@@ -403,7 +418,7 @@ td {
   grid-column-end: 5;
   height: 100%;
   background-color: #b6d4cf;
-  border-radius: 5%;
+  border-radius: 5px;
 }
 
 
@@ -417,6 +432,7 @@ td {
   grid-column-start: 2;
   grid-column-end: 5;
   background-color: #aaa;
+  grid-row-start: 5;
 }
 
 .chat-box-sv {
@@ -430,18 +446,13 @@ td {
     display: grid;
     height: 90vh;
     grid-template-columns: 1fr auto 0.2fr auto 1fr;
-    grid-template-rows: 130px auto 5% 20% 1fr;
+    grid-template-rows: auto auto 5% 20% 1fr;
     gap: 5px;
   }
 
   #dv-canvas canvas {
     height: 70vh;
     width: 35vh;
-  }
-
-  .guessInput {
-    grid-column-start: 2;
-    grid-column-end: 3;
   }
 
   .gv-canvas canvas {
@@ -461,7 +472,7 @@ td {
 
   .chat-box-gv {
     grid-row-start: 2;
-    grid-row-end: 4;
+    grid-row-end: 5;
     grid-column-start: 5;
     grid-column-end: 6;
     background-color: #aaa;
@@ -481,7 +492,7 @@ td {
     grid-row-start: 4;
     grid-row-end: 5;
     background-color: #b6d4cf;
-    border-radius: 5%;
+    border-radius: 5px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 30% 30% auto 10%;
@@ -497,7 +508,7 @@ td {
     grid-column-end: 5;
     height: 100px;
     background-color: #b6d4cf;
-    border-radius: 5%;
+    border-radius: 5px;
   }
 
 }
