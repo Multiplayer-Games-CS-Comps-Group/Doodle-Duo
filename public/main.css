@@ -270,8 +270,7 @@ td {
   text-align: center;
 }
 
-/*new stuff*/
-#drawer-view {
+.drawer-view {
   display: grid;
   height: 90vh;
   gap:5px;
