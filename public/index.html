@@ -66,6 +66,15 @@
         c-0.069-4.325-0.217-15.063,0.03-15.458c0.31-0.494,2.657-0.371,2.968,0c0.229,0.276,0.426,10.068,0.51,15.031
         C20.611,29.837,19.438,29.978,18.271,30.091z"/>
         </symbol>
+        <symbol id="size-small" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=4 />
+        </symbol>
+        <symbol id="size-medium" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=6 />
+        </symbol>
+        <symbol id="size-large" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=8 />
+        </symbol>
     </defs>
 </svg>
 
@@ -120,12 +129,12 @@
         </div>
         <div id="guesserCanvas1" class="center-content gv-canvas gv-canvas-left">
             <canvas id="guesscanvas-1" width="200" height="400"></canvas>
+            <div id="nameDrawing1" class="uk-text-center">Doodler 1</div>
         </div>
-        <div id="guesserCanvas2" class="center-contet gv-canvas gv-canvas-right">
+        <div id="guesserCanvas2" class="center-content gv-canvas gv-canvas-right">
             <canvas id="guesscanvas-2" width="200" height="400"></canvas>
+            <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
         </div>
-        <div id="nameDrawing1" class="uk-text-center">Doodler 1</div>
-        <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
         <div id="gv-info">
             <div class="players-container">
                 <b>Current Players</b>
@@ -154,18 +163,21 @@
         </div>
         <div class="chat-box-gv">
             <div class="chat-box-container">
-                <ul id="chat-box-guesser" class="chat-box"></ul>
+                <div id="chat-box-guesser-wrapper">
+                    <ul id="chat-box-guesser" class="chat-box"></ul>
+                </div>
+                <input class="big-input guessInput" id="GuessInput">
+                <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: arrow-right"></a>
             </div>
         </div>
     </div>
 </div>
 
 <!--     Drawer's view  -->
-
 <div id="drawer-view" style="display: none">
-    <div class="drawer-view">
-        <div class="header title" style="height: 80px">
-            Doodle Duo
+    <div class="drawer-view" >
+        <div class="title">
+            <img class="titleImage" src="title.png">
         </div>
         <div id="dv-canvas-controls">
             <div id="dv-controls-outer-container">
@@ -225,10 +237,23 @@
             <div id="wordToDraw">
                 ERROR
             </div>
+            <div class="players-container">
+                <b>Current Players</b>
+                <table id='players-table'>
+                    <tr>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr>
+                    <tbody id='pbody'>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="dv-chatbox">
             <div class="chat-box-container">
-                <ul id="chat-box-drawer" class="chat-box"></ul>
+                <div class="chat-box-wrapper">
+                    <ul id="chat-box-drawer" class="chat-box"></ul>
+                </div>
             </div>
         </div>
     </div>
@@ -316,7 +341,6 @@
 
     const spaces = document.getElementById('spacesDisplay');
     // Chat boxes from guesser and drawer views
-    const chatContainers = document.getElementsByClassName('chat-box-container');
     const chatBoxes = document.getElementsByClassName('chat-box');
     // Game time displays from guesser and drawer views
     const gameTimeDisplays = getElementsById('gameTimeDisplay dGameTimeDisplay');
@@ -327,9 +351,13 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
-    //buttons for contrlling drawer view
+    //buttons for controlling drawer view draw mode
     const paintbrushButton = document.getElementById('paintbrush-button');
     const fillButton = document.getElementById('fill-button');
+    //buttons for controlling drawer view paintbrush size
+    const smallSizeButton = document.getElementById('small-brush');
+    const mediumSizeButton = document.getElementById('medium-brush');
+    const largeSizeButton = document.getElementById('large-brush');
 
     //ul which stores scoreboard information
     const scores = document.getElementById('score');
@@ -381,8 +409,8 @@
      */
     function postChatMessage(msg, username = null) {
         const elementsToScroll = [];
-        for (chatContainer of chatContainers) {
-            if (isScrolledNearBottom(chatContainer)) elementsToScroll.push(chatContainer);
+        for (chatBox of chatBoxes) {
+            if (isScrolledNearBottom(chatBox)) elementsToScroll.push(chatBox);
         }
 
         for (chatBox of chatBoxes) {
@@ -424,10 +452,10 @@
         // Specialized view behaviors
         switch (newViewName) {
             case "guesserView":
-                for (chatContainer of chatContainers) scrollToBottom(chatContainer);
+                for (chatBox of chatBoxes) scrollToBottom(chatBox);
                 break;
             case "drawerView":
-                for (chatContainer of chatContainers) scrollToBottom(chatContainer);
+                for (chatBox of chatBoxes) scrollToBottom(chatBox);
                 updateCursor();
                 break;
         }
@@ -519,11 +547,29 @@
         paintbrushButton.classList.add("drawer-button-selected");
         fillButton.classList.remove("drawer-button-selected");
     }
-
     function fillButtonClicked() {
         setDrawMode(1);
         fillButton.classList.add("drawer-button-selected");
         paintbrushButton.classList.remove("drawer-button-selected");
+    }
+
+    function smallSizeButtonClicked() {
+      setBrushSize(3);
+      smallSizeButton.classList.add("drawer-button-selected");
+      mediumSizeButton.classList.remove("drawer-button-selected");
+      largeSizeButton.classList.remove("drawer-button-selected");
+    }
+    function mediumSizeButtonClicked() {
+      setBrushSize(7);
+      smallSizeButton.classList.remove("drawer-button-selected");
+      mediumSizeButton.classList.add("drawer-button-selected");
+      largeSizeButton.classList.remove("drawer-button-selected");
+    }
+    function largeSizeButtonClicked() {
+      setBrushSize(15);
+      smallSizeButton.classList.remove("drawer-button-selected");
+      mediumSizeButton.classList.remove("drawer-button-selected");
+      largeSizeButton.classList.add("drawer-button-selected");
     }
 
 
