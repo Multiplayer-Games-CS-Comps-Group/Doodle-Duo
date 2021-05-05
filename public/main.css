@@ -1,22 +1,33 @@
+
+/* DEFINITION OF COLORS/THEME */
+:root {
+  --turquoise: #79adae;
+  --blue: #263fa2;
+  --yellow: #e5c83c;
+  --red: #7e1818;
+}
+
 .header {
-  color: cadetblue;
+  color: var(--turquoise);
 }
 
 .title {
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: cadetblue;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  background-color: #79adae;
   color: #f8f8f8;
-  font-size: 40px;
   text-align: center;
   justify-content: center;
 }
 
+.titleImage {
+  width: 50%;
+  height: 100%;
+}
+
 .timer {
-  grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 2;
   justify-content: center;
   align-content: center;
 }
@@ -59,7 +70,15 @@
 }
 .guesserWordSpaces {
   grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-end: 3;
+  background-color: #aaaaaa;
+}
+
+.scoreboardWord {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  height: 50px;
+  background-color: var(--red);
 }
 
 #nameDrawing1 {
@@ -77,7 +96,9 @@
 
 .guessInput {
   grid-column-start: 2;
-  grid-column-end: 5;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 4;
 }
 
 .drawerWordContainer {
@@ -114,15 +135,6 @@ text {
   padding-left: 15px;
   padding-right: 15px;
   font-family: "Lucida Console", "Courier New", monospace;
-}
-
-.header-bar {
-  background-color: cadetblue;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  font-size: 40px;
-  text-align: center;
-  justify-content: center;
 }
 
 
@@ -264,14 +276,22 @@ td {
   height: 90vh;
   gap:5px;
   grid-template-columns: 10% 1fr auto 1fr 10%;
-  grid-template-rows: 10% auto 10% 20%;
+  grid-template-rows: 150px auto 10% 20%;
 }
 
 .guesser-view {
   display: grid;
   height: 90vh;
   grid-template-columns: 1fr auto 0.2fr auto 1fr;
-  grid-template-rows: 10% auto 10px 10% 20% 1fr;
+  grid-template-rows: 130px auto 10px 10% 20% 1fr;
+  gap: 5px;
+}
+
+.score-view {
+  display: grid;
+  height: 90vh;
+  grid-template-columns: 1fr auto 0.2fr auto 1fr;
+  grid-template-rows: 130px auto 20% 10% 1fr;
   gap: 5px;
 }
 
@@ -362,8 +382,8 @@ td {
 
 #dv-info {
   grid-column-start: 2;
-  grid-column-end: 4;
-  background-color: #44BBA4;
+  grid-column-end: 3;
+  background-color: #b6d4cf;
   border-radius: 5%;
   display: inline-grid;
   grid-template-columns: 1fr auto 1fr;
@@ -372,12 +392,21 @@ td {
 #gv-info {
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: #44BBA4;
+  background-color: #b6d4cf;
   border-radius: 5%;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: 10% 20% auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 20% 20% auto;
 }
+
+#sv-info {
+  grid-column-start: 2;
+  grid-column-end: 5;
+  height: 100%;
+  background-color: #b6d4cf;
+  border-radius: 5%;
+}
+
 
 #dv-chatbox {
   grid-column-start: 2;
@@ -391,14 +420,28 @@ td {
   background-color: #aaa;
 }
 
+.chat-box-sv {
+  grid-column-start: 2;
+  grid-column-end: 5;
+  background-color: #aaa;
+}
+
 @media screen and (max-height: 1000px) {
+  .score-view {
+    display: grid;
+    height: 90vh;
+    grid-template-columns: 1fr auto 0.2fr auto 1fr;
+    grid-template-rows: 130px auto 5% 20% 1fr;
+    gap: 5px;
+  }
+
   #dv-canvas canvas {
     height: 70vh;
     width: 35vh;
   }
 
   .guessInput {
-    grid-column-start: 1;
+    grid-column-start: 2;
     grid-column-end: 3;
   }
 
@@ -423,6 +466,39 @@ td {
     grid-column-start: 5;
     grid-column-end: 6;
     background-color: #aaa;
+  }
+
+  .chat-box-sv {
+    grid-row-start: 2;
+    grid-row-end: 4;
+    grid-column-start: 5;
+    grid-column-end: 6;
+    background-color: #aaa;
+  }
+
+  #gv-info {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    background-color: #b6d4cf;
+    border-radius: 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 30% 30% auto 10%;
+  }
+
+  .timeDisplay {
+    grid-column-start: 3;
+    grid-column-end: 4;
+  }
+
+  #sv-info {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    height: 100px;
+    background-color: #b6d4cf;
+    border-radius: 5%;
   }
 
 }

@@ -14,7 +14,6 @@
 
 <script src="./javascript/colorPicker.js" defer></script>
 <script src="./javascript/canvas.js" defer></script>
-</head>
 
 <body>
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +84,7 @@
 <div id='waiting-room-host' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id="gameId"></p>
-    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly"></input>
+    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly">
         <button id="copy-room-code"
                 onclick="copyLobbyId()">Click to copy
         </button>
@@ -113,14 +112,14 @@
 
 <div id="guesser-view" style="display: none">
     <div class="guesser-view">
-        <div class="title header-bar">
-            Doodle Duo
+        <div class="title">
+            <img class="titleImage" src="title.png">
         </div>
         <div id="guesserCanvas1" class="center-content gv-canvas gv-canvas-left">
             Canvas 1
             <canvas id="guesscanvas-1" width="200" height="400"></canvas>
         </div>
-        <div id="guesserCanvas2" class="center-content gv-canvas gv-canvas-right">
+        <div id="guesserCanvas2" class="center-contet gv-canvas gv-canvas-right">
             Canvas 2
             <canvas id="guesscanvas-2" width="200" height="400"></canvas>
         </div>
@@ -142,7 +141,7 @@
                 </table>
             </div>
             <input class="big-input guessInput" placeholder="Input your Guess" id="GuessInput">
-            <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: arrow"></a>
+            <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: arrow-right"></a>
             <div class="timeDisplay">
                 <div id="timeRemaining">Time Remaining:</div>
                 <span id="gameTimeDisplay"></span>
@@ -155,7 +154,6 @@
         </div>
     </div>
 </div>
-
 <!--     Drawer's view  -->
 <div id="drawer-view" style="display: none">
     <div class="header title" style="height: 80px">
@@ -226,69 +224,43 @@
     </div>
 </div>
 
-<!-- Scoreboard View -->
-<div id="scoreboard" style="display:none">
-    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-        <div class="uk-container">
-            <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-                <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-                    Doodle Duo
-                </div>
-                <div class="uk-width-1-2" style="height: 100vw">
-                    <div class="uk-height-1-1 uk-cover-container">
-                        <div id="scoreboardCanvas1"
-                             class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                            Canvas 1
-                            <canvas id="scorecanvas-1" width="200" height="400"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="uk-width-1-2" style="height: 100vw">
-                    <div class="uk-height-1-1 uk-cover-container">
-                        <div id="scoreboardCanvas2"
-                             class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                            Canvas 2
-                            <canvas id="scorecanvas-2" width="200" height="400"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div style="width: 100%; display: flex; flex-direction: row">
-                    <div style="width: 50%">
-                        <div id="scorenameDrawing1" class="uk-text-center"></div>
-                    </div>
-                    <div style="width: 50%">
-                        <div id="scorenameDrawing2" class="uk-text-center"></div>
-                    </div>
-                </div>
+<!--score board-->
+<div id="scoreboard" style="display: none">
+    <div class="score-view">
+        <div class="title">
+            <img class="titleImage" src="title.png">
+        </div>
+        <div id="scoreboardCanvas1" class="center-content gv-canvas gv-canvas-left">
+            Canvas 1
+            <canvas id="scorecanvas-1" width="200" height="400"></canvas>
+        </div>
+        <div id="scoreboardCanvas2" class="center-content gv-canvas gv-canvas-right">
+            Canvas 2
+            <canvas id="scorecanvas-2" width="200" height="400"></canvas>
+        </div>
+        <div id="scorenameDrawing1" class="uk-text-center">Doodler 1</div>
+        <div id="scorenameDrawing2" class="uk-text-center">Doodler 2</div>
+        <div id="sv-info">
+            <div class="scoreboardWord">
+                <span id="wordDisplay">WORD</span>
+            </div>
+        </div>
+        <div class="chat-box-sv">
+            <div class="scoreboard-container">
+                <div class="score-container">
+                    <ul id="score" class="score-box"></ul>
+                    <b id='correct-ans'></b>
+                    <table id='score-table'>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Points</th>
+                        </tr>
+                        <tbody id='tbody'>
 
-                <div class="uk-width-1-1" style="height: 80px">
-                    <div class="uk-height-1-1 uk-cover-container uk-align-center">
-                        <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                            <span id="wordDisplay"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-                    <div class="uk-align-center">
-                        <div class="scoreboard-container">
-                            <div class="score-container">
-                                <ul id="score" class="score-box"></ul>
-                                <b id='correct-ans'></b>
-                                <table id='score-table'>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>Player</th>
-                                        <th>Points</th>
-                                    </tr>
-                                    <tbody id='tbody'>
-
-                                    </tbody>
-                                </table>
-                                <b id='winner'></b>
-                            </div>
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
+                    <b id='winner'></b>
                 </div>
             </div>
         </div>
