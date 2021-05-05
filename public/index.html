@@ -8,6 +8,9 @@
 <!--  Custom CSS     -->
 <link rel="stylesheet" href="./main.css"/>
 
+<!--Icons-->
+<link href="public/dist/captain-icons.css" rel="stylesheet">
+
 <!-- UIkit JS -->
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
@@ -116,11 +119,9 @@
             <img class="titleImage" src="title.png">
         </div>
         <div id="guesserCanvas1" class="center-content gv-canvas gv-canvas-left">
-            Canvas 1
             <canvas id="guesscanvas-1" width="200" height="400"></canvas>
         </div>
         <div id="guesserCanvas2" class="center-contet gv-canvas gv-canvas-right">
-            Canvas 2
             <canvas id="guesscanvas-2" width="200" height="400"></canvas>
         </div>
         <div id="nameDrawing1" class="uk-text-center">Doodler 1</div>
@@ -140,8 +141,10 @@
                     </tbody>
                 </table>
             </div>
-            <input class="big-input guessInput" placeholder="Input your Guess" id="GuessInput">
-            <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: arrow-right"></a>
+            <div class="guessInput">
+                <input type="text" class="big-input" placeholder="Input your Guess" id="GuessInput">
+                <input type="submit" class="submitGuess" onclick="guessInputHandler()" uk-icon="icon: arrow-right">
+            </div>
             <div class="timeDisplay">
                 <div id="timeRemaining">Time Remaining:</div>
                 <span id="gameTimeDisplay"></span>
