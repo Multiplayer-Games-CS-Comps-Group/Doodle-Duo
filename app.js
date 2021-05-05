@@ -156,9 +156,10 @@ io.on('connection', function (socket) {
       if (username === '') {
         username = 'Player ' + (getRoomSize(lobbyId) + 1);
       }
+      socket.emit('waitingRoomForPlayer', lobbyId, lobbies[lobbyId].users);
+
       addUserToLobby(lobbyId, socket, username);
 
-      socket.emit('waitingRoomForPlayer', lobbyId);
       io.in(lobbyId).emit('broadcastJoined', getUsername(socket));
     } else {
       socket.emit('errorRoomId'); //TODO: should maybe do this with a callback? And pass an error message
