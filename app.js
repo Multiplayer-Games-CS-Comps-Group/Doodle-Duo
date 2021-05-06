@@ -27,7 +27,7 @@ const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 20;
+const SCORE_DISPLAY_TIMER = 1;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -70,8 +70,8 @@ const createScoreObject = (lobbyId) => {
   }
 
   let { drawer1, drawer2 } = lobbies[lobbyId].state.roundInfo.drawers;
-  scores[drawer1].drawer = 1;
-  scores[drawer2].drawer = 2;
+  if (scores[drawer1]) scores[drawer1].drawer = 1;
+  if (scores[drawer2]) scores[drawer2].drawer = 2;
 
   return scores;
 };
@@ -125,6 +125,21 @@ function addUserToLobby(lobbyId, socketObject, username) {
   socketObject.join(lobbyId);
 
   lobbies[lobbyId].users[socketObject.id] = username;
+}
+
+/*
+ * Removes a user from a lobby
+ */
+function removeUserFromLobby(socketObject) {
+  // If user isn't already in a lobby, exit function
+  if (!'lobbyId' in socketObject) return;
+
+  const curLobbyId = socketObject.lobbyId;
+
+  delete socketObject.lobbyId;
+  socketObject.leave(curLobbyId);
+
+  delete lobbies[curLobbyId].users[socketObject.id];
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
@@ -211,7 +226,7 @@ io.on('connection', function (socket) {
     io.sockets.in(lobbyId).emit('undoEvent', drawingEvents, drawNum);
   });
 
-  socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
+  socket.on('scoreBoardCanvas', function (drawingEvents, drawNum) {
     let lobbyId = socket.lobbyId;
     io.sockets.in(lobbyId).emit('scoreBoardCanvas', drawingEvents, drawNum);
   });
@@ -255,16 +270,16 @@ io.on('connection', function (socket) {
 
   function updateGuessed(lobbyId, socketObj) {
     //TO DO: ALSO UPDATE 
-    socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word,createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]); //The view can update to make it clear they guessed
-    io.sockets.in(lobbyId).emit('someoneGuessed',createScoreObject(lobbyId),socketObj.id,lobbies[lobbyId].users[socketObj.id]);
+    socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word, createScoreObject(lobbyId), lobbies[lobbyId].users[socketObj.id]); //The view can update to make it clear they guessed
+    io.sockets.in(lobbyId).emit('someoneGuessed', createScoreObject(lobbyId), socketObj.id, lobbies[lobbyId].users[socketObj.id]);
     // for (var i =1; i<lobbies[lobbyId].state.roundInfo.drawers.length+1; i++){
     //   io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer+'i').emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
     // }
     // for (var i =1; i<lobbies[lobbyId].state.roundInfo.guessers.length+1; i++){
     //   io.sockets.in(lobbies[lobbyId].state.roundInfo.guessers.guesser+'i').emit('updateScore2',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
     // }
-    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer1).emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
-    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer2).emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
+    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer1).emit('updateScore', createScoreObject(lobbyId), lobbies[lobbyId].users[socketObj.id]);
+    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer2).emit('updateScore', createScoreObject(lobbyId), lobbies[lobbyId].users[socketObj.id]);
 
   };
 
@@ -275,8 +290,8 @@ io.on('connection', function (socket) {
       console.log('End of the round! Displaying scores now'); //TODO: TEMP
       console.log(`Next round will start in ${SCORE_DISPLAY_TIMER} seconds`); //TODO: TEMP
       io.sockets.in(lobbyId)
-        .emit('endRoundScores', createScoreObject(lobbyId),lobbies[lobbyId].state.roundInfo.compound.word);
-        //.emit('endRoundScores', createScoreBoard(lobbyId));
+        .emit('endRoundScores', createScoreObject(lobbyId), lobbies[lobbyId].state.roundInfo.compound.word);
+      //.emit('endRoundScores', createScoreBoard(lobbyId));
 
       setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }
@@ -350,7 +365,7 @@ io.on('connection', function (socket) {
     console.log('Ending the game!');
     //let scoreboard = createScoreBoard(lobbyId);
     //scoreboard += 'THE WINNER IS:' + globalThis.winner + '!';
-    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId),lobbies[lobbyId].state.roundInfo.compound.word);
+    io.sockets.in(lobbyId).emit('gameOverEvent', createScoreObject(lobbyId), lobbies[lobbyId].state.roundInfo.compound.word);
   };
 
   function startGameTimer(lobbyId) {
@@ -359,8 +374,42 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     console.log('A user disconnected');
-    //TODO: Removing users from game lobbies, and updating those lobbies appropriately
-    socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected'); //TODO: Probably want to emit just to the room, not all lobbies
+    
+    if (socket.lobbyId) {
+      let curLobbyId = socket.lobbyId;
+      let shouldEndRound = false;
+
+      if (Object.keys(lobbies[curLobbyId].state).length !== 0) {
+        // If number of players is now too low, end the game 
+        // If they were a drawer, end the round
+
+        const numRoundsLeft = lobbies[curLobbyId].state.rules.numRounds - lobbies[curLobbyId].state.roundInfo.round - 1;
+        lobbies[curLobbyId].state.meta.drawPairs = lib.getDrawPairs(
+          lib.getGameWords(numRoundsLeft),
+          Object.keys(lobbies[curLobbyId].users).filter(id => id != socket.id)
+        );
+
+        lobbies[curLobbyId].state.meta.numPlayers--;
+        delete lobbies[curLobbyId].state.players[socket.id];
+
+        if (
+          socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer1 ||
+          socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer2
+        ) {
+          shouldEndRound = true;
+        }
+      } else {
+        io.in(curLobbyId).emit('broadcastLeft', getUsername(socket));
+      }
+
+      removeUserFromLobby(socket);
+
+      if (shouldEndRound) {
+        clearInterval(lobbies[curLobbyId].state.timer.id);
+        endOfRound(curLobbyId);
+      }
+    }
+
   });
 });
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/

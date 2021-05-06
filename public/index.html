@@ -893,6 +893,15 @@
         el.appendChild(document.createTextNode(username + '  has joined! \n'));
       }
     });
+    
+    socket.on('broadcastLeft', function (username) {
+      console.debug('broadcastLeft', { username });
+
+      for (el of playerJoinNotifications) {
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(username + '  has left \n'));
+      }
+    });
 
     socket.on('waitingRoomForPlayer', function (roomId, users) {
       console.debug('waitingRoomForPlayer', { roomId });

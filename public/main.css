@@ -122,7 +122,7 @@
   padding: 0;
 }
 #chat-box-guesser-wrapper {
-  height: calc(100% - 44px);
+  height: calc(100% - 40px);
   position: relative;
 }
 #chat-box-guesser {
