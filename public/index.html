@@ -67,13 +67,13 @@
         C20.611,29.837,19.438,29.978,18.271,30.091z"/>
         </symbol>
         <symbol id="size-small" viewBox="0 0 20 20">
-            <circle cx=10 cy=10 r=4 />
+            <circle cx=10 cy=10 r=4/></circle>
         </symbol>
         <symbol id="size-medium" viewBox="0 0 20 20">
-            <circle cx=10 cy=10 r=6 />
+            <circle cx=10 cy=10 r=6/></circle>
         </symbol>
         <symbol id="size-large" viewBox="0 0 20 20">
-            <circle cx=10 cy=10 r=8 />
+            <circle cx=10 cy=10 r=8/></circle>
         </symbol>
     </defs>
 </svg>
@@ -143,7 +143,7 @@
                         <th>Player</th>
                         <th>Score</th>
                     </tr>
-                    <tbody id= 'pbody'>
+                    <tbody id='pbody'>
                     </tbody>
                 </table>
             </div>
@@ -173,7 +173,7 @@
 
 <!--     Drawer's view  -->
 <div id="drawer-view" style="display: none">
-    <div class="drawer-view" >
+    <div class="drawer-view">
         <div class="title">
             <img class="titleImage" src="title.png">
         </div>
@@ -242,7 +242,7 @@
                         <th>Player</th>
                         <th>Score</th>
                     </tr>
-                    <tbody id= 'p2body'>
+                    <tbody id='p2body'>
 
                     </tbody>
                 </table>
@@ -363,588 +363,602 @@
     const playerBody2 = document.getElementById('p2body')
 
 
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            /**
+            * Returns whether a given HTML element is scrolled to within 10px of the bottom
+            */
+            const isScrolledNearBottom = el =>
+            el.scrollTop + 10 >= el.scrollHeight - el.clientHeight;
 
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    /**
-     * Returns whether a given HTML element is scrolled to within 10px of the bottom
-     */
-    const isScrolledNearBottom = el =>
-        el.scrollTop + 10 >= el.scrollHeight - el.clientHeight;
+            /**
+            * Scrolls given HTML element to the bottom
+            */
+            const scrollToBottom = el =>
+            el.scrollTop = el.scrollHeight - el.clientHeight;
 
-    /**
-     * Scrolls given HTML element to the bottom
-     */
-    const scrollToBottom = el =>
-        el.scrollTop = el.scrollHeight - el.clientHeight;
-
-    /**
-     * This function enables us to get multiple elements by id and treat them like one
-     * Particularly helpful in updating identical things in the drawer and guesser view
-     * use like this:
-     * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
-     * (without this function we'd have to have 2 different assignments like this:
-     * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
-     */
-    function getElementsById(ids) {
-        const idList = ids.split(' ');
-        let results = [], item;
-        for (let i = 0; i < idList.length; i++) {
-            item = document.getElementById(idList[i]);
-            if (item) {
+            /**
+            * This function enables us to get multiple elements by id and treat them like one
+            * Particularly helpful in updating identical things in the drawer and guesser view
+            * use like this:
+            * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+            * (without this function we'd have to have 2 different assignments like this:
+            * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
+            */
+            function getElementsById(ids) {
+                const idList = ids.split(' ');
+                let results = [], item;
+                for (let i = 0; i < idList.length; i++) {
+                item = document.getElementById(idList[i]);
+                if (item) {
                 results.push(item);
             }
-        }
-        return (results);
-    }
+            }
+                return (results);
+            }
 
-    /**
-     * Posts a message to all chatboxes, and scrolls them if they are already scrolled
-     * all the way down.
-     */
-    function postChatMessage(msg, username = null) {
-        const elementsToScroll = [];
-        for (chatBox of chatBoxes) {
-            if (isScrolledNearBottom(chatBox)) elementsToScroll.push(chatBox);
-        }
+            /**
+            * Posts a message to all chatboxes, and scrolls them if they are already scrolled
+            * all the way down.
+            */
+            function postChatMessage(msg, username = null) {
+                const elementsToScroll = [];
+                for (chatBox of chatBoxes) {
+                if (isScrolledNearBottom(chatBox)) elementsToScroll.push(chatBox);
+            }
 
-        for (chatBox of chatBoxes) {
-            const msgLi = document.createElement('li');
+                for (chatBox of chatBoxes) {
+                const msgLi = document.createElement('li');
 
-            if (username) {
+                if (username) {
                 const usernameB = document.createElement('b');
                 usernameB.innerText = username + ": ";
                 msgLi.appendChild(usernameB);
             }
 
-            const msgSpan = document.createElement('span');
-            msgSpan.innerText = msg;
-            msgLi.appendChild(msgSpan);
+                const msgSpan = document.createElement('span');
+                msgSpan.innerText = msg;
+                msgLi.appendChild(msgSpan);
 
-            chatBox.appendChild(msgLi);
-        }
+                chatBox.appendChild(msgLi);
+            }
 
-        for (el of elementsToScroll) {
-            scrollToBottom(el);
-        }
-    }
+                for (el of elementsToScroll) {
+                scrollToBottom(el);
+            }
+            }
 
-    /**
-     * Switches between the different views
-     *
-     * Pass in the ID of the view to make it display, and all other views
-     * will not display.
-     */
-    function switchToView(newViewName) {
-        for (let [viewName, view] of Object.entries(allViews)) {
-            if (viewName === newViewName) {
+            /**
+            * Switches between the different views
+            *
+            * Pass in the ID of the view to make it display, and all other views
+            * will not display.
+            */
+            function switchToView(newViewName) {
+                for (let [viewName, view] of Object.entries(allViews)) {
+                if (viewName === newViewName) {
                 view.style.display = 'block';
             } else {
                 view.style.display = 'none';
             }
-        }
+            }
 
-        // Specialized view behaviors
-        switch (newViewName) {
-            case "guesserView":
+                // Specialized view behaviors
+                switch (newViewName) {
+                case "guesserView":
                 for (chatBox of chatBoxes) scrollToBottom(chatBox);
                 break;
-            case "drawerView":
+                case "drawerView":
                 for (chatBox of chatBoxes) scrollToBottom(chatBox);
                 updateCursor();
                 break;
-        }
-    }
+            }
+            }
 
-    /**
-     * Gets the usernames of the two drawers for the current round
-     * Takes as input the scores object defined in notes.js
-     */
-    function getDrawerNames(scores) {
-        let drawer1 = 'Drawer 1';
-        let drawer2 = 'Drawer 2';
-        for (let data of Object.values(scores)) {
-            if (data.drawer === 1) {
+            /**
+            * Gets the usernames of the two drawers for the current round
+            * Takes as input the scores object defined in notes.js
+            */
+            function getDrawerNames(scores) {
+                let drawer1 = 'Drawer 1';
+                let drawer2 = 'Drawer 2';
+                for (let data of Object.values(scores)) {
+                if (data.drawer === 1) {
                 drawer1 = data.username;
             } else if (data.drawer === 2) {
                 drawer2 = data.username;
             }
-        }
-        return [drawer1, drawer2];
-    }
+            }
+                return [drawer1, drawer2];
+            }
 
-    /**
-     * Resets the values of certain inputs, and sets the view to the initial screen
-     */
-    function reset() {
-        roomInput.value = '';
-        gameCodeDisplay.value = '';
-        switchToView('initialScreen');
-    }
-
-
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    /**
-     * onclick function for lobby code copy button
-     */
-    function copyLobbyId() {
-        gameCodeDisplay.select();
-        gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
-
-        document.execCommand('copy');
-
-        copyRoomCodeButton.innerText = 'Copied!';
-    }
-
-    /**
-     * onclick function for guess input pencil icon
-     * onkeyup(enter) for the guess input
-     */
-    function guessInputHandler() {
-        socket.emit('playerGuess', guessInputBox.value);
-        guessInputBox.value = '';
-    }
-
-    guessInputBox.onkeyup = ({keyCode}) => {
-        if (keyCode === 13) guessInputHandler();
-    }
-
-    /**
-     * onclick function for create lobby button
-     */
-    function createButtonClicked() {
-        socket.emit('createClicked', nameInput.value);
-    }
-
-    /**
-     * onclick function for join lobby button
-     * onkeyup(enter) for lobby code input
-     */
-    function joinButtonClicked() {
-        switchToView('waitingRoomForPlayer');
-        console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
-        socket.emit('joinClicked', roomInput.value, nameInput.value);
-    }
-
-    roomInput.onkeyup = ({keyCode}) => {
-        if (keyCode === 13) joinButtonClicked();
-    }
-
-    /**
-     * onclick function for start game button
-     */
-    function startGameButtonClicked() {
-        socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
-    }
-
-    function paintbrushButtonClicked() {
-        setDrawMode(0);
-        paintbrushButton.classList.add("drawer-button-selected");
-        fillButton.classList.remove("drawer-button-selected");
-    }
-    function fillButtonClicked() {
-        setDrawMode(1);
-        fillButton.classList.add("drawer-button-selected");
-        paintbrushButton.classList.remove("drawer-button-selected");
-    }
-
-    function smallSizeButtonClicked() {
-      setBrushSize(3);
-      smallSizeButton.classList.add("drawer-button-selected");
-      mediumSizeButton.classList.remove("drawer-button-selected");
-      largeSizeButton.classList.remove("drawer-button-selected");
-    }
-    function mediumSizeButtonClicked() {
-      setBrushSize(7);
-      smallSizeButton.classList.remove("drawer-button-selected");
-      mediumSizeButton.classList.add("drawer-button-selected");
-      largeSizeButton.classList.remove("drawer-button-selected");
-    }
-    function largeSizeButtonClicked() {
-      setBrushSize(15);
-      smallSizeButton.classList.remove("drawer-button-selected");
-      mediumSizeButton.classList.remove("drawer-button-selected");
-      largeSizeButton.classList.add("drawer-button-selected");
-    }
+            /**
+            * Resets the values of certain inputs, and sets the view to the initial screen
+            */
+            function reset() {
+                roomInput.value = '';
+                gameCodeDisplay.value = '';
+                switchToView('initialScreen');
+            }
 
 
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO Events ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    socket.on('connect', function () {
-        switchToView('initialScreen');
-    });
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            /**
+            * onclick function for lobby code copy button
+            */
+            function copyLobbyId() {
+                gameCodeDisplay.select();
+                gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
 
-    socket.on('succesfullyCreatedLobby', function (lobbyId) {
-        console.debug('succesfullyCreatedLobby', {lobbyId});
-        switchToView('waitingRoomForHost');
-        gameCodeDisplay.value = lobbyId;
-    });
+                document.execCommand('copy');
 
-    socket.on('endRoundScores', function (scoresObj, ans) {
+                copyRoomCodeButton.innerText = 'Copied!';
+            }
 
-        console.log(scoresObj)
-        switchToView('scoreboard');
-        document.getElementById('wordDisplay').innerText = ans;
+            /**
+            * onclick function for guess input pencil icon
+            * onkeyup(enter) for the guess input
+            */
+            function guessInputHandler() {
+                socket.emit('playerGuess', guessInputBox.value);
+                guessInputBox.value = '';
+            }
 
-        // clears canvases before updated version
-        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-        sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
-        sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+            guessInputBox.onkeyup = ({keyCode}) => {
+                if (keyCode === 13) guessInputHandler();
+            }
+
+            /**
+            * onclick function for create lobby button
+            */
+            function createButtonClicked() {
+                socket.emit('createClicked', nameInput.value);
+            }
+
+            /**
+            * onclick function for join lobby button
+            * onkeyup(enter) for lobby code input
+            */
+            function joinButtonClicked() {
+                switchToView('waitingRoomForPlayer');
+                console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
+                socket.emit('joinClicked', roomInput.value, nameInput.value);
+            }
+
+            roomInput.onkeyup = ({keyCode}) => {
+                if (keyCode === 13) joinButtonClicked();
+            }
+
+            /**
+            * onclick function for start game button
+            */
+            function startGameButtonClicked() {
+                socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
+            }
+
+            function paintbrushButtonClicked() {
+                setDrawMode(0);
+                paintbrushButton.classList.add("drawer-button-selected");
+                fillButton.classList.remove("drawer-button-selected");
+            }
+            function fillButtonClicked() {
+                setDrawMode(1);
+                fillButton.classList.add("drawer-button-selected");
+                paintbrushButton.classList.remove("drawer-button-selected");
+            }
+
+            function smallSizeButtonClicked() {
+                setBrushSize(3);
+                smallSizeButton.classList.add("drawer-button-selected");
+                mediumSizeButton.classList.remove("drawer-button-selected");
+                largeSizeButton.classList.remove("drawer-button-selected");
+            }
+            function mediumSizeButtonClicked() {
+                setBrushSize(7);
+                smallSizeButton.classList.remove("drawer-button-selected");
+                mediumSizeButton.classList.add("drawer-button-selected");
+                largeSizeButton.classList.remove("drawer-button-selected");
+            }
+            function largeSizeButtonClicked() {
+                setBrushSize(15);
+                smallSizeButton.classList.remove("drawer-button-selected");
+                mediumSizeButton.classList.remove("drawer-button-selected");
+                largeSizeButton.classList.add("drawer-button-selected");
+            }
 
 
-        // if you are a drawer, you are re-emitting canvas data
-        if (drawerNumber != 0) {
-            socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
-        }
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO Events ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            socket.on('connect', function () {
+                switchToView('initialScreen');
+            });
 
-        correctAns.innerText = 'The correct answer is: ' + ans;
-        //myScoreList.sort(function (a,b) {return a.score - b.score} )
+            socket.on('succesfullyCreatedLobby', function (lobbyId) {
+                console.debug('succesfullyCreatedLobby', {lobbyId});
+                switchToView('waitingRoomForHost');
+                gameCodeDisplay.value = lobbyId;
+            });
 
-        ranklist = [];
-        for (let player in scoresObj) {
-            let playerObj = scoresObj[player];
-            ranklist.push(playerObj);
-        }
+            socket.on('endRoundScores', function (scoresObj, ans) {
 
-        ranklist.sort(function (a, b) {
-            return b.score - a.score
-        });
+                console.log(scoresObj)
+                switchToView('scoreboard');
+                document.getElementById('wordDisplay').innerText = ans;
 
-        console.log(ranklist);
-        console.log('ranklist: ' + ranklist.sort(function (a, b) {
-            return b.score - a.score
-        })[0].score);
-        tableBody.innerHTML = '';
-        for (var i = 0; i < ranklist.length; i++) {
-            const addCell = document.createElement('tr');
-            tableBody.appendChild(addCell);
-
-            const rank = document.createElement('td');
-            rank.innerText = (i + 1);
-            const playerUsername = document.createElement('td');
-            playerUsername.innerText = ranklist[i].username;
-            const points = document.createElement('tr');
-            points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
-
-            addCell.appendChild(rank);
-            addCell.appendChild(playerUsername);
-            addCell.appendChild(points);
-        }
-
-        console.debug('endRoundScores', {scoresObj});
-    });
+                // clears canvases before updated version
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+                sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
 
 
-    socket.on('scoreBoardCanvas', function (drawingEvents, drawNum) {
-        if (drawNum == 1) {
-            for (let i = 0; i < drawingEvents.length; i++) {
+                // if you are a drawer, you are re-emitting canvas data
+                if (drawerNumber != 0) {
+                socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+            }
+
+                correctAns.innerText = 'The correct answer is: ' + ans;
+                //myScoreList.sort(function (a,b) {return a.score - b.score} )
+
+                ranklist = [];
+                for (let player in scoresObj) {
+                let playerObj = scoresObj[player];
+                ranklist.push(playerObj);
+            }
+
+                ranklist.sort(function (a, b) {
+                return b.score - a.score
+            });
+
+                console.log(ranklist);
+                console.log('ranklist: ' + ranklist.sort(function (a, b) {
+                return b.score - a.score
+            })[0].score);
+                tableBody.innerHTML = '';
+                for (var i = 0; i < ranklist.length; i++) {
+                const addCell = document.createElement('tr');
+                tableBody.appendChild(addCell);
+
+                const rank = document.createElement('td');
+                rank.innerText = (i + 1);
+                const playerUsername = document.createElement('td');
+                playerUsername.innerText = ranklist[i].username;
+                const points = document.createElement('tr');
+                points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
+
+                addCell.appendChild(rank);
+                addCell.appendChild(playerUsername);
+                addCell.appendChild(points);
+            }
+
+                console.debug('endRoundScores', {scoresObj});
+            });
+
+
+            socket.on('scoreBoardCanvas', function (drawingEvents, drawNum) {
+                if (drawNum == 1) {
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent3(drawingEvents[i]);
             }
-        } else if (drawNum == 2) {
-            for (let i = 0; i < drawingEvents.length; i++) {
+            } else if (drawNum == 2) {
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent4(drawingEvents[i]);
             }
-        }
-    });
+            }
+            });
 
-    socket.on('errorRoomId', function () {
-        console.debug('errorRoomId');
-        reset();
-        alert('Unknown game code');
-    });
+            socket.on('errorRoomId', function () {
+                console.debug('errorRoomId');
+                reset();
+                alert('Unknown game code');
+            });
 
-    socket.on('tooManyPlayers', function () {
-        console.debug('tooManyPlayers');
-        reset();
-        alert('Room full');
-    });
+            socket.on('tooManyPlayers', function () {
+                console.debug('tooManyPlayers');
+                reset();
+                alert('Room full');
+            });
 
-    socket.on('tooFewPlayers', function () {
-        console.debug('tooFewPlayers');
-        //reset();
-        alert('We recommend a minimum of four players to play this game');
-    });
+            socket.on('tooFewPlayers', function () {
+                console.debug('tooFewPlayers');
+                //reset();
+                alert('We recommend a minimum of four players to play this game');
+            });
 
-    socket.on('drawerView', function (scores, data) {
-        console.debug('drawerView', {scores, data});
-        drawerNumber = data.drawer;
-        switchToView('drawerView');
+            socket.on('drawerView', function (scores, data) {
+                console.debug('drawerView', {scores, data});
+                drawerNumber = data.drawer;
+                switchToView('drawerView');
 
-      drawingEvents = []
-      ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-      wordToDraw.innerText = data.word;
-      playerBody2.innerHTML = '';
+                drawingEvents = []
+                ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+                wordToDraw.innerText = data.word;
+                playerBody2.innerHTML = '';
 
-      playerList = [];
-      for (let player in scores){
-        let playerObj = scores[player];
-        playerList.push(playerObj);
-      }
-      console.log(playerList);
+                playerList = [];
+                for (let player in scores){
+                let playerObj = scores[player];
+                playerList.push(playerObj);
+            }
+                console.log(playerList);
 
-      for (var i = 0; i<playerList.length; i++){
-        const addCell = document.createElement('tr');
-        playerBody2.appendChild(addCell);
+                for (var i = 0; i<playerList.length; i++){
+                const addCell = document.createElement('tr');
+                playerBody2.appendChild(addCell);
 
-        const player = document.createElement('td');
-        player.innerText = playerList[i].username;
-        const score = document.createElement('td');
-        score.innerText = playerList[i].score;
-        score.setAttribute("id", playerList[i].username+'2');
+                const player = document.createElement('td');
+                player.innerText = playerList[i].username;
+                const score = document.createElement('td');
+                score.innerText = playerList[i].score;
+                score.setAttribute("id", playerList[i].username+'2');
 
-        addCell.appendChild(player);
-        addCell.appendChild(score);
-      }
-    });
+                addCell.appendChild(player);
+                addCell.appendChild(score);
+            }
+            });
 
-    socket.on('guesserView', function (scores, data) {
-      console.debug('guesserView', { scores, data });
-      switchToView('guesserView');
+            socket.on('guesserView', function (scores, data) {
+                console.debug('guesserView', {scores, data});
+                switchToView('guesserView');
 
-      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      let spacesLength = data.word1Length + data.word2Length;
-      let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
-      console.log(spacesDisplay);
-      spaces.innerText = spacesDisplay;
-      let drawerNames = getDrawerNames(scores);
-      drawerNumber = 0;
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                let spacesLength = data.word1Length + data.word2Length;
+                let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
+                console.log(spacesDisplay);
+                spaces.innerText = spacesDisplay;
+                let drawerNames = getDrawerNames(scores);
+                drawerNumber = 0;
 
-      nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
-      nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
-      playerBody.innerHTML = '';
+                nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+                nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+                playerBody.innerHTML = '';
 
-      playerList = [];
-      for (let player in scores){
-        let playerObj = scores[player];
-        playerList.push(playerObj);
-      }
-      console.log(playerList);
+                playerList = [];
+                for (let player in scores){
+                let playerObj = scores[player];
+                playerList.push(playerObj);
+            }
+                console.log(playerList);
 
-      for (var i = 0; i<playerList.length; i++){
-        const addCell = document.createElement('tr');
-        playerBody.appendChild(addCell);
+                for (var i = 0; i<playerList.length; i++){
+                const addCell = document.createElement('tr');
+                playerBody.appendChild(addCell);
 
-        const player = document.createElement('td');
-        player.innerText = playerList[i].username;
-        player.setAttribute('id',playerList[i].username)
-        const score = document.createElement('td');
-        score.innerText = playerList[i].score;
-        score.setAttribute("id", playerList[i].username+'score');
+                const player = document.createElement('td');
+                player.innerText = playerList[i].username;
+                player.setAttribute('id',playerList[i].username)
+                const score = document.createElement('td');
+                score.innerText = playerList[i].score;
+                score.setAttribute("id", playerList[i].username+'score');
 
-        addCell.appendChild(player);
-        addCell.appendChild(score);
-      }
-    });
+                addCell.appendChild(player);
+                addCell.appendChild(score);
+            }
+            });
 
-    socket.on('timerUpdate', function (timeLeft) {
-        console.debug('timerUpdate', timeLeft);
-        for (let timerElement of gameTimeDisplays) {
-            timerElement.innerText = timeLeft + ' seconds';
-        }
-    });
+            socket.on('timerUpdate', function (timeLeft) {
+                console.debug('timerUpdate', timeLeft);
+                for (let timerElement of gameTimeDisplays) {
+                timerElement.innerText = timeLeft + ' seconds';
+            }
+            });
 
-    socket.on('gameOverEvent', function (scoresObj, ans) {
-        switchToView('scoreboard');
-        // maybe we don't need this?
+            socket.on('gameOverEvent', function (scoresObj, ans) {
+                switchToView('scoreboard');
+                // maybe we don't need this?
 
-        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-        sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
-        sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+                sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
 
-        // if you are a drawer, you are re-emitting canvas data
-        if (drawerNumber != 0) {
-            socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
-        }
+                // if you are a drawer, you are re-emitting canvas data
+                if (drawerNumber != 0) {
+                socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+            }
 
-        document.getElementById('wordDisplay').innerText = ans;
-        correctAns.innerText = 'The correct answer is: ' + ans;
-        //myScoreList.sort(function (a,b) {return a.score - b.score} )
+                document.getElementById('wordDisplay').innerText = ans;
+                correctAns.innerText = 'The correct answer is: ' + ans;
+                //myScoreList.sort(function (a,b) {return a.score - b.score} )
 
-        ranklist = [];
-        for (var player in scoresObj) {
-            var playerObj = scoresObj[player];
-            ranklist.push(playerObj);
-        }
+                ranklist = [];
+                for (var player in scoresObj) {
+                var playerObj = scoresObj[player];
+                ranklist.push(playerObj);
+            }
 
-        ranklist.sort(function (a, b) {
-            return b.score - a.score
-        });
+                ranklist.sort(function (a, b) {
+                return b.score - a.score
+            });
 
-        console.log(ranklist);
-        console.log('ranklist: ' + ranklist.sort(function (a, b) {
-            return b.score - a.score
-        })[0].score);
-        tableBody.innerHTML = '';
-        for (var i = 0; i < ranklist.length; i++) {
-            const addCell = document.createElement('tr');
-            tableBody.appendChild(addCell);
+                console.log(ranklist);
+                console.log('ranklist: ' + ranklist.sort(function (a, b) {
+                return b.score - a.score
+            })[0].score);
+                tableBody.innerHTML = '';
+                for (var i = 0; i < ranklist.length; i++) {
+                const addCell = document.createElement('tr');
+                tableBody.appendChild(addCell);
 
-            const rank = document.createElement('td');
-            rank.innerText = (i + 1);
-            const playerUsername = document.createElement('td');
-            playerUsername.innerText = ranklist[i].username;
-            const points = document.createElement('tr');
-            points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
+                const rank = document.createElement('td');
+                rank.innerText = (i + 1);
+                const playerUsername = document.createElement('td');
+                playerUsername.innerText = ranklist[i].username;
+                const points = document.createElement('tr');
+                points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
 
-            addCell.appendChild(rank);
-            addCell.appendChild(playerUsername);
-            addCell.appendChild(points);
-        }
-        winner.innerText = 'THE WINNER IS ' + ranklist[0].username + '!!!'
-        console.debug('gameOverEvent', {scoresObj});
-    });
+                addCell.appendChild(rank);
+                addCell.appendChild(playerUsername);
+                addCell.appendChild(points);
+            }
+                winner.innerText = 'THE WINNER IS ' + ranklist[0].username + '!!!'
+                console.debug('gameOverEvent', {scoresObj});
+            });
 
-    //sent to the specific user when they guess right
+            //sent to the specific user when they guess right
 
-    socket.on('correctGuess', function (word,gameState,username) {
-      console.debug('correctGuess');
-      spaces.innerText = word; // reveal the word
+            socket.on('correctGuess', function (word,gameState,username) {
+                console.debug('correctGuess');
+                spaces.innerText = word; // reveal the word
 
-      postChatMessage('You guessed it!');
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-      for (var i = 0; i<playerList.length; i++) {
-          if (playerList[i].username === username) {
-              console.log('correctGuess');
-              document.getElementById(username + 'score').innerText = playerList[i].score;
-              //document.getElementById(username+'2').innerText = playerList[i].score;
-          }
-      }
-    });
+                postChatMessage('You guessed it!');
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('correctGuess');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+                //document.getElementById(username+'2').innerText = playerList[i].score;
 
-    socket.on('someoneGuessed', function (gameState, socketId, username) {
-      console.debug('someoneGuessed', { gameState, socketId, username });
-      postChatMessage(username + '  has correctly guessed the compound word!');
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
+            }
+            }
+            });
 
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'score').innerText = playerList[i].score;
-          //document.getElementById(username+'2').innerText = playerList[i].score;
-        }
-      }
-    });
+            socket.on('someoneGuessed', function (gameState, socketId, username) {
+                console.debug('someoneGuessed', {gameState, socketId, username});
+                postChatMessage(username + '  has correctly guessed the compound word!');
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+                //document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
 
-    socket.on('updateScore',function(gameState,username){
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
+            socket.on('updateScore',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
 
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'2').innerText = playerList[i].score;
-        }
-      }
-    });
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
 
-    socket.on('updateScore2',function(gameState,username){
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
+            socket.on('updateScore2',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
 
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'score').innerText = playerList[i].score;
-        }
-      }
-    });
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
 
-    socket.on('closeGuess', function () {
-        console.debug('closeGuess');
-        postChatMessage('Your guess was close...');
-    });
+            socket.on('updateScore2',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
 
-    socket.on('wrongGuess', function (playerGuess, socketId, username) {
-        console.debug('wrongGuess', {playerGuess, socketId});
-        postChatMessage(playerGuess, username);
-    });
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+            }
+            }
+            });
 
-    socket.on('broadcastJoined', function (username) {
-        console.debug('broadcastJoined', {username});
+            socket.on('closeGuess', function () {
+                console.debug('closeGuess');
+                postChatMessage('Your guess was close...');
+            });
 
-        for (el of playerJoinNotifications) {
-            el.appendChild(document.createElement('br'));
-            el.appendChild(document.createTextNode(username + '  has joined! \n'));
-        }
-    });
+            socket.on('wrongGuess', function (playerGuess, socketId, username) {
+                console.debug('wrongGuess', {playerGuess, socketId});
+                postChatMessage(playerGuess, username);
+            });
 
-    socket.on('waitingRoomForPlayer', function (roomId,users) {
-      console.debug('waitingRoomForPlayer', { roomId });
-      switchToView('waitingRoomForPlayer');
-      displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
+            socket.on('broadcastJoined', function (username) {
+                console.debug('broadcastJoined', {username});
 
-      for (var i = 0; i<Object.values(users).length; i++){
-        for (el of playerJoinNotifications) {
-          el.appendChild(document.createElement('br'));
-          el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
-        }
-      }
-      console.log(Object.values(users));
-    });
+                for (el of playerJoinNotifications) {
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(username + '  has joined! \n'));
+            }
+            });
 
-    socket.on('drawingUpdate', function (drawingEvents, drawNum) {
-        //console.log('drawingUpdate Client');
-        if (drawNum == 1) {
-            for (let i = 0; i < drawingEvents.length; i++) {
+            socket.on('waitingRoomForPlayer', function (roomId,users) {
+                console.debug('waitingRoomForPlayer', {roomId});
+                switchToView('waitingRoomForPlayer');
+                displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
+
+                for (var i = 0; i<Object.values(users).length; i++){
+                for (el of playerJoinNotifications) {
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
+            }
+            }
+                console.log(Object.values(users));
+            });
+
+            socket.on(' drawingUpdate', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent1(drawingEvents[i]);
             }
-        } else if (drawNum == 2) {
-            for (let i = 0; i < drawingEvents.length; i++) {
+            } else if (drawNum == 2) {
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent2(drawingEvents[i]);
             }
-        }
+            }
 
-    });
-    socket.on('undoEvent', function (drawingEvents, drawNum) {
-        //console.log('drawingUpdate Client');
-        if (drawNum == 1) {
-            gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-            gctx1.beginPath();
-            for (let i = 0; i < drawingEvents.length; i++) {
+            });
+            socket.on(' undoEvent', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx1.beginPath();
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent1(drawingEvents[i]);
             }
-            gctx1.stroke();
+                gctx1.stroke();
 
-            updateColor();
-            updateWidth();
-        } else if (drawNum == 2) {
-            gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-            gctx2.beginPath();
-            for (let i = 0; i < drawingEvents.length; i++) {
+                updateColor();
+                updateWidth();
+            } else if (drawNum == 2) {
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                gctx2.beginPath();
+                for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent2(drawingEvents[i]);
             }
-            gctx2.stroke();
+                gctx2.stroke();
 
-            updateColor();
-            updateWidth();
-        }
+                updateColor();
+                updateWidth();
+            }
 
-    });
+            });
 
-    socket.on('clearEvent', function (drawingEvents, drawNum) {
-        //console.log('drawingUpdate Client');
-        if (drawNum == 1) {
-            gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-        } else if (drawNum == 2) {
-            gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-        }
+            socket.on(' clearEvent', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+            } else if (drawNum == 2) {
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+            }
 
-    });
+            });
 </script>
 
 </body>
