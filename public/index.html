@@ -908,8 +908,8 @@
                 console.log(Object.values(users));
             });
 
-            socket.on(' drawingUpdate', function (drawingEvents, drawNum) {
-                //console.log(' drawingUpdate Client');
+            socket.on('drawingUpdate', function (drawingEvents, drawNum) {
+                console.log(' drawingUpdate Client');
                 if (drawNum == 1) {
                 for (let i = 0; i < drawingEvents.length; i++) {
                 handleDrawingEvent1(drawingEvents[i]);
@@ -921,7 +921,7 @@
             }
 
             });
-            socket.on(' undoEvent', function (drawingEvents, drawNum) {
+            socket.on('undoEvent', function (drawingEvents, drawNum) {
                 //console.log(' drawingUpdate Client');
                 if (drawNum == 1) {
                 gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
@@ -930,9 +930,6 @@
                 handleDrawingEvent1(drawingEvents[i]);
             }
                 gctx1.stroke();
-
-                updateColor();
-                updateWidth();
             } else if (drawNum == 2) {
                 gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
                 gctx2.beginPath();
@@ -940,14 +937,11 @@
                 handleDrawingEvent2(drawingEvents[i]);
             }
                 gctx2.stroke();
-
-                updateColor();
-                updateWidth();
             }
 
             });
 
-            socket.on(' clearEvent', function (drawingEvents, drawNum) {
+            socket.on('clearEvent', function (drawingEvents, drawNum) {
                 //console.log(' drawingUpdate Client');
                 if (drawNum == 1) {
                 gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
