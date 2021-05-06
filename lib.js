@@ -269,6 +269,6 @@ function testCreateGameInstance() { //TODO: delete this function
 module.exports = {
   getLDistance, checkIfAllDone,
   createGameInstance, getAllGuessers, setUpRound,
-  calculateScore
+  calculateScore, getGameWords, getDrawPairs
 };
 
