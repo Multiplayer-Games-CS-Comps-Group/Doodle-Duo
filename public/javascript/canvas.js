@@ -233,7 +233,7 @@ const undoDrawingEvents = () => {
   ctx1.stroke();
 
   updateColor();
-  updateWidth();
+  setBrushSize(currentSize);
 }
 
 /* ------------ Clear Canvas ------------ */
