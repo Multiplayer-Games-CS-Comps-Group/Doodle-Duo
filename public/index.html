@@ -1,61 +1,63 @@
 <!DOCTYPE html>
 <html>
 <!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><head>-->
-  <title>Compound Game</title>
+<title>Compound Game</title>
 
-  <!-- UIkit CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
-  <!--  Custom CSS     -->
-  <link rel="stylesheet" href="./main.css" />
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css"/>
+<!--  Custom CSS     -->
+<link rel="stylesheet" href="./main.css"/>
 
-  <!-- UIkit JS -->
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+<!--Icons-->
+<link href="public/dist/captain-icons.css" rel="stylesheet">
 
-  <script src="./javascript/colorPicker.js" defer></script>
-  <script src="./javascript/canvas.js" defer></script>
-</head>
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+
+<script src="./javascript/colorPicker.js" defer></script>
+<script src="./javascript/canvas.js" defer></script>
 
 <body>
-  <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-      <symbol id="icon-paintbrush" viewBox="0 0 20 20">
-        <path
-          d="M1.384 16.647c0 0-0.675 2.080-1.384 2.807 0 0 0.212 0.224 0.758 0.544 0 0 1.402-1.449 2.155-1.963 0 0.001-0.217-1.692-1.528-1.388z">
-        </path>
-        <path
-          d="M18.988 2.545c-2.452-4.682-6.469-1.471-6.469-1.471 5.353 1.57 4.618 8.168 4.618 8.168 4.135-2.452 1.851-6.697 1.851-6.697z">
-        </path>
-        <path
-          d="M8.832 12.031c1.27-1.632 7.594-5.629 7.602-5.634-0.274-0.744-0.592-1.355-0.933-1.858-1.752 0.738-8.301 6.189-8.301 6.189 2.329-3.11 7.583-7.055 7.592-7.061-1.702-1.73-3.61-1.417-3.61-1.417-3.204 2.925-7.31 7.898-8.855 9.809-0.195 0.223-0.404 0.483-0.627 0.781 0 0 1.788-1.477 2.372-0.756 0.585 0.722 0.412 2.166 0.412 2.166s1.169-1.477 1.857-0.722c0.687 0.756 0.24 1.788 0 2.062 0 0 0.996-0.997 1.203-0.618 0.206 0.378 0.034 1.237-0.585 2.027 0 0 0.114-0.132 0.273-0.336 4.732-5.805 9.907-7.419 9.907-7.419-0.104-0.685-0.236-1.303-0.389-1.862-2.36 0.969-7.917 4.651-7.917 4.651z">
-        </path>
-        <path
-          d="M7.148 15.589c-0.035-0.274-0.808 0-0.808 0 0.12-0.274-0.052-1.013-0.378-1.425s-1.478 0.086-1.478 0.086c0-0.345-0.464-1.22-0.979-1.581-0.514-0.36-1.805 0.172-1.805 0.172 0.224 1.942-0.316 3.808-0.316 3.808 2.736-1.033 1.528 1.39 1.528 1.39 1.805-1.064 4.046-1.039 4.046-1.039 0.516-0.878 0.19-1.41 0.19-1.41z">
-        </path>
-      </symbol>
-      <symbol id="icon-fill" viewBox="0 0 28.873 32">
-        <path
-          d="M28.81,21.28c0,0-0.66-8.218-6.886-5.791l0,0c-2.291-2.095-5.796-5.265-8.114-7.199c-0.21-3.544-1.158-8.738-4.943-8.26
+        <symbol id="icon-paintbrush" viewBox="0 0 20 20">
+            <path
+                    d="M1.384 16.647c0 0-0.675 2.080-1.384 2.807 0 0 0.212 0.224 0.758 0.544 0 0 1.402-1.449 2.155-1.963 0 0.001-0.217-1.692-1.528-1.388z">
+            </path>
+            <path
+                    d="M18.988 2.545c-2.452-4.682-6.469-1.471-6.469-1.471 5.353 1.57 4.618 8.168 4.618 8.168 4.135-2.452 1.851-6.697 1.851-6.697z">
+            </path>
+            <path
+                    d="M8.832 12.031c1.27-1.632 7.594-5.629 7.602-5.634-0.274-0.744-0.592-1.355-0.933-1.858-1.752 0.738-8.301 6.189-8.301 6.189 2.329-3.11 7.583-7.055 7.592-7.061-1.702-1.73-3.61-1.417-3.61-1.417-3.204 2.925-7.31 7.898-8.855 9.809-0.195 0.223-0.404 0.483-0.627 0.781 0 0 1.788-1.477 2.372-0.756 0.585 0.722 0.412 2.166 0.412 2.166s1.169-1.477 1.857-0.722c0.687 0.756 0.24 1.788 0 2.062 0 0 0.996-0.997 1.203-0.618 0.206 0.378 0.034 1.237-0.585 2.027 0 0 0.114-0.132 0.273-0.336 4.732-5.805 9.907-7.419 9.907-7.419-0.104-0.685-0.236-1.303-0.389-1.862-2.36 0.969-7.917 4.651-7.917 4.651z">
+            </path>
+            <path
+                    d="M7.148 15.589c-0.035-0.274-0.808 0-0.808 0 0.12-0.274-0.052-1.013-0.378-1.425s-1.478 0.086-1.478 0.086c0-0.345-0.464-1.22-0.979-1.581-0.514-0.36-1.805 0.172-1.805 0.172 0.224 1.942-0.316 3.808-0.316 3.808 2.736-1.033 1.528 1.39 1.528 1.39 1.805-1.064 4.046-1.039 4.046-1.039 0.516-0.878 0.19-1.41 0.19-1.41z">
+            </path>
+        </symbol>
+        <symbol id="icon-fill" viewBox="0 0 28.873 32">
+            <path
+                    d="M28.81,21.28c0,0-0.66-8.218-6.886-5.791l0,0c-2.291-2.095-5.796-5.265-8.114-7.199c-0.21-3.544-1.158-8.738-4.943-8.26
         C2.614,0.821,6.214,12.227,6.214,12.227l0.011-0.013c-3.067,3.628-6.31,7.784-6.223,8.393c1.108,7.678,10.13,12.029,12.663,11.316
         c0.624-0.176,6.553-7.805,9.665-11.854c-0.097,0.865-0.229,1.853-0.406,2.808c-0.354,1.927,0.106,4.644,3.377,4.644
         C29.642,27.519,28.81,21.28,28.81,21.28z M8.55,2.246c2.516-0.898,3.436,2.093,3.762,4.848c-0.433-0.321-0.73-0.505-0.834-0.495
         C11.165,6.63,9.29,8.644,7.143,11.138C7.142,11.134,5.38,3.378,8.55,2.246z M13.077,14.704c-1.121,0.402-2.306-0.035-2.645-0.979
-        c-0.34-0.943,0.296-2.035,1.417-2.438c1.122-0.403,2.307,0.034,2.645,0.978C14.834,13.209,14.198,14.301,13.077,14.704z" />
-      </symbol>
-      <symbol id="icon-undo" viewBox="0 0 20 19">
-        <path
-          d="M11.864 16.206c-3.311 1.617-7.112 0.638-8.491-2.185-1.281-2.623-0.021-5.912 2.815-7.664 0.926 1.626 1.742 2.93 1.919 2.93 0.459 0 3.172-6.964 3.044-7.477s-7.839-2.136-8.074-1.752c-0.089 0.146 0.559 1.532 1.417 3.184-4.014 2.657-5.646 7.684-3.628 11.814 2.211 4.522 7.956 6.257 12.837 3.873 0.944-0.461 1.783-1.043 2.512-1.714l-2.049-2.731c-0.621 0.683-1.394 1.277-2.301 1.72z">
-        </path>
-        <path
-          d="M15.811 11.077c-0.082 0.596-0.263 1.186-0.531 1.752l2.574 2.45c0.608-0.935 1.049-1.957 1.3-3.012l-3.343-1.189z">
-        </path>
-      </symbol>
-      <symbol id="icon-clear" viewBox="0 0 28.873 32">
-        <path d="M24.752,3.076C24.296,2.43,20.25,2.283,15.58,2.424c0.092-0.661,0.243-2.061-0.051-2.333
+        c-0.34-0.943,0.296-2.035,1.417-2.438c1.122-0.403,2.307,0.034,2.645,0.978C14.834,13.209,14.198,14.301,13.077,14.704z"/>
+        </symbol>
+        <symbol id="icon-undo" viewBox="0 0 20 19">
+            <path
+                    d="M11.864 16.206c-3.311 1.617-7.112 0.638-8.491-2.185-1.281-2.623-0.021-5.912 2.815-7.664 0.926 1.626 1.742 2.93 1.919 2.93 0.459 0 3.172-6.964 3.044-7.477s-7.839-2.136-8.074-1.752c-0.089 0.146 0.559 1.532 1.417 3.184-4.014 2.657-5.646 7.684-3.628 11.814 2.211 4.522 7.956 6.257 12.837 3.873 0.944-0.461 1.783-1.043 2.512-1.714l-2.049-2.731c-0.621 0.683-1.394 1.277-2.301 1.72z">
+            </path>
+            <path
+                    d="M15.811 11.077c-0.082 0.596-0.263 1.186-0.531 1.752l2.574 2.45c0.608-0.935 1.049-1.957 1.3-3.012l-3.343-1.189z">
+            </path>
+        </symbol>
+        <symbol id="icon-clear" viewBox="0 0 28.873 32">
+            <path d="M24.752,3.076C24.296,2.43,20.25,2.283,15.58,2.424c0.092-0.661,0.243-2.061-0.051-2.333
         c-0.389-0.36-5.514,0.436-5.812,0.908C9.52,1.317,9.589,2.192,9.655,2.733c-4.782,0.351-8.934,0.91-9.284,1.455
         c-0.834,1.298,0,3.894,0,3.894s6.984-0.495,11.774-0.464c4.789,0.031,12.606,0.464,12.606,0.464S25.864,4.652,24.752,3.076z"/>
-      <path d="M22.744,10.06c-0.495-0.556-19.405-0.494-19.9,0c-0.446,0.446-0.59,16.514,0.021,20.258c0,0,0.037,1.002,0.586,1.471
+            <path d="M22.744,10.06c-0.495-0.556-19.405-0.494-19.9,0c-0.446,0.446-0.59,16.514,0.021,20.258c0,0,0.037,1.002,0.586,1.471
         C4,32.255,22.803,31.91,23.201,31.164c0.142-0.264,0.229-0.535,0.291-0.789c0.031-0.062,0.057-0.195,0.076-0.393
         c0.054-0.361,0.045-0.621,0.045-0.621C23.805,25.257,23.178,10.549,22.744,10.06z M4.92,30.425
         c-0.066-4.072-0.229-15.387,0.024-15.792c0.31-0.494,2.658-0.371,2.968,0c0.243,0.293,0.449,11.279,0.524,15.871
@@ -64,310 +66,253 @@
         c-0.069-4.325-0.217-15.063,0.03-15.458c0.31-0.494,2.657-0.371,2.968,0c0.229,0.276,0.426,10.068,0.51,15.031
         C20.611,29.837,19.438,29.978,18.271,30.091z"/>
         </symbol>
+        <symbol id="size-small" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=4/></circle>
+        </symbol>
+        <symbol id="size-medium" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=6/></circle>
+        </symbol>
+        <symbol id="size-large" viewBox="0 0 20 20">
+            <circle cx=10 cy=10 r=8/></circle>
+        </symbol>
     </defs>
-  </svg>
+</svg>
 
-  <div id='initial-screen'>
+<div id='initial-screen'>
     <h1>Compound Game</h1>
 
     <div class="buttons">
-      <input class="big-input" type='text' placeholder="Enter Player Name" id='nameInput' />
-      <br><br>
-      <button onclick="createButtonClicked()">CREATE</button>
-      <div>OR</div>
-      <div>
-        <input type='text' class="big-input" placeholder='Enter Room Id' id='roomIdInput' />
-        <button onclick="joinButtonClicked()">JOIN</button>
-      </div>
+        <input class="big-input" type='text' placeholder="Enter Player Name" id='nameInput'/>
+        <br><br>
+        <button onclick="createButtonClicked()">CREATE</button>
+        <div>OR</div>
+        <div>
+            <input type='text' class="big-input" placeholder='Enter Room Id' id='roomIdInput'/>
+            <button onclick="joinButtonClicked()">JOIN</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div id='waiting-room-host' style="display:none">
+<div id='waiting-room-host' style="display:none">
     <h1>Compound Game Waiting Room</h1>
-    <p id="gameId"> </p>
-    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly"></input><button id="copy-room-code"
-        onclick="copyLobbyId()">Click to copy</button></h2>
-    <p id='userJoin'> </p>
-    <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
-    <input type='text' placeholder='Number of Rounds' id='RoundInput' />
-    <input type='text' placeholder='Round Timer' id='RoundTimerInput' />
+    <p id="gameId"></p>
+    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly">
+        <button id="copy-room-code"
+                onclick="copyLobbyId()">Click to copy
+        </button>
+    </h2>
+    <p id='userJoin'></p>
+    <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input"/>
+    <input type='text' placeholder='Number of Rounds' id='RoundInput'/>
+    <input type='text' placeholder='Round Timer' id='RoundTimerInput'/>
 
 
     <button onclick='startGameButtonClicked()'>Start Game</button>
     <p id='playerJoin2'></p> <!-- TODO: Add whatever happens to playerJoin? -->
 
-  </div>
+</div>
 
-  <div id='waiting-room-player' style="display:none">
+<div id='waiting-room-player' style="display:none">
     <h1>Compound Game Waiting Room</h1>
     <p id='displayRoom'></p>
     <p id='playerJoin'></p>
-  </div>
+</div>
 
-  <div id='example' style="display:none">
+<div id='example' style="display:none">
     <h3>Example</h3>
-  </div>
+</div>
 
-  <!--     Guesser's view  -->
-  <div id="guesser-view" style="display:none">
-    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-      <div class="uk-container">
-        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-          <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-            Doodle Duo
-          </div>
-          <div class="uk-width-1-2" style="height: 100vw">
-            <div class="uk-height-1-1 uk-cover-container">
-              <div id="guesserCanvas1"
-                class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                Canvas 1
-                <canvas id="guesscanvas-1" width="200" height="400"></canvas>
-              </div>
+<div id="guesser-view" style="display: none">
+    <div class="guesser-view">
+        <div class="title">
+            <img class="titleImage" src="title.png">
+        </div>
+        <div id="guesserCanvas1" class="center-content gv-canvas gv-canvas-left">
+            <canvas id="guesscanvas-1" width="200" height="400"></canvas>
+            <div id="nameDrawing1" class="uk-text-center">Doodler 1</div>
+        </div>
+        <div id="guesserCanvas2" class="center-content gv-canvas gv-canvas-right">
+            <canvas id="guesscanvas-2" width="200" height="400"></canvas>
+            <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
+        </div>
+        <div id="gv-info">
+            <div class="players-container">
+                <b>Current Players</b>
+                <table id='players-table'>
+                    <tr>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr>
+                    <tbody id='pbody'>
+                    </tbody>
+                </table>
             </div>
-          </div>
-          <div class="uk-width-1-2" style="height: 100vw">
-            <div class="uk-height-1-1 uk-cover-container">
-              <div id="guesserCanvas2"
-                class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                Canvas 2
-                <canvas id="guesscanvas-2" width="200" height="400"></canvas>
-              </div>
+            <div class="guesserWordSpaces">
+                <span class="center-content" id="spacesDisplay">_</span>
             </div>
-          </div>
-          <div style="width: 100%; display: flex; flex-direction: row">
-            <div style="width: 50%">
-              <div id="nameDrawing1" class="uk-text-center"></div>
-            </div>
-            <div style="width: 50%">
-              <div id="nameDrawing2" class="uk-text-center"></div>
-            </div>
-          </div>
-
-          <div class="uk-width-1-1" style="height: 80px">
-            <div class="uk-height-1-1 uk-cover-container uk-align-center">
-              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <span id="spacesDisplay"></span>
-              </div>
-              <div>
+            <div class="timeDisplay">
                 <div id="timeRemaining">Time Remaining:</div>
                 <span id="gameTimeDisplay"></span>
-              </div>
             </div>
-          </div>
-          <div class="uk-width-1-2 uk-align-center" style="height: 80px">
-            <div class="uk-inline">
-              <input class="uk-input uk-box-shadow big-input" placeholder="Input your Guess" id="GuessInput">
-              <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: pencil"></a>
-            </div>
-          </div>
-          <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-            <div class="uk-align-center">
-              <div class="chat-box-container">
-                <ul id="chat-box-guesser" class="chat-box"></ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="uk-width-1-1 uk-align-left uk-height-large" style="width: 50vw">
-            <div class="uk-align-left">
-              
-                <div class="players-container">
-                  <b>Current Players</b>
-                  <table id='players-table'>
-                    <tr>
-                      <th>Player</th>
-                      <th>Score</th>
-                    </tr>
-                    <tbody id= 'pbody'>
-
-                    </tbody>
-                  </table>
-                </div>
-            </div>
-          </div>
-
         </div>
-      </div>
+        <div class="chat-box-gv">
+            <div class="chat-box-container">
+                <div id="chat-box-guesser-wrapper">
+                    <ul id="chat-box-guesser" class="chat-box"></ul>
+                </div>
+                <div class="guessInput">
+                    <input type="text" class="big-input" placeholder="Input your Guess" id="GuessInput">
+                    <button type="submit" class="submitGuess" onclick="guessInputHandler()">
+                        <i class="cap-icon ci-plane-paper submitIcon">Submit</i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!--     Drawer's view  -->
-  <div style="display:none" id="drawer-view">
-    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-      <div class="uk-container">
-        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-          <div class="uk-width-1-1 uk-heading-large uk-text-center header" style="height: 80px">
-            Doodle Duo
-          </div>
-          <div class="uk-width-1-6 uk-background-muted" style="height: 120vw">
-            <div class="uk-flex-column uk-flex">
-              <div class="colorPickerContainer">
-                <h2 id="color-choice"></h2>
-                <input class="color-range" type="range" min="0" max="100" value="75" title="Drag me to select.">
-              </div>
-              <input type="range" min=1 max=50 id="brush-size" value="5">
-              <button id="paintbrush-button" class="drawer-button drawer-button-selected center-content" onclick="paintbrushButtonClicked()" aria-label="draw">
-                <svg class="icon icon-paintbrush">
-                  <use xlink:href="#icon-paintbrush"></use>
-                </svg>
-              </button>
-              <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()" aria-label="fill">
-                <svg class="icon icon-fill">
-                  <use xlink:href="#icon-fill"></use>
-                </svg>
-              </button>
-              <button id="undo-button" class="drawer-button center-content" aria-label="undo">
-                <svg class="icon icon-undo">
-                  <use xlink:href="#icon-undo"></use>
-                </svg>
-              </button>
-              <button id="clear-button" class="drawer-button center-content" aria-label="clear canvas">
-                <svg class="icon icon-clear">
-                  <use xlink:href="#icon-clear"></use>
-                </svg>
-              </button>
-              <div class="uk-width-1-1 uk-align-left uk-height-large" style="width: 50vw">
-                <div class="uk-align-left">
-                  
-                    <div class="players2-container">
-                      <b>Current Players</b>
-                      <table id='players2-table'>
-                        <tr>
-                          <th>Player</th>
-                          <th>Score</th>
-                        </tr>
-                        <tbody id= 'p2body'>
-    
-                        </tbody>
-                      </table>
-                    </div>
+<!--     Drawer's view  -->
+<div id="drawer-view" style="display: none">
+    <div class="drawer-view">
+        <div class="title">
+            <img class="titleImage" src="title.png">
+        </div>
+        <div id="dv-canvas-controls">
+            <div id="dv-controls-outer-container">
+                <div id="dv-controls-inner-container">
+                    <input id="color-select" type="color">
+                    <button id="paintbrush-button" class="drawer-button drawer-button-selected center-content"
+                            onclick="paintbrushButtonClicked()" aria-label="draw">
+                        <svg class="icon icon-paintbrush">
+                            <use xlink:href="#icon-paintbrush"></use>
+                        </svg>
+                    </button>
+                    <button id="small-brush" class="drawer-button drawer-button-selected center-content"
+                            onclick="smallSizeButtonClicked()" aria-label="small brush">
+                        <svg class="icon icon-size-small">
+                            <use xlink:href="#size-small"></use>
+                        </svg>
+                    </button>
+                    <button id="medium-brush" class="drawer-button center-content" onclick="mediumSizeButtonClicked()"
+                            aria-label="medium brush">
+                        <svg class="icon icon-size-medium">
+                            <use xlink:href="#size-medium"></use>
+                        </svg>
+                    </button>
+                    <button id="large-brush" class="drawer-button center-content" onclick="largeSizeButtonClicked()"
+                            aria-label="large brush">
+                        <svg class="icon icon-size-large">
+                            <use xlink:href="#size-large"></use>
+                        </svg>
+                    </button>
+                    <button id="fill-button" class="drawer-button center-content" onclick="fillButtonClicked()"
+                            aria-label="fill">
+                        <svg class="icon icon-fill">
+                            <use xlink:href="#icon-fill"></use>
+                        </svg>
+                    </button>
+                    <button id="undo-button" class="drawer-button center-content" aria-label="undo">
+                        <svg class="icon icon-undo">
+                            <use xlink:href="#icon-undo"></use>
+                        </svg>
+                    </button>
+                    <button id="clear-button" class="drawer-button center-content" aria-label="clear canvas">
+                        <svg class="icon icon-clear">
+                            <use xlink:href="#icon-clear"></use>
+                        </svg>
+                    </button>
                 </div>
-              </div>
-
             </div>
-          </div>
-<!--          id="gCanvas-wrapper"-->
-          <div class="uk-width-2-3"  style="height: 120vw" >
-            <div class="uk-height-1-1 uk-cover-container">
-              <div class="uk-cover uk-margin-auto uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                <canvas id="canvas-1" width="200" height="400"></canvas>
-              </div>
-            </div>
-          </div>
-          <div class="uk-width-1-1" style="height: 100px">
-            <div class="uk-height-1-1 uk-cover-container uk-align-center">
-              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <div id="wordToDraw" class="uk-margin-small-left">
-                  ERROR
-                </div>
-              </div>
-              <div>
+        </div>
+        <div id="dv-canvas">
+            <canvas id="canvas-1" width="200" height="400"></canvas>
+        </div>
+        <div id="dv-info">
+            <div>
                 <div>Time Remaining:</div>
                 <span id="dGameTimeDisplay"></span>
-              </div>
             </div>
-          </div>
-          <div class="uk-width-1-1 uk-align-center uk-height-medium" style="width: 80vw">
-            <div class="uk-align-center uk-flex uk-flex-column">
-              <div class="chat-box-container">
-                <ul id="chat-box-drawer" class="chat-box"></ul>
-              </div>
+            <div id="wordToDraw">
+                ERROR
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Scoreboard View -->
-  <div id="scoreboard" style="display:none">
-    <div class="uk-section uk-section-default uk-height-viewport uk-text-large">
-      <div class="uk-container">
-        <div class="uk-child-width-expand uk-grid" uk-grid="masonry: true">
-          <div class="uk-width-1-1 uk-heading-large uk-text-center uk-background-primary" style="height: 80px">
-            Doodle Duo
-          </div>
-          <div class="uk-width-1-2" style="height: 100vw">
-            <div class="uk-height-1-1 uk-cover-container">
-              <div id="scoreboardCanvas1"
-                   class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                Canvas 1
-                <canvas id="scorecanvas-1" width="200" height="400"></canvas>
-              </div>
-            </div>
-          </div>
-          <div class="uk-width-1-2" style="height: 100vw">
-            <div class="uk-height-1-1 uk-cover-container">
-              <div id="scoreboardCanvas2"
-                   class="uk-cover uk-border-rounded uk-background-muted uk-height-1-1 uk-width-1-1">
-                Canvas 2
-                <canvas id="scorecanvas-2" width="200" height="400"></canvas>
-              </div>
-            </div>
-          </div>
-          <div style="width: 100%; display: flex; flex-direction: row">
-            <div style="width: 50%">
-              <div id="scorenameDrawing1" class="uk-text-center"></div>
-            </div>
-            <div style="width: 50%">
-              <div id="scorenameDrawing2" class="uk-text-center"></div>
-            </div>
-          </div>
-
-          <div class="uk-width-1-1" style="height: 80px">
-            <div class="uk-height-1-1 uk-cover-container uk-align-center">
-              <div class="uk-cover uk-flex uk-flex-row large-text uk-border-rounded uk-background-muted uk-height-1-1">
-                <span id="wordDisplay"></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="uk-width-1-1 uk-align-center uk-height-large" style="width: 50vw">
-            <div class="uk-align-center">
-              <div class="scoreboard-container">
-                <div class="score-container">
-                  <ul id="score" class="score-box"></ul>
-                  <b id='correct-ans'></b>
-                  <table id='score-table'>
+            <div class="players2-container">
+                <b>Current Players</b>
+                <table id='players2-table'>
                     <tr>
-                      <th>Rank</th>
-                      <th>Player</th>
-                      <th>Points</th>
+                        <th>Player</th>
+                        <th>Score</th>
                     </tr>
-                    <tbody id= 'tbody'>
+                    <tbody id='p2body'>
 
                     </tbody>
-                  </table>
-                  <b id='winner'></b>
-                </div>
-              </div>
+                </table>
             </div>
-          </div>
         </div>
-      </div>
+        <div id="dv-chatbox">
+            <div class="chat-box-container">
+                <div class="chat-box-wrapper">
+                    <ul id="chat-box-drawer" class="chat-box"></ul>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script src="/socket.io/socket.io.js"></script>
+<!--score board-->
+<div id="scoreboard" style="display: none">
+    <div class="score-view">
+        <div class="title">
+            <img class="titleImage" src="title.png">
+        </div>
+        <div id="scoreboardCanvas1" class="center-content gv-canvas gv-canvas-left">
+            <canvas id="scorecanvas-1" width="200" height="400"></canvas>
+            <div id="scorenameDrawing1">Doodler 1</div>
+        </div>
+        <div id="scoreboardCanvas2" class="center-content gv-canvas gv-canvas-right">
+            <canvas id="scorecanvas-2" width="200" height="400"></canvas>
+            <div id="scorenameDrawing2">Doodler 2</div>
+        </div>
+        <div class="chat-box-sv">
+            <div class="scoreboard-container">
+                <div class="score-container">
+                    <ul id="score" class="score-box"></ul>
+                    <b id='correct-ans'></b>
+                    <table id='score-table'>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Points</th>
+                        </tr>
+                        <tbody id='tbody'>
 
-  <!--initialize socket object so clients can establish connections-->
-  <script>
+                        </tbody>
+                    </table>
+                    <b id='winner'></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<!--initialize socket object so clients can establish connections-->
+<script>
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Global Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
     const socket = io();
     var drawerNumber = 0;
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ HTML Element Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    // Object containing all possible views
+        // Object containing all possible views
     const allViews = {
-      initialScreen: document.getElementById('initial-screen'),
-      waitingRoomForHost: document.getElementById('waiting-room-host'),
-      waitingRoomForPlayer: document.getElementById('waiting-room-player'),
-      example: document.getElementById('example'),
-      guesserView: document.getElementById('guesser-view'),
-      drawerView: document.getElementById('drawer-view'),
-      scoreboard: document.getElementById('scoreboard')
-    };
+            initialScreen: document.getElementById('initial-screen'),
+            waitingRoomForHost: document.getElementById('waiting-room-host'),
+            waitingRoomForPlayer: document.getElementById('waiting-room-player'),
+            example: document.getElementById('example'),
+            guesserView: document.getElementById('guesser-view'),
+            drawerView: document.getElementById('drawer-view'),
+            scoreboard: document.getElementById('scoreboard')
+        };
 
     // Initial screen room input
     const roomInput = document.getElementById('roomIdInput');
@@ -388,7 +333,6 @@
 
     const spaces = document.getElementById('spacesDisplay');
     // Chat boxes from guesser and drawer views
-    const chatContainers = document.getElementsByClassName('chat-box-container');
     const chatBoxes = document.getElementsByClassName('chat-box');
     // Game time displays from guesser and drawer views
     const gameTimeDisplays = getElementsById('gameTimeDisplay dGameTimeDisplay');
@@ -399,9 +343,13 @@
     const nameDrawing2 = document.getElementById('nameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
-    //buttons for contrlling drawer view
+    //buttons for controlling drawer view draw mode
     const paintbrushButton = document.getElementById('paintbrush-button');
     const fillButton = document.getElementById('fill-button');
+    //buttons for controlling drawer view paintbrush size
+    const smallSizeButton = document.getElementById('small-brush');
+    const mediumSizeButton = document.getElementById('medium-brush');
+    const largeSizeButton = document.getElementById('large-brush');
 
     //ul which stores scoreboard information
     const scores = document.getElementById('score');
@@ -413,568 +361,605 @@
     const playerBody = document.getElementById('pbody');
     const playerTable = document.getElementById('players-table');
     const playerBody2 = document.getElementById('p2body')
-    
-
-
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    /**
-     * Returns whether a given HTML element is scrolled to within 10px of the bottom
-     */
-    const isScrolledNearBottom = el =>
-      el.scrollTop + 10 >= el.scrollHeight - el.clientHeight;
-
-    /**
-     * Scrolls given HTML element to the bottom
-     */
-    const scrollToBottom = el =>
-      el.scrollTop = el.scrollHeight - el.clientHeight;
-
-    /**
-     * This function enables us to get multiple elements by id and treat them like one
-     * Particularly helpful in updating identical things in the drawer and guesser view
-     * use like this:
-     * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
-     * (without this function we'd have to have 2 different assignments like this:
-     * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
-     */
-    function getElementsById(ids) {
-      const idList = ids.split(' ');
-      let results = [], item;
-      for (let i = 0; i < idList.length; i++) {
-        item = document.getElementById(idList[i]);
-        if (item) {
-          results.push(item);
-        }
-      }
-      return (results);
-    }
-
-    /**
-     * Posts a message to all chatboxes, and scrolls them if they are already scrolled
-     * all the way down.
-     */
-    function postChatMessage(msg, username = null) {
-      const elementsToScroll = [];
-      for (chatContainer of chatContainers) {
-        if (isScrolledNearBottom(chatContainer)) elementsToScroll.push(chatContainer);
-      }
-
-      for (chatBox of chatBoxes) {
-        const msgLi = document.createElement('li');
-
-        if (username) {
-          const usernameB = document.createElement('b');
-          usernameB.innerText = username + ": ";
-          msgLi.appendChild(usernameB);
-        }
-
-        const msgSpan = document.createElement('span');
-        msgSpan.innerText = msg;
-        msgLi.appendChild(msgSpan);
-
-        chatBox.appendChild(msgLi);
-      }
-
-      for (el of elementsToScroll) {
-        scrollToBottom(el);
-      }
-    }
-
-    /**
-     * Switches between the different views
-     *
-     * Pass in the ID of the view to make it display, and all other views
-     * will not display.
-     */
-    function switchToView(newViewName) {
-      for (let [viewName, view] of Object.entries(allViews)) {
-        if (viewName === newViewName) {
-          view.style.display = 'block';
-        } else {
-          view.style.display = 'none';
-        }
-      }
-
-      // Specialized view behaviors
-      switch (newViewName) {
-        case "guesserView":
-          for (chatContainer of chatContainers) scrollToBottom(chatContainer);
-          break;
-        case "drawerView":
-          for (chatContainer of chatContainers) scrollToBottom(chatContainer);
-          updateCursor();
-          break;
-      }
-    }
-
-    /**
-     * Gets the usernames of the two drawers for the current round
-     * Takes as input the scores object defined in notes.js
-     */
-    function getDrawerNames(scores) {
-      let drawer1 = 'Drawer 1';
-      let drawer2 = 'Drawer 2';
-      for (let data of Object.values(scores)) {
-        if (data.drawer === 1) {
-          drawer1 = data.username;
-        } else if (data.drawer === 2) {
-          drawer2 = data.username;
-        }
-      }
-      return [drawer1, drawer2];
-    }
-
-    /**
-     * Resets the values of certain inputs, and sets the view to the initial screen
-     */
-    function reset() {
-      roomInput.value = '';
-      gameCodeDisplay.value = '';
-      switchToView('initialScreen');
-    }
-
-
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    /**
-     * onclick function for lobby code copy button
-     */
-    function copyLobbyId() {
-      gameCodeDisplay.select();
-      gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
-
-      document.execCommand('copy');
-
-      copyRoomCodeButton.innerText = 'Copied!';
-    }
-
-    /**
-     * onclick function for guess input pencil icon
-     * onkeyup(enter) for the guess input
-     */
-    function guessInputHandler() {
-      socket.emit('playerGuess', guessInputBox.value);
-      guessInputBox.value = '';
-    }
-    guessInputBox.onkeyup = ({ keyCode }) => {
-      if (keyCode === 13) guessInputHandler();
-    }
-
-    /**
-     * onclick function for create lobby button
-     */
-    function createButtonClicked() {
-      socket.emit('createClicked', nameInput.value);
-    }
-
-    /**
-     * onclick function for join lobby button
-     * onkeyup(enter) for lobby code input
-     */
-    function joinButtonClicked() {
-      switchToView('waitingRoomForPlayer');
-      console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
-      socket.emit('joinClicked', roomInput.value, nameInput.value);
-    }
-    roomInput.onkeyup = ({ keyCode }) => {
-      if (keyCode === 13) joinButtonClicked();
-    }
-
-    /**
-     * onclick function for start game button
-     */
-    function startGameButtonClicked() {
-      socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
-    }
-
-    function paintbrushButtonClicked() {
-      setDrawMode(0);
-      paintbrushButton.classList.add("drawer-button-selected");
-      fillButton.classList.remove("drawer-button-selected");
-    }
-
-    function fillButtonClicked() {
-      setDrawMode(1);
-      fillButton.classList.add("drawer-button-selected");
-      paintbrushButton.classList.remove("drawer-button-selected");
-    }
-
-
-
-    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO Events ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-    socket.on('connect', function () {
-      switchToView('initialScreen');
-    });
-
-    socket.on('succesfullyCreatedLobby', function (lobbyId) {
-      console.debug('succesfullyCreatedLobby', { lobbyId });
-      switchToView('waitingRoomForHost');
-      gameCodeDisplay.value = lobbyId;
-    });
-
-    socket.on('endRoundScores', function (scoresObj, ans) {
-
-      console.log(scoresObj)
-      switchToView('scoreboard');
-      document.getElementById('wordDisplay').innerText = ans;
-
-      // clears canvases before updated version
-      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
-      sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
-
-
-      // if you are a drawer, you are re-emitting canvas data
-      if(drawerNumber != 0){
-        socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
-      }
-
-      correctAns.innerText = 'The correct answer is: '+ ans;
-      //myScoreList.sort(function (a,b) {return a.score - b.score} )
-
-      ranklist = [];
-      for (let player in scoresObj){
-        let playerObj = scoresObj[player];
-        ranklist.push(playerObj);
-      }
-
-      ranklist.sort(function (a,b) {return b.score - a.score});
-
-      console.log(ranklist);
-      console.log('ranklist: '+ ranklist.sort(function (a,b) {return b.score - a.score} )[0].score);
-      tableBody.innerHTML = '';
-      for (var i = 0; i<ranklist.length; i++){
-        const addCell = document.createElement('tr');
-        tableBody.appendChild(addCell);
-
-        const rank = document.createElement('td');
-        rank.innerText = (i+1);
-        const playerUsername = document.createElement('td');
-        playerUsername.innerText = ranklist[i].username;
-        const points = document.createElement('tr');
-        points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
-
-        addCell.appendChild(rank);
-        addCell.appendChild(playerUsername);
-        addCell.appendChild(points);
-      }
-
-      console.debug('endRoundScores', { scoresObj });
-    });
-
-
-    socket.on('scoreBoardCanvas', function (drawingEvents, drawNum){
-      if(drawNum == 1){
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent3(drawingEvents[i]);
-       }
-      }
-      else if(drawNum == 2){
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent4(drawingEvents[i]);
-        }
-      }
-    });
-
-    socket.on('errorRoomId', function () {
-      console.debug('errorRoomId');
-      reset();
-      alert('Unknown game code');
-    });
-
-    socket.on('tooManyPlayers', function () {
-      console.debug('tooManyPlayers');
-      reset();
-      alert('Room full');
-    });
-
-    socket.on('tooFewPlayers', function () {
-      console.debug('tooFewPlayers');
-      //reset();
-      alert('We recommend a minimum of four players to play this game');
-    });
-
-    socket.on('drawerView', function (scores, data) {
-      console.debug('drawerView', { scores, data });
-      drawerNumber = data.drawer;
-      switchToView('drawerView');
-
-      drawingEvents = []
-      ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-      wordToDraw.innerText = data.word;
-      playerBody2.innerHTML = '';
-
-      playerList = [];
-      for (let player in scores){
-        let playerObj = scores[player];
-        playerList.push(playerObj);
-      }
-      console.log(playerList);
-
-      for (var i = 0; i<playerList.length; i++){
-        const addCell = document.createElement('tr');
-        playerBody2.appendChild(addCell);
-
-        const player = document.createElement('td');
-        player.innerText = playerList[i].username;
-        const score = document.createElement('td');
-        score.innerText = playerList[i].score;
-        score.setAttribute("id", playerList[i].username+'2');
-
-        addCell.appendChild(player);
-        addCell.appendChild(score);
-      }
-    });
-
-    socket.on('guesserView', function (scores, data) {
-      console.debug('guesserView', { scores, data });
-      switchToView('guesserView');
-
-      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      let spacesLength = data.word1Length + data.word2Length;
-      let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
-      console.log(spacesDisplay);
-      spaces.innerText = spacesDisplay;
-      let drawerNames = getDrawerNames(scores);
-      drawerNumber = 0;
-
-      nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
-      nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
-      playerBody.innerHTML = '';
-
-      playerList = [];
-      for (let player in scores){
-        let playerObj = scores[player];
-        playerList.push(playerObj);
-      }
-      console.log(playerList);
-
-      for (var i = 0; i<playerList.length; i++){
-        const addCell = document.createElement('tr');
-        playerBody.appendChild(addCell);
-
-        const player = document.createElement('td');
-        player.innerText = playerList[i].username;
-        player.setAttribute('id',playerList[i].username)
-        const score = document.createElement('td');
-        score.innerText = playerList[i].score;
-        score.setAttribute("id", playerList[i].username+'score');
-
-        addCell.appendChild(player);
-        addCell.appendChild(score);
-      }
-    });
-
-    socket.on('timerUpdate', function (timeLeft) {
-      console.debug('timerUpdate', timeLeft);
-      for (let timerElement of gameTimeDisplays) {
-        timerElement.innerText = timeLeft + ' seconds';
-      }
-    });
-
-    socket.on('gameOverEvent', function (scoresObj,ans) {
-      switchToView('scoreboard');
-      // maybe we don't need this?
-
-      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
-      sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
-
-      // if you are a drawer, you are re-emitting canvas data
-      if(drawerNumber != 0){
-        socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
-      }
-
-      document.getElementById('wordDisplay').innerText = ans;
-      correctAns.innerText = 'The correct answer is: '+ ans;
-      //myScoreList.sort(function (a,b) {return a.score - b.score} )
-
-      ranklist = [];
-      for (var player in scoresObj){
-        var playerObj = scoresObj[player];
-        ranklist.push(playerObj);
-      }
-
-      ranklist.sort(function (a,b) {return b.score - a.score});
-
-      console.log(ranklist);
-      console.log('ranklist: '+ ranklist.sort(function (a,b) {return b.score - a.score} )[0].score);
-      tableBody.innerHTML = '';
-      for (var i = 0; i<ranklist.length; i++){
-        const addCell = document.createElement('tr');
-        tableBody.appendChild(addCell);
-
-        const rank = document.createElement('td');
-        rank.innerText = (i+1);
-        const playerUsername = document.createElement('td');
-        playerUsername.innerText = ranklist[i].username;
-        const points = document.createElement('tr');
-        points.innerText = ranklist[i].score + '(+'+ ranklist[i].gained+' points)';
-
-        addCell.appendChild(rank);
-        addCell.appendChild(playerUsername);
-        addCell.appendChild(points);
-      }
-      winner.innerText = 'THE WINNER IS '+ ranklist[0].username+'!!!'
-      console.debug('gameOverEvent', { scoresObj });
-    });
-
-    //sent to the specific user when they guess right
-    socket.on('correctGuess', function (word,gameState,username) {
-      console.debug('correctGuess');
-      spaces.innerText = word; // reveal the word
-
-      postChatMessage('You guessed it!');
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('correctGuess');
-          document.getElementById(username+'score').innerText = playerList[i].score;
-          //document.getElementById(username+'2').innerText = playerList[i].score;
-
-        }
-      }
-    });
-
-    socket.on('someoneGuessed', function (gameState, socketId, username) {
-      console.debug('someoneGuessed', { gameState, socketId, username });
-      postChatMessage(username + '  has correctly guessed the compound word!');
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'score').innerText = playerList[i].score;
-          //document.getElementById(username+'2').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('updateScore',function(gameState,username){
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'2').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('updateScore2',function(gameState,username){
-      playerList = [];
-      for (let player in gameState){
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i<playerList.length; i++){
-        if (playerList[i].username === username){
-          console.log('someoneGuessed');
-          document.getElementById(username+'score').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('closeGuess', function () {
-      console.debug('closeGuess');
-      postChatMessage('Your guess was close...');
-    });
-
-    socket.on('wrongGuess', function (playerGuess, socketId, username) {
-      console.debug('wrongGuess', { playerGuess, socketId });
-      postChatMessage(playerGuess, username);
-    });
-
-    socket.on('broadcastJoined', function (username) {
-      console.debug('broadcastJoined', { username });
-
-      for (el of playerJoinNotifications) {
-        el.appendChild(document.createElement('br'));
-        el.appendChild(document.createTextNode(username + '  has joined! \n'));
-      }
-    });
-
-    socket.on('waitingRoomForPlayer', function (roomId,users) {
-      console.debug('waitingRoomForPlayer', { roomId });
-      switchToView('waitingRoomForPlayer');
-      displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
-
-      for (var i = 0; i<Object.values(users).length; i++){
-        for (el of playerJoinNotifications) {
-          el.appendChild(document.createElement('br'));
-          el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
-        }
-      }
-      console.log(Object.values(users));
-    });
-
-    socket.on('drawingUpdate', function (drawingEvents, drawNum) {
-      //console.log('drawingUpdate Client');
-      if (drawNum == 1) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
-        }
-      }
-      else if (drawNum == 2) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
-        }
-      }
-
-    });
-    socket.on('undoEvent', function (drawingEvents, drawNum) {
-      //console.log('drawingUpdate Client');
-      if (drawNum == 1) {
-        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-        gctx1.beginPath();
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
-        }
-        gctx1.stroke();
-
-        updateColor();
-        updateWidth();
-      }
-      else if (drawNum == 2) {
-        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-        gctx2.beginPath();
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
-        }
-        gctx2.stroke();
-
-        updateColor();
-        updateWidth();
-      }
-
-    });
-
-    socket.on('clearEvent', function (drawingEvents, drawNum) {
-      //console.log('drawingUpdate Client');
-      if (drawNum == 1) {
-        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-      }
-      else if (drawNum == 2) {
-        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-      }
-
-    });
-  </script>
+
+
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            /**
+            * Returns whether a given HTML element is scrolled to within 10px of the bottom
+            */
+            const isScrolledNearBottom = el =>
+            el.scrollTop + 10 >= el.scrollHeight - el.clientHeight;
+
+            /**
+            * Scrolls given HTML element to the bottom
+            */
+            const scrollToBottom = el =>
+            el.scrollTop = el.scrollHeight - el.clientHeight;
+
+            /**
+            * This function enables us to get multiple elements by id and treat them like one
+            * Particularly helpful in updating identical things in the drawer and guesser view
+            * use like this:
+            * const gameTimeDisplay = getElementsById('gameTimeDisplay dGameTimeDisplay');
+            * (without this function we'd have to have 2 different assignments like this:
+            * const gameCodeDisplay = document.getElementById('gameCodeDisplay'); //
+            */
+            function getElementsById(ids) {
+                const idList = ids.split(' ');
+                let results = [], item;
+                for (let i = 0; i < idList.length; i++) {
+                item = document.getElementById(idList[i]);
+                if (item) {
+                results.push(item);
+            }
+            }
+                return (results);
+            }
+
+            /**
+            * Posts a message to all chatboxes, and scrolls them if they are already scrolled
+            * all the way down.
+            */
+            function postChatMessage(msg, username = null) {
+                const elementsToScroll = [];
+                for (chatBox of chatBoxes) {
+                if (isScrolledNearBottom(chatBox)) elementsToScroll.push(chatBox);
+            }
+
+                for (chatBox of chatBoxes) {
+                const msgLi = document.createElement('li');
+
+                if (username) {
+                const usernameB = document.createElement('b');
+                usernameB.innerText = username + ": ";
+                msgLi.appendChild(usernameB);
+            }
+
+                const msgSpan = document.createElement('span');
+                msgSpan.innerText = msg;
+                msgLi.appendChild(msgSpan);
+
+                chatBox.appendChild(msgLi);
+            }
+
+                for (el of elementsToScroll) {
+                scrollToBottom(el);
+            }
+            }
+
+            /**
+            * Switches between the different views
+            *
+            * Pass in the ID of the view to make it display, and all other views
+            * will not display.
+            */
+            function switchToView(newViewName) {
+                for (let [viewName, view] of Object.entries(allViews)) {
+                if (viewName === newViewName) {
+                view.style.display = 'block';
+            } else {
+                view.style.display = 'none';
+            }
+            }
+
+                // Specialized view behaviors
+                switch (newViewName) {
+                case "guesserView":
+                for (chatBox of chatBoxes) scrollToBottom(chatBox);
+                break;
+                case "drawerView":
+                for (chatBox of chatBoxes) scrollToBottom(chatBox);
+                updateCursor();
+                break;
+            }
+            }
+
+            /**
+            * Gets the usernames of the two drawers for the current round
+            * Takes as input the scores object defined in notes.js
+            */
+            function getDrawerNames(scores) {
+                let drawer1 = 'Drawer 1';
+                let drawer2 = 'Drawer 2';
+                for (let data of Object.values(scores)) {
+                if (data.drawer === 1) {
+                drawer1 = data.username;
+            } else if (data.drawer === 2) {
+                drawer2 = data.username;
+            }
+            }
+                return [drawer1, drawer2];
+            }
+
+            /**
+            * Resets the values of certain inputs, and sets the view to the initial screen
+            */
+            function reset() {
+                roomInput.value = '';
+                gameCodeDisplay.value = '';
+                switchToView('initialScreen');
+            }
+
+
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            /**
+            * onclick function for lobby code copy button
+            */
+            function copyLobbyId() {
+                gameCodeDisplay.select();
+                gameCodeDisplay.setSelectionRange(0, 99999); //Mobile devices
+
+                document.execCommand('copy');
+
+                copyRoomCodeButton.innerText = 'Copied!';
+            }
+
+            /**
+            * onclick function for guess input pencil icon
+            * onkeyup(enter) for the guess input
+            */
+            function guessInputHandler() {
+                socket.emit('playerGuess', guessInputBox.value);
+                guessInputBox.value = '';
+            }
+
+            guessInputBox.onkeyup = ({keyCode}) => {
+                if (keyCode === 13) guessInputHandler();
+            }
+
+            /**
+            * onclick function for create lobby button
+            */
+            function createButtonClicked() {
+                socket.emit('createClicked', nameInput.value);
+            }
+
+            /**
+            * onclick function for join lobby button
+            * onkeyup(enter) for lobby code input
+            */
+            function joinButtonClicked() {
+                switchToView('waitingRoomForPlayer');
+                console.debug(`Attempting to join lobby ${roomInput.value} with username ${nameInput.value}`);
+                socket.emit('joinClicked', roomInput.value, nameInput.value);
+            }
+
+            roomInput.onkeyup = ({keyCode}) => {
+                if (keyCode === 13) joinButtonClicked();
+            }
+
+            /**
+            * onclick function for start game button
+            */
+            function startGameButtonClicked() {
+                socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
+            }
+
+            function paintbrushButtonClicked() {
+                setDrawMode(0);
+                paintbrushButton.classList.add("drawer-button-selected");
+                fillButton.classList.remove("drawer-button-selected");
+            }
+            function fillButtonClicked() {
+                setDrawMode(1);
+                fillButton.classList.add("drawer-button-selected");
+                paintbrushButton.classList.remove("drawer-button-selected");
+            }
+
+            function smallSizeButtonClicked() {
+                setBrushSize(3);
+                smallSizeButton.classList.add("drawer-button-selected");
+                mediumSizeButton.classList.remove("drawer-button-selected");
+                largeSizeButton.classList.remove("drawer-button-selected");
+            }
+            function mediumSizeButtonClicked() {
+                setBrushSize(7);
+                smallSizeButton.classList.remove("drawer-button-selected");
+                mediumSizeButton.classList.add("drawer-button-selected");
+                largeSizeButton.classList.remove("drawer-button-selected");
+            }
+            function largeSizeButtonClicked() {
+                setBrushSize(15);
+                smallSizeButton.classList.remove("drawer-button-selected");
+                mediumSizeButton.classList.remove("drawer-button-selected");
+                largeSizeButton.classList.add("drawer-button-selected");
+            }
+
+
+            /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO Events ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+            socket.on('connect', function () {
+                switchToView('initialScreen');
+            });
+
+            socket.on('succesfullyCreatedLobby', function (lobbyId) {
+                console.debug('succesfullyCreatedLobby', {lobbyId});
+                switchToView('waitingRoomForHost');
+                gameCodeDisplay.value = lobbyId;
+            });
+
+            socket.on('endRoundScores', function (scoresObj, ans) {
+
+                console.log(scoresObj)
+                switchToView('scoreboard');
+                document.getElementById('wordDisplay').innerText = ans;
+
+                // clears canvases before updated version
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+                sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+
+
+                // if you are a drawer, you are re-emitting canvas data
+                if (drawerNumber != 0) {
+                socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+            }
+
+                correctAns.innerText = 'The correct answer is: ' + ans;
+                //myScoreList.sort(function (a,b) {return a.score - b.score} )
+
+                ranklist = [];
+                for (let player in scoresObj) {
+                let playerObj = scoresObj[player];
+                ranklist.push(playerObj);
+            }
+
+                ranklist.sort(function (a, b) {
+                return b.score - a.score
+            });
+
+                console.log(ranklist);
+                console.log('ranklist: ' + ranklist.sort(function (a, b) {
+                return b.score - a.score
+            })[0].score);
+                tableBody.innerHTML = '';
+                for (var i = 0; i < ranklist.length; i++) {
+                const addCell = document.createElement('tr');
+                tableBody.appendChild(addCell);
+
+                const rank = document.createElement('td');
+                rank.innerText = (i + 1);
+                const playerUsername = document.createElement('td');
+                playerUsername.innerText = ranklist[i].username;
+                const points = document.createElement('tr');
+                points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
+
+                addCell.appendChild(rank);
+                addCell.appendChild(playerUsername);
+                addCell.appendChild(points);
+            }
+
+                console.debug('endRoundScores', {scoresObj});
+            });
+
+
+            socket.on('scoreBoardCanvas', function (drawingEvents, drawNum) {
+                if (drawNum == 1) {
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent3(drawingEvents[i]);
+            }
+            } else if (drawNum == 2) {
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent4(drawingEvents[i]);
+            }
+            }
+            });
+
+            socket.on('errorRoomId', function () {
+                console.debug('errorRoomId');
+                reset();
+                alert('Unknown game code');
+            });
+
+            socket.on('tooManyPlayers', function () {
+                console.debug('tooManyPlayers');
+                reset();
+                alert('Room full');
+            });
+
+            socket.on('tooFewPlayers', function () {
+                console.debug('tooFewPlayers');
+                //reset();
+                alert('We recommend a minimum of four players to play this game');
+            });
+
+            socket.on('drawerView', function (scores, data) {
+                console.debug('drawerView', {scores, data});
+                drawerNumber = data.drawer;
+                switchToView('drawerView');
+
+                drawingEvents = []
+                ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+                wordToDraw.innerText = data.word;
+                playerBody2.innerHTML = '';
+
+                playerList = [];
+                for (let player in scores){
+                let playerObj = scores[player];
+                playerList.push(playerObj);
+            }
+                console.log(playerList);
+
+                for (var i = 0; i<playerList.length; i++){
+                const addCell = document.createElement('tr');
+                playerBody2.appendChild(addCell);
+
+                const player = document.createElement('td');
+                player.innerText = playerList[i].username;
+                const score = document.createElement('td');
+                score.innerText = playerList[i].score;
+                score.setAttribute("id", playerList[i].username+'2');
+
+                addCell.appendChild(player);
+                addCell.appendChild(score);
+            }
+            });
+
+            socket.on('guesserView', function (scores, data) {
+                console.debug('guesserView', {scores, data});
+                switchToView('guesserView');
+
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                let spacesLength = data.word1Length + data.word2Length;
+                let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
+                console.log(spacesDisplay);
+                spaces.innerText = spacesDisplay;
+                let drawerNames = getDrawerNames(scores);
+                drawerNumber = 0;
+
+                nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+                nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+                playerBody.innerHTML = '';
+
+                playerList = [];
+                for (let player in scores){
+                let playerObj = scores[player];
+                playerList.push(playerObj);
+            }
+                console.log(playerList);
+
+                for (var i = 0; i<playerList.length; i++){
+                const addCell = document.createElement('tr');
+                playerBody.appendChild(addCell);
+
+                const player = document.createElement('td');
+                player.innerText = playerList[i].username;
+                player.setAttribute('id',playerList[i].username)
+                const score = document.createElement('td');
+                score.innerText = playerList[i].score;
+                score.setAttribute("id", playerList[i].username+'score');
+
+                addCell.appendChild(player);
+                addCell.appendChild(score);
+            }
+            });
+
+            socket.on('timerUpdate', function (timeLeft) {
+                console.debug('timerUpdate', timeLeft);
+                for (let timerElement of gameTimeDisplays) {
+                timerElement.innerText = timeLeft + ' seconds';
+            }
+            });
+
+            socket.on('gameOverEvent', function (scoresObj, ans) {
+                switchToView('scoreboard');
+                // maybe we don't need this?
+
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                sctx1.clearRect(0, 0, scorecanvas1.width, scorecanvas1.height);
+                sctx2.clearRect(0, 0, scorecanvas2.width, scorecanvas2.height);
+
+                // if you are a drawer, you are re-emitting canvas data
+                if (drawerNumber != 0) {
+                socket.emit('scoreBoardCanvas', drawingEvents, drawerNumber);
+            }
+
+                document.getElementById('wordDisplay').innerText = ans;
+                correctAns.innerText = 'The correct answer is: ' + ans;
+                //myScoreList.sort(function (a,b) {return a.score - b.score} )
+
+                ranklist = [];
+                for (var player in scoresObj) {
+                var playerObj = scoresObj[player];
+                ranklist.push(playerObj);
+            }
+
+                ranklist.sort(function (a, b) {
+                return b.score - a.score
+            });
+
+                console.log(ranklist);
+                console.log('ranklist: ' + ranklist.sort(function (a, b) {
+                return b.score - a.score
+            })[0].score);
+                tableBody.innerHTML = '';
+                for (var i = 0; i < ranklist.length; i++) {
+                const addCell = document.createElement('tr');
+                tableBody.appendChild(addCell);
+
+                const rank = document.createElement('td');
+                rank.innerText = (i + 1);
+                const playerUsername = document.createElement('td');
+                playerUsername.innerText = ranklist[i].username;
+                const points = document.createElement('tr');
+                points.innerText = ranklist[i].score + '(+' + ranklist[i].gained + ' points)';
+
+                addCell.appendChild(rank);
+                addCell.appendChild(playerUsername);
+                addCell.appendChild(points);
+            }
+                winner.innerText = 'THE WINNER IS ' + ranklist[0].username + '!!!'
+                console.debug('gameOverEvent', {scoresObj});
+            });
+
+            //sent to the specific user when they guess right
+
+            socket.on('correctGuess', function (word,gameState,username) {
+                console.debug('correctGuess');
+                spaces.innerText = word; // reveal the word
+
+                postChatMessage('You guessed it!');
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('correctGuess');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+                //document.getElementById(username+'2').innerText = playerList[i].score;
+
+            }
+            }
+            });
+
+            socket.on('someoneGuessed', function (gameState, socketId, username) {
+                console.debug('someoneGuessed', {gameState, socketId, username});
+                postChatMessage(username + '  has correctly guessed the compound word!');
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+                //document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
+
+            socket.on('updateScore',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
+
+            socket.on('updateScore2',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'2').innerText = playerList[i].score;
+            }
+            }
+            });
+
+            socket.on('updateScore2',function(gameState,username){
+                playerList = [];
+                for (let player in gameState){
+                let playerObj = gameState[player];
+                playerList.push(playerObj);
+            }
+
+                for (var i = 0; i<playerList.length; i++){
+                if (playerList[i].username === username){
+                console.log('someoneGuessed');
+                document.getElementById(username+'score').innerText = playerList[i].score;
+            }
+            }
+            });
+
+            socket.on('closeGuess', function () {
+                console.debug('closeGuess');
+                postChatMessage('Your guess was close...');
+            });
+
+            socket.on('wrongGuess', function (playerGuess, socketId, username) {
+                console.debug('wrongGuess', {playerGuess, socketId});
+                postChatMessage(playerGuess, username);
+            });
+
+            socket.on('broadcastJoined', function (username) {
+                console.debug('broadcastJoined', {username});
+
+                for (el of playerJoinNotifications) {
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(username + '  has joined! \n'));
+            }
+            });
+
+            socket.on('waitingRoomForPlayer', function (roomId,users) {
+                console.debug('waitingRoomForPlayer', {roomId});
+                switchToView('waitingRoomForPlayer');
+                displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
+
+                for (var i = 0; i<Object.values(users).length; i++){
+                for (el of playerJoinNotifications) {
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
+            }
+            }
+                console.log(Object.values(users));
+            });
+
+            socket.on(' drawingUpdate', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent1(drawingEvents[i]);
+            }
+            } else if (drawNum == 2) {
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent2(drawingEvents[i]);
+            }
+            }
+
+            });
+            socket.on(' undoEvent', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+                gctx1.beginPath();
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent1(drawingEvents[i]);
+            }
+                gctx1.stroke();
+
+                updateColor();
+                updateWidth();
+            } else if (drawNum == 2) {
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+                gctx2.beginPath();
+                for (let i = 0; i < drawingEvents.length; i++) {
+                handleDrawingEvent2(drawingEvents[i]);
+            }
+                gctx2.stroke();
+
+                updateColor();
+                updateWidth();
+            }
+
+            });
+
+            socket.on(' clearEvent', function (drawingEvents, drawNum) {
+                //console.log(' drawingUpdate Client');
+                if (drawNum == 1) {
+                gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+            } else if (drawNum == 2) {
+                gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+            }
+
+            });
+</script>
 
 </body>
 
