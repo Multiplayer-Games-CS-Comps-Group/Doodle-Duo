@@ -156,9 +156,10 @@ io.on('connection', function (socket) {
       if (username === '') {
         username = 'Player ' + (getRoomSize(lobbyId) + 1);
       }
+      socket.emit('waitingRoomForPlayer', lobbyId, lobbies[lobbyId].users);
+
       addUserToLobby(lobbyId, socket, username);
 
-      socket.emit('waitingRoomForPlayer', lobbyId);
       io.in(lobbyId).emit('broadcastJoined', getUsername(socket));
     } else {
       socket.emit('errorRoomId'); //TODO: should maybe do this with a callback? And pass an error message
@@ -255,40 +256,17 @@ io.on('connection', function (socket) {
   function updateGuessed(lobbyId, socketObj) {
     //TO DO: ALSO UPDATE 
     socketObj.emit('correctGuess', lobbies[lobbyId].state.roundInfo.compound.word,createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]); //The view can update to make it clear they guessed
-    io.sockets.in(lobbyId)
-      .emit(
-        'someoneGuessed',
-        createScoreObject(lobbyId),
-        socketObj.id,
-        lobbies[lobbyId].users[socketObj.id]
-      );
+    io.sockets.in(lobbyId).emit('someoneGuessed',createScoreObject(lobbyId),socketObj.id,lobbies[lobbyId].users[socketObj.id]);
+    // for (var i =1; i<lobbies[lobbyId].state.roundInfo.drawers.length+1; i++){
+    //   io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer+'i').emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
+    // }
+    // for (var i =1; i<lobbies[lobbyId].state.roundInfo.guessers.length+1; i++){
+    //   io.sockets.in(lobbies[lobbyId].state.roundInfo.guessers.guesser+'i').emit('updateScore2',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
+    // }
+    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer1).emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
+    io.sockets.in(lobbies[lobbyId].state.roundInfo.drawers.drawer2).emit('updateScore',createScoreObject(lobbyId),lobbies[lobbyId].users[socketObj.id]);
+
   };
-
-  function createScoreBoard(lobbyId) {
-    let scoreBoard = 'The correct word is: ' + lobbies[lobbyId].state.roundInfo.compound.word + '\n' + 'Current Rankings: \n';
-    let allScores = [];
-    for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)) {
-      allScores.push(createScoreObject(lobbyId)[socketId].score);
-      //scoreBoard+=createScoreObject(lobbyId)[socketId].username+": "+ createScoreObject(lobbyId)[socketId].score+"\n";
-    }
-    allScores.sort(function (a, b) { return b - a });
-    let found = [];
-    globalThis.winner = '';
-    for (var i = 0; i < allScores.length; i++) {
-      for (let [socketId, username] of Object.entries(lobbies[lobbyId].users)) {
-        if (createScoreObject(lobbyId)[socketId].score == allScores[i] && !(found.includes(createScoreObject(lobbyId)[socketId].username))) {
-          scoreBoard += (i + 1) + '. ' + createScoreObject(lobbyId)[socketId].username + ": " + createScoreObject(lobbyId)[socketId].score + "(+" + createScoreObject(lobbyId)[socketId].gained + "points)\n";
-          found.push(createScoreObject(lobbyId)[socketId].username);
-          if (globalThis.winner == '') {
-            globalThis.winner += createScoreObject(lobbyId)[socketId].username;
-          }
-          break
-        }
-      }
-    }
-    return scoreBoard
-  }
-
 
   function endOfRound(lobbyId) {
     if (lobbies[lobbyId].state.roundInfo.round + 1 >= lobbies[lobbyId].state.rules.numRounds) {

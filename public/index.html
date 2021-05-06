@@ -272,9 +272,6 @@
             <canvas id="scorecanvas-2" width="200" height="400"></canvas>
             <div id="scorenameDrawing2">Doodler 2</div>
         </div>
-        <div id="sv-info center-content">
-            <span class="lg-text" id="wordDisplay">WORD</span>
-        </div>
         <div class="chat-box-sv">
             <div class="scoreboard-container">
                 <div class="score-container">
@@ -363,6 +360,8 @@
     const tableBody = document.getElementById('tbody');
     const playerBody = document.getElementById('pbody');
     const playerTable = document.getElementById('players-table');
+    const playerBody2 = document.getElementById('p2body')
+
 
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Utility Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
@@ -670,48 +669,71 @@
         drawerNumber = data.drawer;
         switchToView('drawerView');
 
-        drawingEvents = []
-        ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-        wordToDraw.innerText = data.word;
+      drawingEvents = []
+      ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+      wordToDraw.innerText = data.word;
+      playerBody2.innerHTML = '';
+
+      playerList = [];
+      for (let player in scores){
+        let playerObj = scores[player];
+        playerList.push(playerObj);
+      }
+      console.log(playerList);
+
+      for (var i = 0; i<playerList.length; i++){
+        const addCell = document.createElement('tr');
+        playerBody2.appendChild(addCell);
+
+        const player = document.createElement('td');
+        player.innerText = playerList[i].username;
+        const score = document.createElement('td');
+        score.innerText = playerList[i].score;
+        score.setAttribute("id", playerList[i].username+'2');
+
+        addCell.appendChild(player);
+        addCell.appendChild(score);
+      }
     });
 
     socket.on('guesserView', function (scores, data) {
-        console.debug('guesserView', {scores, data});
-        switchToView('guesserView');
+      console.debug('guesserView', { scores, data });
+      switchToView('guesserView');
 
-        gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
-        gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
-        let spacesLength = data.word1Length + data.word2Length;
-        let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
-        console.log(spacesDisplay);
-        spaces.innerText = spacesDisplay;
-        let drawerNames = getDrawerNames(scores);
-        drawerNumber = 0;
+      gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
+      gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
+      let spacesLength = data.word1Length + data.word2Length;
+      let spacesDisplay = ' __'.repeat(spacesLength).slice(1); //slice(1) cuts off the leading space
+      console.log(spacesDisplay);
+      spaces.innerText = spacesDisplay;
+      let drawerNames = getDrawerNames(scores);
+      drawerNumber = 0;
 
-        nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
-        nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
-        playerBody.innerHTML = '';
+      nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+      nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+      playerBody.innerHTML = '';
 
-        playerList = [];
-        for (let player in scores) {
-            let playerObj = scores[player];
-            playerList.push(playerObj);
-        }
-        console.log(playerList);
+      playerList = [];
+      for (let player in scores){
+        let playerObj = scores[player];
+        playerList.push(playerObj);
+      }
+      console.log(playerList);
 
-        for (var i = 0; i < playerList.length; i++) {
-            const addCell = document.createElement('tr');
-            playerBody.appendChild(addCell);
+      for (var i = 0; i<playerList.length; i++){
+        const addCell = document.createElement('tr');
+        playerBody.appendChild(addCell);
 
-            const player = document.createElement('td');
-            player.innerText = playerList[i].username;
-            const score = document.createElement('td');
-            score.innerText = playerList[i].score;
-            score.setAttribute("id", playerList[i].username);
+        const player = document.createElement('td');
+        player.innerText = playerList[i].username;
+        player.setAttribute('id',playerList[i].username)
+        const score = document.createElement('td');
+        score.innerText = playerList[i].score;
+        score.setAttribute("id", playerList[i].username+'score');
 
-            addCell.appendChild(player);
-            addCell.appendChild(score);
-        }
+        addCell.appendChild(player);
+        addCell.appendChild(score);
+      }
     });
 
     socket.on('timerUpdate', function (timeLeft) {
@@ -774,41 +796,72 @@
     });
 
     //sent to the specific user when they guess right
-    socket.on('correctGuess', function (word, gameState, username) {
-        console.debug('correctGuess');
-        spaces.innerText = word; // reveal the word
 
-        postChatMessage('You guessed it!');
-        playerList = [];
-        for (let player in gameState) {
-            let playerObj = gameState[player];
-            playerList.push(playerObj);
-        }
-        for (var i = 0; i < playerList.length; i++) {
-            if (playerList[i].username === username) {
-                console.log('correctGuess');
-                document.getElementById(username).innerText = playerList[i].score;
-            }
-        }
+    socket.on('correctGuess', function (word,gameState,username) {
+      console.debug('correctGuess');
+      spaces.innerText = word; // reveal the word
+
+      postChatMessage('You guessed it!');
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+      for (var i = 0; i<playerList.length; i++) {
+          if (playerList[i].username === username) {
+              console.log('correctGuess');
+              document.getElementById(username + 'score').innerText = playerList[i].score;
+              //document.getElementById(username+'2').innerText = playerList[i].score;
+          }
+      }
     });
 
     socket.on('someoneGuessed', function (gameState, socketId, username) {
-        console.debug('someoneGuessed', {gameState, socketId, username});
-        postChatMessage(username + '  has correctly guessed the compound word!');
+      console.debug('someoneGuessed', { gameState, socketId, username });
+      postChatMessage(username + '  has correctly guessed the compound word!');
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
 
-        playerList = [];
-        for (let player in gameState) {
-            let playerObj = gameState[player];
-            playerList.push(playerObj);
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username+'score').innerText = playerList[i].score;
+          //document.getElementById(username+'2').innerText = playerList[i].score;
         }
+      }
+    });
 
-        for (var i = 0; i < playerList.length; i++) {
-            if (playerList[i].username === username) {
-                console.log('someoneGuessed');
-                document.getElementById(username).innerText = playerList[i].score;
-            }
+    socket.on('updateScore',function(gameState,username){
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username+'2').innerText = playerList[i].score;
         }
+      }
+    });
 
+    socket.on('updateScore2',function(gameState,username){
+      playerList = [];
+      for (let player in gameState){
+        let playerObj = gameState[player];
+        playerList.push(playerObj);
+      }
+
+      for (var i = 0; i<playerList.length; i++){
+        if (playerList[i].username === username){
+          console.log('someoneGuessed');
+          document.getElementById(username+'score').innerText = playerList[i].score;
+        }
+      }
     });
 
     socket.on('closeGuess', function () {
@@ -830,10 +883,18 @@
         }
     });
 
-    socket.on('waitingRoomForPlayer', function (roomId) {
-        console.debug('waitingRoomForPlayer', {roomId});
-        switchToView('waitingRoomForPlayer');
-        displayRoom.innerText = 'You are in room ' + roomId + '! Waiting for host to start game...';
+    socket.on('waitingRoomForPlayer', function (roomId,users) {
+      console.debug('waitingRoomForPlayer', { roomId });
+      switchToView('waitingRoomForPlayer');
+      displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
+
+      for (var i = 0; i<Object.values(users).length; i++){
+        for (el of playerJoinNotifications) {
+          el.appendChild(document.createElement('br'));
+          el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
+        }
+      }
+      console.log(Object.values(users));
     });
 
     socket.on('drawingUpdate', function (drawingEvents, drawNum) {
