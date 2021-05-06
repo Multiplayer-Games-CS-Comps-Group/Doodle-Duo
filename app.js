@@ -381,6 +381,8 @@ io.on('connection', function (socket) {
       let shouldEndGame = false;
 
       if (Object.keys(lobbies[curLobbyId].state).length !== 0) {
+        io.sockets.in(curLobbyId).emit('playerDisconnect', getUsername(socket));
+
         const numRoundsLeft = lobbies[curLobbyId].state.rules.numRounds - lobbies[curLobbyId].state.roundInfo.round - 1;
 
         lobbies[curLobbyId].state.meta.drawPairs = lib.getDrawPairs(

@@ -893,7 +893,11 @@
         el.appendChild(document.createTextNode(username + '  has joined! \n'));
       }
     });
-    
+
+    socket.on('playerDisconnect', function (username) {
+      postChatMessage(username + ' has disconnected');
+    });
+
     socket.on('broadcastLeft', function (username) {
       console.debug('broadcastLeft', { username });
 
