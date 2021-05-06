@@ -229,8 +229,10 @@
                 <div>Time Remaining:</div>
                 <span id="dGameTimeDisplay"></span>
             </div>
-            <div id="wordToDraw">
-                ERROR
+            <div class="drawerWordContainer">
+                <div id="wordToDraw">
+                    ERROR
+                </div>
             </div>
             <div class="players2-container">
                 <b>Current Players</b>
@@ -578,7 +580,8 @@
 
                 console.log(scoresObj)
                 switchToView('scoreboard');
-                document.getElementById('wordDisplay').innerText = ans;
+                // If we want to add an additional word display to scoreboard we can do this
+                // document.getElementById('wordDisplay').innerText = ans;
 
                 // clears canvases before updated version
                 gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
@@ -667,7 +670,7 @@
 
                 drawingEvents = []
                 ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-                wordToDraw.innerText = data.word;
+                wordToDraw.innerText = "Word to draw: "+ data.word;
                 playerBody2.innerHTML = '';
 
                 playerList = [];
