@@ -27,7 +27,7 @@ const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 1;
+const SCORE_DISPLAY_TIMER = 5;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -378,18 +378,19 @@ io.on('connection', function (socket) {
     if (socket.lobbyId) {
       let curLobbyId = socket.lobbyId;
       let shouldEndRound = false;
+      let shouldEndGame = false;
 
       if (Object.keys(lobbies[curLobbyId].state).length !== 0) {
-        // If number of players is now too low, end the game 
-        // If they were a drawer, end the round
-
         const numRoundsLeft = lobbies[curLobbyId].state.rules.numRounds - lobbies[curLobbyId].state.roundInfo.round - 1;
+
         lobbies[curLobbyId].state.meta.drawPairs = lib.getDrawPairs(
           lib.getGameWords(numRoundsLeft),
           Object.keys(lobbies[curLobbyId].users).filter(id => id != socket.id)
         );
 
         lobbies[curLobbyId].state.meta.numPlayers--;
+        if (lobbies[curLobbyId].state.meta.numPlayers < 3) shouldEndGame = true;
+        
         delete lobbies[curLobbyId].state.players[socket.id];
 
         if (
@@ -404,7 +405,10 @@ io.on('connection', function (socket) {
 
       removeUserFromLobby(socket);
 
-      if (shouldEndRound) {
+      if (shouldEndGame) {
+        clearInterval(lobbies[curLobbyId].state.timer.id);
+        endOfGame(curLobbyId);
+      } else if (shouldEndRound) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
         endOfRound(curLobbyId);
       }
