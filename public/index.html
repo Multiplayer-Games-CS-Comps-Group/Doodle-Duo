@@ -150,12 +150,6 @@
             <div class="guesserWordSpaces">
                 <span class="center-content" id="spacesDisplay">_</span>
             </div>
-            <div class="guessInput">
-                <input type="text" class="big-input" placeholder="Input your Guess" id="GuessInput">
-                <button type="submit" class="submitGuess" onclick="guessInputHandler()">
-                    <i class="cap-icon ci-plane-paper submitIcon"></i>
-                </button>
-            </div>
             <div class="timeDisplay">
                 <div id="timeRemaining">Time Remaining:</div>
                 <span id="gameTimeDisplay"></span>
@@ -166,8 +160,12 @@
                 <div id="chat-box-guesser-wrapper">
                     <ul id="chat-box-guesser" class="chat-box"></ul>
                 </div>
-                <input class="big-input guessInput" id="GuessInput">
-                <a class="uk-form-icon uk-form-icon-flip" onclick="guessInputHandler()" uk-icon="icon: arrow-right"></a>
+                <div class="guessInput">
+                    <input type="text" class="big-input" placeholder="Input your Guess" id="GuessInput">
+                    <button type="submit" class="submitGuess" onclick="guessInputHandler()">
+                        <i class="cap-icon ci-plane-paper submitIcon">Submit</i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -237,17 +235,7 @@
             <div id="wordToDraw">
                 ERROR
             </div>
-<!--            <div class="players-container">-->
-<!--                <b>Current Players</b>-->
-<!--                <table id='players-table'>-->
-<!--                    <tr>-->
-<!--                        <th>Player</th>-->
-<!--                        <th>Score</th>-->
-<!--                    </tr>-->
-<!--                    <tbody id='pbody'>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </div>-->
+<!--            Add players table here -->
         </div>
         <div id="dv-chatbox">
             <div class="chat-box-container">
@@ -266,15 +254,13 @@
             <img class="titleImage" src="title.png">
         </div>
         <div id="scoreboardCanvas1" class="center-content gv-canvas gv-canvas-left">
-            Canvas 1
             <canvas id="scorecanvas-1" width="200" height="400"></canvas>
+            <div id="scorenameDrawing1">Doodler 1</div>
         </div>
         <div id="scoreboardCanvas2" class="center-content gv-canvas gv-canvas-right">
-            Canvas 2
             <canvas id="scorecanvas-2" width="200" height="400"></canvas>
+            <div id="scorenameDrawing2">Doodler 2</div>
         </div>
-        <div id="scorenameDrawing1" class="uk-text-center">Doodler 1</div>
-        <div id="scorenameDrawing2" class="uk-text-center">Doodler 2</div>
         <div id="sv-info">
             <div class="scoreboardWord">
                 <span id="wordDisplay">WORD</span>
