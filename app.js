@@ -422,7 +422,14 @@ io.on('connection', function (socket) {
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
-
+/*
 http.listen(5000, function () {
   console.log('listening on *:5000');
+});
+*/
+
+
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, () => {
+    console.log(`listening on *:${ PORT }`);
 });

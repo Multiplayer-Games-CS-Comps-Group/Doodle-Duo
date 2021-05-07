@@ -573,7 +573,8 @@
     socket.on('succesfullyCreatedLobby', function (lobbyId) {
       console.debug('succesfullyCreatedLobby', { lobbyId });
       switchToView('waitingRoomForHost');
-      gameCodeDisplay.value = lobbyId;
+      // Front end change ???
+      gameCodeDisplay.value = lobbyId.substring(5, lobbyId.length+1);;
     });
 
     socket.on('endRoundScores', function (scoresObj, ans) {
