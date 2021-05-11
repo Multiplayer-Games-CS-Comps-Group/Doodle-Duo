@@ -85,43 +85,480 @@
     </defs>
   </svg>
 
-  <div id='initial-screen'>
-    <h1>Compound Game</h1>
+  <!-- Background Color-->
+  <script>
+    function setBackground() {
+      return "hsla(" + ~~(360 * Math.random()) + "," + "100%," + "93%,1)"
+    }
 
-    <div class="buttons">
-      <input class="big-input" type='text' placeholder="Enter Player Name" id='nameInput' />
-      <br><br>
-      <button onclick="createButtonClicked()">CREATE</button>
-      <div>OR</div>
-      <div>
-        <input type='text' class="big-input" placeholder='Enter Room Id' id='roomIdInput' />
-        <button onclick="joinButtonClicked()">JOIN</button>
+    document.body.style.backgroundColor = setBackground()
+  </script>
+
+  <!-- Landing Screen-->
+
+  <div id='initial-screen'>
+
+    <!-- Background Image Render [currently not working b/c we're using the changing background]-->
+    <div class="uk-height-viewport uk-flex uk-flex-column uk-background-cover uk-padding-remove">
+
+      <!-- TODO: When Desktop mode written, replace below non-commented line with:  <div class="uk-hidden@s uk-height-viewport uk-width-1-1" style=height:100vh>-->
+      <div class="uk-height-viewport uk-width-1-1" style=height:100vh>
+
+        <!-- NavBar-like Top Of Window-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:4vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
+            <div class="uk-width-auto uk-position-top-left uk-padding-remove">
+              <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
+                <a class="uk-link-muted" onClick="howToPlayClicked()"
+                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> How To Play</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Title Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="editedTitle.png" style="height:15vh; width:80vw;max-width:340px" uk-img>
+            </div>
+          </div>
+        </div>
+
+        <!-- Central Image-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:40vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-section-secondary uk-width-expand uk-text-center"
+                style="height:30vh;width:80vw;max-width:680px">
+                <p style="font-size:36px"> Illustration</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name Box Field-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:12vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove uk-flex-center uk-flex-middle">
+              <div class="uk-margin">
+                <div class="uk-card" style="height:1vh"></div>
+                <input class="uk-input" type="text" placeholder="Enter Player Name" id='nameInput'
+                  style="text-align:center">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Forms -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove uk-text-center" style=height:29vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+
+            <!-- Join Lobby field+button-->
+            <div class="uk-width-auto uk-padding-remove uk-flex-center uk-flex-middle">
+              <div class="uk-card uk-background-muted uk-border-rounded"
+                style="height:20vh;width:40vw;text-align:center;max-width:340px">
+                <p style="font-size: 16px;"> Join A Lobby </p>
+                <div class="uk-margin" uk-margin>
+                  <input class="uk-input" type="text" placeholder="Room Code" id='roomIdInput'
+                    style="width:37vw;font-size:15px;height:5vh;text-align:center;max-width:320px">
+                  <button class="uk-button uk-button-primary" onclick="joinButtonClicked()"
+                    style="width:37vw;font-size:15px;height:5vh;text-transform:none;text-align:center;max-width:320px">Join</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Create Lobby button-->
+            <div class="uk-width-auto">
+              <div class="uk-card uk-background-muted uk-border-rounded"
+                style="height:20vh;width:40vw;text-align:center;max-width:340px">
+                <p style="font-size: 16px;"> Create A Lobby </p>
+
+                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
+                <div class="uk-card" style="height:3vh;width:40vw"></div>
+                <div class="uk-margin" uk-margin>
+                  <button class="uk-button uk-button-primary"
+                    style="width:37vw;font-size:15px;height:5vh;text-transform:none;max-width:320px"
+                    onclick="createButtonClicked()">Create</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+
+  <!-- WAITING ROOM HOST -->
   <div id='waiting-room-host' style="display:none">
-    <h1>Compound Game Waiting Room</h1>
-    <p id="gameId"></p>
-    <h2> Game room ID: <input id="gameCodeDisplay" readonly="readonly">
-      <button id="copy-room-code" onclick="copyLobbyId()">Click to copy
-      </button>
-    </h2>
-    <p id='userJoin'></p>
-    <input type='text' placeholder='Max Players' id='MaxPlayerInput' class="uk-input" />
-    <input type='text' placeholder='Number of Rounds' id='RoundInput' />
-    <input type='text' placeholder='Round Timer' id='RoundTimerInput' />
+    <!-- Background Image Render [currently not working b/c we're using the changing background]-->
+    <div class="uk-height-viewport uk-flex uk-flex-column uk-background-cover uk-padding-remove">
+
+      <!-- TODO: When Desktop mode written, replace below non-commented line with:  <div class="uk-hidden@s uk-height-viewport uk-width-1-1" style=height:100vh>-->
+      <div class="uk-height-viewport uk-width-1-1" style=height:100vh>
+
+        <!-- NavBar-like Top Of Window-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:4vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
+            <div class="uk-width-auto uk-position-top-left uk-padding-remove">
+              <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
+                <a class="uk-link-muted" onClick="backHome()"
+                  style="font-size: 16px;text-decoration:underline; font-weight:bold;"> Leave Lobby </a>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
-    <button onclick='startGameButtonClicked()'>Start Game</button>
-    <p id='playerJoin2'></p> <!-- TODO: Add whatever happens to playerJoin? -->
+        <!-- Title Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="editedTitle.png" style="height:15vh; width:80vw;max-width:340px" uk-img>
+            </div>
+          </div>
+        </div>
 
+
+        <!-- ID Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
+          <div
+            class="uk-padding-remove uk-height-1-1 uk-marging-remove uk-flex uk-flex-column uk-flex-column uk-flex-middle">
+            <div class="uk-width-auto uk-padding-remove" style=height:20vh>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
+                <div class="uk-card" style="height:1vh;width:40vw"></div>
+                <p style="font-size:24px"> Your Room Code Is</p>
+              </div>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <input id="gameCodeDisplay" readonly="readonly" class="uk-input"
+                  style="width:40vw;max-width:340px;text-align:center"></input>
+                <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()"
+                  style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click
+                  to copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Players Title + Spacer -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:5vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+                <p style="font-size:24px;"> Players:</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Current Players Box (Currently, only two text boxes)-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
+              <p style="font-size:16px;"> First 5 names here:</p>
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
+              <p style="font-size:16px;"> Second 5 here[TODO]:</p>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Settings Title + Spacer -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:7vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+                <p style="font-size:24px;"> Settings:</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forms -->
+
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
+
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" style=height:6vh
+            uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:35vw;max-width:680px">
+              <p class="uk-padding-remove uk-text-center uk-text-middle" style="font-size:15px;"> Number of Rounds:</p>
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:10vw;max-width:680px"> </div>
+            <input type='text' placeholder='6' id='RoundInput'
+              class="uk-input uk-padding-remove uk-text-middle uk-text-center" style="width:13vw" />
+          </div>
+
+          <div class="uk-padding-remove-vertical uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle"
+            style=height:6vh uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:35vw;max-width:680px">
+              <p style="font-size:15px;"> Round Timer (Sec):</p>
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:10vw;max-width:680px"> </div>
+            <input type='text' placeholder='120' id='RoundTimerInput'
+              class="uk-input uk-padding-remove uk-text-middle uk-text-center" style="width:13vw" />
+          </div>
+
+        </div>
+
+        <!-- Start Game Button -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:5vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+                <button onclick='startGameButtonClicked()' class="uk-button uk-button-primary"
+                  style="width:37vw;font-size:16px;height:10vh;text-transform:none;text-align:center;max-width:320px">Start
+                  Game</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+
+
+  <!-- ####### -->
+
+  <!-- How To Play Screen-->
+
+  <div id='how-to-play-screen' style="display:none">
+
+    <!-- Background Image Render [currently not working b/c we're using the changing background]-->
+    <div class="uk-height-viewport uk-flex uk-flex-column uk-background-cover uk-padding-remove">
+
+      <!-- TODO: When Desktop mode written, replace below non-commented line with:  <div class="uk-hidden@s uk-height-viewport uk-width-1-1" style=height:100vh>-->
+      <div class="uk-height-viewport uk-width-1-1" style=height:100vh>
+
+        <!-- NavBar-like Top Of Window-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:4vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
+            <div class="uk-width-auto uk-position-top-left uk-padding-remove">
+              <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
+                <a class="uk-link-muted" onClick="backHome()"
+                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> Back to Home </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Title Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="editedTitle.png" style="height:15vh; width:80vw;max-width:340px" uk-img>
+            </div>
+          </div>
+        </div>
+
+        <!-- Central Image-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:10vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-section-secondary uk-width-expand uk-text-center"
+                style="height:30vh;width:80vw;max-width:680px">
+                <p style="font-size:36px"> [page wip]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name Box Field-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:12vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove uk-flex-center uk-flex-middle">
+              <div class="uk-margin">
+                <div class="uk-card" style="height:1vh"></div>
+                <input class="uk-input" type="text" placeholder="Enter Player Name" id='nameInput'
+                  style="text-align:center">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Forms -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove uk-text-center" style=height:29vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+
+            <!-- Join Lobby field+button-->
+            <div class="uk-width-auto uk-padding-remove uk-flex-center uk-flex-middle">
+              <div class="uk-card uk-background-muted uk-border-rounded"
+                style="height:20vh;width:40vw;text-align:center;max-width:340px">
+                <p style="font-size: 16px;"> Join A Lobby </p>
+                <div class="uk-margin" uk-margin>
+                  <input class="uk-input" type="text" placeholder="Room Code" id='roomIdInput'
+                    style="width:37vw;font-size:15px;height:5vh;text-align:center;max-width:320px">
+                  <button class="uk-button uk-button-primary" onclick="joinButtonClicked()"
+                    style="width:37vw;font-size:15px;height:5vh;text-transform:none;text-align:center;max-width:320px">Join</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Create Lobby button-->
+            <div class="uk-width-auto">
+              <div class="uk-card uk-background-muted uk-border-rounded"
+                style="height:20vh;width:40vw;text-align:center;max-width:340px">
+                <p style="font-size: 16px;"> Create A Lobby </p>
+
+                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
+                <div class="uk-card" style="height:3vh;width:40vw"></div>
+                <div class="uk-margin" uk-margin>
+                  <button class="uk-button uk-button-primary"
+                    style="width:37vw;font-size:15px;height:5vh;text-transform:none;max-width:320px"
+                    onclick="createButtonClicked()">Create</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ####### -->
+
+
+
+
+  <!-- WAITING ROOM -->
   <div id='waiting-room-player' style="display:none">
-    <h1>Compound Game Waiting Room</h1>
-    <p id='displayRoom'></p>
-    <p id='playerJoin'></p>
+    <!-- Background Image Render [currently not working b/c we're using the changing background]-->
+    <div class="uk-height-viewport uk-flex uk-flex-column uk-background-cover uk-padding-remove"
+      data-src="/assets/wallpaper.png" uk-img>
+
+      <!-- TODO: When Desktop mode written, replace below non-commented line with:  <div class="uk-hidden@s uk-height-viewport uk-width-1-1" style=height:100vh>-->
+      <div class="uk-height-viewport uk-width-1-1" style=height:100vh>
+
+        <!-- NavBar-like Top Of Window-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:4vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
+            <div class="uk-width-auto uk-position-top-left uk-padding-remove">
+              <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
+                <a class="uk-link-muted" onClick="backHome()"
+                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> Leave Lobby </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Title Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="editedTitle.png" style="height:15vh; width:80vw;max-width:340px" uk-img>
+            </div>
+          </div>
+        </div>
+
+        <!-- ID Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
+          <div
+            class="uk-padding-remove uk-height-1-1 uk-marging-remove uk-flex uk-flex-column uk-flex-column uk-flex-middle">
+            <div class="uk-width-auto uk-padding-remove" style=height:20vh>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
+                <div class="uk-card" style="height:1vh;width:40vw"></div>
+                <!-- 
+          <p style="font-size:24px"> Your Room Code Is [TODO]</p>
+          -->
+              </div>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <!-- 
+          <input id="gameCodeDisplay" readonly="readonly"class="uk-input" style="width:40vw;max-width:340px;text-align:center"></input>
+          <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()" style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click to copy</button>
+          -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Players Title + Spacer -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:5vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+                <p style="font-size:24px;"> Players:</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Current Players Box (Currently, only two text boxes)-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
+              <p style="font-size:16px;"> First 4 names here:</p>
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
+              <p style="font-size:16px;"> Second 4 here[TODO]:</p>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Unnecesarilly Elaborate Spacers [Skeleton Code From Host Room w/o anything showing] -->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:7vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
+
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" style=height:6vh
+            uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:35vw;max-width:680px">
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:10vw;max-width:680px"> </div>
+          </div>
+
+          <div class="uk-padding-remove-vertical uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle"
+            style=height:6vh uk-grid>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:35vw;max-width:680px">
+            </div>
+            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+              style="height:5vh;width:10vw;max-width:680px"> </div>
+          </div>
+
+        </div>
+
+        <!-- Start Game Button -->
+
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:5vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-padding-remove uk-width-expand uk-text-center"
+                style="height:5vh;width:80vw;max-width:680px">
+                <p style="font-size:20px;"> Waiting On Host To Start Game</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id='example' style="display:none">
@@ -183,7 +620,7 @@
       <div class="title">
         <img class="titleImage" src="title.png">
       </div>
-      <div id="dv-canvas-controls">
+      <div id="dv-canvas-controls" style="background-color:transparent">
         <div id="dv-controls-outer-container">
           <div id="dv-controls-inner-container">
             <input id="color-select" type="color">
@@ -316,6 +753,7 @@
       initialScreen: document.getElementById('initial-screen'),
       waitingRoomForHost: document.getElementById('waiting-room-host'),
       waitingRoomForPlayer: document.getElementById('waiting-room-player'),
+      howToPlayScreen: document.getElementById('how-to-play-screen'),
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
@@ -333,7 +771,6 @@
     // Lobby number display from player waiting room
     const displayRoom = document.getElementById('displayRoom');
     // Game rule inputs from host waiting room
-    const maxPlayer = document.getElementById('MaxPlayerInput');
     const roundInput = document.getElementById('RoundInput');
     const roundTimer = document.getElementById('RoundTimerInput');
     // Player join notification divs from waiting rooms
@@ -491,6 +928,16 @@
 
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Event Handlers ~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
     /**
+     * Somewhat jank way of implementing a "Leave Lobby" button
+     * Given that refreshing the browser removes one from the lobby, and we don't have a way to do so without forcing a disconnect
+     * This forces a disconnect and brings them back to the main page, effectively working like a "Leave Lobby" option
+     */
+
+    function backHome() {
+      location.reload()
+    }
+
+    /**
     * onclick function for lobby code copy button
     */
     function copyLobbyId() {
@@ -537,10 +984,16 @@
     }
 
     /**
+     * onclick function for how to play text/button
+     */
+    function howToPlayClicked() {
+      switchToView('howToPlayScreen');
+    }
+    /**
     * onclick function for start game button
     */
     function startGameButtonClicked() {
-      socket.emit('startGame', maxPlayer.value, roundInput.value, roundTimer.value);
+      socket.emit('startGame', roundInput.value, roundTimer.value);
     }
 
     function paintbrushButtonClicked() {
@@ -843,7 +1296,7 @@
       }
     });
 
-    socket.on('broadcastClose',function(username){
+    socket.on('broadcastClose', function (username) {
       postChatMessage(username + '  has a close guess!');
     })
 
