@@ -507,7 +507,7 @@
     * onkeyup(enter) for the guess input
     */
     function guessInputHandler() {
-      socket.emit('playerGuess', guessInputBox.value);
+      if (guessInputBox.value !== '') socket.emit('playerGuess', guessInputBox.value);
       guessInputBox.value = '';
     }
 

@@ -233,7 +233,7 @@ function setUpRound(gameInstance, roundNum) {
     drawer2: curDrawPair.drawer2
   };
   let allPlayers = Object.keys(gameInstance.players);
-  console.log(curDrawPair);
+  // console.log(curDrawPair);
   gameInstance.roundInfo = {
     round: roundNum,
     guessCount: 0,
