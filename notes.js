@@ -45,6 +45,7 @@ lobbies = {
       timer: {
         id: null, //id of interval
         timeLeft: 0,
+        scoreScreenId: null, //id of score screen timer
       },
       roundInfo: {
         round: 0,

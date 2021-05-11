@@ -27,9 +27,9 @@ function readCSV(filePath) {
     .split('\n')
     .map(e => e.trim())
     .map(e => e.split(',').map(e => e.trim()));
-  
+
   var out = [];
-  for(var i in data) {
+  for (var i in data) {
     var compound = {
       word: data[i][0],
       left: data[i][1],
@@ -155,7 +155,7 @@ function getAllGuessers(playerArray, drawers) {
 
 
 function calculateScore(guessCount) {
-  var out = 10 - (2*parseInt(guessCount));
+  var out = 10 - (2 * parseInt(guessCount));
   console.log(`Calculate Score: out=${out}, guessCount=${guessCount}`);
   if (out >= 2) { return out; }
   else { return 2; }
@@ -208,6 +208,7 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
     timer: {
       id: null, //id of interval
       timeLeft: 0,
+      scoreScreenId: null,
     },
     roundInfo: {
       round: -1,
