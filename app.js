@@ -294,7 +294,7 @@ io.on('connection', function (socket) {
         .emit('endRoundScores', createScoreObject(lobbyId), lobbies[lobbyId].state.roundInfo.compound.word);
       //.emit('endRoundScores', createScoreBoard(lobbyId));
 
-      setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
+      lobbies[lobbyId].state.timer.scoreScreenId = setTimeout(() => advanceRoundAndStart(lobbyId), SCORE_DISPLAY_TIMER * 1000);
     }
   };
 
@@ -313,6 +313,7 @@ io.on('connection', function (socket) {
   }
 
   function advanceRoundAndStart(lobbyId) {
+    lobbies[lobbyId].state.timer.scoreScreenId = null;
     lobbies[lobbyId].state.roundInfo.round += 1;
     lib.setUpRound(lobbies[lobbyId].state, lobbies[lobbyId].state.roundInfo.round);
 
@@ -397,8 +398,11 @@ io.on('connection', function (socket) {
         delete lobbies[curLobbyId].state.players[socket.id];
 
         if (
-          socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer1 ||
-          socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer2
+          (
+            socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer1 ||
+            socket.id == lobbies[curLobbyId].state.roundInfo.drawers.drawer2
+          ) &&
+          lobbies[curLobbyId].state.timer.scoreScreenId === null
         ) {
           shouldEndRound = true;
         }
@@ -410,6 +414,7 @@ io.on('connection', function (socket) {
 
       if (shouldEndGame) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
+        clearTimeout(lobbies[curLobbyId].state.timer.scoreScreenId);
         endOfGame(curLobbyId);
       } else if (shouldEndRound) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
@@ -431,5 +436,5 @@ http.listen(5000, function () {
 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
-    console.log(`listening on *:${ PORT }`);
+  console.log(`listening on *:${PORT}`);
 });
