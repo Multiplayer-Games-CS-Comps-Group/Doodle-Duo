@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html>
 <!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><head>-->
-<title>Compound Game</title>
 
-<!-- UIkit CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
-<!--  Custom CSS     -->
-<link rel="stylesheet" href="./main.css" />
+<head>
+  <title>Compound Game</title>
 
-<!-- UIkit JS -->
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
 
-<script src="./javascript/colorPicker.js" defer></script>
-<script src="./javascript/canvas.js" defer></script>
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/css/uikit.min.css" />
+  <!--  Custom CSS     -->
+  <link rel="stylesheet" href="./main.css" />
+
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.17/dist/js/uikit-icons.min.js"></script>
+
+  <script src="./javascript/colorPicker.js" defer></script>
+  <script src="./javascript/canvas.js" defer></script>
+</head>
+
 
 <body>
   <svg style="position: absolute; width: 0; height: 0; overflow: hidden" xmlns="http://www.w3.org/2000/svg"
@@ -574,7 +583,7 @@
       console.debug('succesfullyCreatedLobby', { lobbyId });
       switchToView('waitingRoomForHost');
       // Front end change ???
-      gameCodeDisplay.value = lobbyId.substring(5, lobbyId.length+1);;
+      gameCodeDisplay.value = lobbyId.substring(5, lobbyId.length + 1);;
     });
 
     socket.on('endRoundScores', function (scoresObj, ans) {
