@@ -87,10 +87,6 @@ function allGuessed(lobbyId) {
 
 
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lobbies and User Data START ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
-//TODO: Make a global users dict that points to lobbyId instead? (Only if we're worried about
-//      users knowing eachother's socketId's)
-//TODO: https://socket.io/docs/v4/emitting-events/ Acknowledgements might be good for joining a lobby.
-
 /*
  * lobbies keeps track of the game and user data for each current ongoing game or lobby.
  *
@@ -178,7 +174,7 @@ io.on('connection', function (socket) {
 
       io.in(lobbyId).emit('broadcastJoined', getUsername(socket));
     } else {
-      socket.emit('errorRoomId'); //TODO: should maybe do this with a callback? And pass an error message
+      socket.emit('errorRoomId');
       return;
     }
   });
@@ -186,7 +182,7 @@ io.on('connection', function (socket) {
   socket.on('startGame', function (maxPlayers, numRounds, roundTimer) {
     let lobbyId = socket.lobbyId;
     if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
-    else maxPlayers = parseInt(maxPlayers); //TODO: error handling for unparseable values
+    else maxPlayers = parseInt(maxPlayers);
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
     else numRounds = parseInt(numRounds);
     if (roundTimer === '') roundTimer = DEFAULT_ROUND_TIMER;
@@ -195,7 +191,7 @@ io.on('connection', function (socket) {
     let currentRoomSize = getRoomSize(lobbyId);
 
     if (currentRoomSize < MIN_PLAYERS) {
-      socket.emit('tooFewPlayers'); //TODO: is there a better way to handle errors? (callbacks??)
+      socket.emit('tooFewPlayers');
       return;
     }
 
@@ -235,6 +231,8 @@ io.on('connection', function (socket) {
 
   socket.on('playerGuess', function (playerGuess) {
     console.log('PlayerGuess function is being called!');
+    if (playerGuess.length === 0) return;
+
     let lobbyId = socket.lobbyId;
     let ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld === 0) {
@@ -326,8 +324,6 @@ io.on('connection', function (socket) {
     notifyDrawers(lobbyId);
     notifyGuessers(lobbyId);
     startGameTimer(lobbyId);
-    //TODO: Do we need to emit a 'new round' event? Or is notifying the drawers and guessers good enough?
-    // (It's probably good enough, we just need to be sure to pass them any needed new-round info)
   }
 
   function notifyDrawers(lobbyId) {
