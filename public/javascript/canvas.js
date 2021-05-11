@@ -135,9 +135,9 @@ clearCanvasButton.onclick = e => {
 const updateColor = () => {
   let newColor = colorSelect.value;
   currentRGB = [
-    parseInt(newColor.slice(1,3), 16),
-    parseInt(newColor.slice(3,5), 16),
-    parseInt(newColor.slice(5,7), 16)
+    parseInt(newColor.slice(1, 3), 16),
+    parseInt(newColor.slice(3, 5), 16),
+    parseInt(newColor.slice(5, 7), 16)
   ];
   ctx1.strokeStyle = newColor;
 
@@ -185,7 +185,7 @@ const handleDrawingEvent = e => {
 const storeBreakpointEvent = () => drawingEvents.push({ type: "breakpoint", data: {} });
 
 const drawAndStore = (previousX, previousY, currentX, currentY) => {
-  drawingEvents.push({
+  let newDrawingEvent = {
     type: "draw",
     data: {
       fromX: previousX,
@@ -195,22 +195,26 @@ const drawAndStore = (previousX, previousY, currentX, currentY) => {
       color: currentRGB,
       size: currentSize
     }
-  });
+  }
+
+  drawingEvents.push(newDrawingEvent);
   drawSegment(previousX, previousY, currentX, currentY);
-  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
+  socket.emit('drawingUpdate', newDrawingEvent, drawerNumber);
 }
 
 const fillAndStore = (x, y, fillColor) => {
-  drawingEvents.push({
+  let newDrawingEvent = {
     type: "fill",
     data: {
       x,
       y,
       color: fillColor
     }
-  });
+  }
+
+  drawingEvents.push(newDrawingEvent);
   floodFill(x, y, fillColor);
-  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
+  socket.emit('drawingUpdate', newDrawingEvent, drawerNumber);
 }
 
 const drawSegment = (previousX, previousY, currentX, currentY) => {

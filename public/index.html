@@ -934,16 +934,12 @@
       console.log(Object.values(users));
     });
 
-    socket.on('drawingUpdate', function (drawingEvents, drawNum) {
-      console.log(' drawingUpdate Client');
+    socket.on('drawingUpdate', function (drawingEvent, drawNum) {
+      // console.log(' drawingUpdate', drawingEvent);
       if (drawNum == 1) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
-        }
+        handleDrawingEvent1(drawingEvent);
       } else if (drawNum == 2) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
-        }
+        handleDrawingEvent2(drawingEvent);
       }
 
     });
