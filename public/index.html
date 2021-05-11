@@ -843,6 +843,10 @@
       }
     });
 
+    socket.on('broadcastClose',function(username){
+      postChatMessage(username + '  has a close guess!');
+    })
+
     socket.on('updateScore', function (gameState, username) {
       playerList = [];
       for (let player in gameState) {

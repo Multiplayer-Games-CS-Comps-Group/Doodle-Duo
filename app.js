@@ -236,24 +236,24 @@ io.on('connection', function (socket) {
     let lobbyId = socket.lobbyId;
     let ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld === 0) {
+      if(!lobbies[lobbyId].state.players[socket.id].doneGuessing){
+        // Calculate guesser score
+        let score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
 
-      // Calculate guesser score
-      let score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
+        // Update player object score
+        lobbies[lobbyId].state.players[socket.id].score += score;
+        lobbies[lobbyId].state.players[socket.id].gained += score;
+        lobbies[lobbyId].state.players[socket.id].doneGuessing = true;
+        lobbies[lobbyId].state.roundInfo.guessCount += 1;
 
-      // Update player object score
-      lobbies[lobbyId].state.players[socket.id].score += score;
-      lobbies[lobbyId].state.players[socket.id].gained += score;
-      lobbies[lobbyId].state.players[socket.id].doneGuessing = true;
-      lobbies[lobbyId].state.roundInfo.guessCount += 1;
-
-      // Give drawers points
-      let drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
-      lobbies[lobbyId].state.players[drawer1].score += 5;
-      lobbies[lobbyId].state.players[drawer1].gained += 5;
-      let drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
-      lobbies[lobbyId].state.players[drawer2].score += 5;
-      lobbies[lobbyId].state.players[drawer2].gained += 5;
-
+        // Give drawers points
+        let drawer1 = lobbies[lobbyId].state.roundInfo.drawers.drawer1;
+        lobbies[lobbyId].state.players[drawer1].score += 5;
+        lobbies[lobbyId].state.players[drawer1].gained += 5;
+        let drawer2 = lobbies[lobbyId].state.roundInfo.drawers.drawer2;
+        lobbies[lobbyId].state.players[drawer2].score += 5;
+        lobbies[lobbyId].state.players[drawer2].gained += 5;
+      }
       updateGuessed(lobbyId, socket);
       if (allGuessed(lobbyId)) {
         clearInterval(lobbies[lobbyId].state.timer.id);
@@ -261,6 +261,7 @@ io.on('connection', function (socket) {
       }
     } else if (ld <= 2) {
       socket.emit('closeGuess');
+      io.sockets.in(lobbyId).emit('broadcastClose',lobbies[lobbyId].users[socket.id]);
     } else {
       io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]);
