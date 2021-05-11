@@ -646,11 +646,11 @@
     socket.on('scoreBoardCanvas', function (drawingEvents, drawNum) {
       if (drawNum == 1) {
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent3(drawingEvents[i]);
+          handleDrawingEvent(drawingEvents[i], sctx1);
         }
       } else if (drawNum == 2) {
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent4(drawingEvents[i]);
+          handleDrawingEvent(drawingEvents[i], sctx2);
         }
       }
     });
@@ -934,16 +934,12 @@
       console.log(Object.values(users));
     });
 
-    socket.on('drawingUpdate', function (drawingEvents, drawNum) {
-      console.log(' drawingUpdate Client');
+    socket.on('drawingUpdate', function (drawingEvent, drawNum) {
+      // console.log(' drawingUpdate', drawingEvent);
       if (drawNum == 1) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
-        }
+        handleDrawingEvent(drawingEvent, gctx1);
       } else if (drawNum == 2) {
-        for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
-        }
+        handleDrawingEvent(drawingEvent, gctx2);
       }
 
     });
@@ -953,14 +949,14 @@
         gctx1.clearRect(0, 0, guesscanvas1.width, guesscanvas1.height);
         gctx1.beginPath();
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent1(drawingEvents[i]);
+          handleDrawingEvent(drawingEvents[i], gctx1);
         }
         gctx1.stroke();
       } else if (drawNum == 2) {
         gctx2.clearRect(0, 0, guesscanvas2.width, guesscanvas2.height);
         gctx2.beginPath();
         for (let i = 0; i < drawingEvents.length; i++) {
-          handleDrawingEvent2(drawingEvents[i]);
+          handleDrawingEvent(drawingEvents[i], gctx2);
         }
         gctx2.stroke();
       }

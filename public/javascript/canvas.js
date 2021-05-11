@@ -14,10 +14,14 @@ let [prevX, prevY] = [0, 0];
 const canvas1 = document.getElementById("canvas-1");
 const guesscanvas1 = document.getElementById("guesscanvas-1");
 const guesscanvas2 = document.getElementById("guesscanvas-2");
+const scorecanvas1 = document.getElementById("scorecanvas-1");
+const scorecanvas2 = document.getElementById("scorecanvas-2");
 
 const ctx1 = canvas1.getContext("2d");
 const gctx1 = guesscanvas1.getContext("2d");
 const gctx2 = guesscanvas2.getContext("2d");
+const sctx1 = scorecanvas1.getContext("2d");
+const sctx2 = scorecanvas2.getContext("2d");
 
 const undoButton = document.getElementById("undo-button");
 const clearCanvasButton = document.getElementById("clear-button");
@@ -32,56 +36,27 @@ canvas1.height = 400;
 guesscanvas1.width = 200;
 guesscanvas1.height = 400;
 
-guesscanvas1.width = 200;
-guesscanvas1.height = 400;
+guesscanvas2.width = 200;
+guesscanvas2.height = 400;
+
+scorecanvas1.width = 200;
+scorecanvas1.height = 400;
+
+scorecanvas2.width = 200;
+scorecanvas2.height = 400;
+
 
 ctx1.lineCap = "round";
 gctx1.lineCap = "round";
 gctx2.lineCap = "round";
-
-const offsetPosToCanvasPos = (x, y) => [
-  x / canvas1.offsetWidth * canvas1.width,
-  y / canvas1.offsetHeight * canvas1.height
-]
-
-const offsetPosToCanvasPos1 = (x, y) => [
-  x / guesscanvas1.offsetWidth * guesscanvas1.width,
-  y / guesscanvas1.offsetHeight * guesscanvas1.height
-]
-
-const offsetPosToCanvasPos2 = (x, y) => [
-  x / guesscanvas2.offsetWidth * guesscanvas2.width,
-  y / guesscanvas2.offsetHeight * guesscanvas2.height
-]
-
-
-/* ~~~~~~~~~~~~ Scoreboard Setup ~~~~~~~~~~~~*/
-
-const scorecanvas1 = document.getElementById("scorecanvas-1");
-scorecanvas1.width = 200;
-scorecanvas1.height = 400;
-
-const scorecanvas2 = document.getElementById("scorecanvas-2");
-scorecanvas1.width = 200;
-scorecanvas1.height = 400;
-
-
-const sctx1 = scorecanvas1.getContext("2d");
 sctx1.lineCap = "round";
-
-const sctx2 = scorecanvas2.getContext("2d");
 sctx2.lineCap = "round";
 
-
-const offsetPosToCanvasPos3 = (x, y) => [
-  x / scorecanvas1.offsetWidth * scorecanvas1.width,
-  y / scorecanvas1.offsetHeight * scorecanvas1.height
+const offsetPosToCanvasPos = (x, y, canvas) => [
+  x / canvas.offsetWidth * canvas.width,
+  y / canvas.offsetHeight * canvas.height
 ]
 
-const offsetPosToCanvasPos4 = (x, y) => [
-  x / scorecanvas2.offsetWidth * scorecanvas2.width,
-  y / scorecanvas2.offsetHeight * scorecanvas2.height
-]
 
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~ Custom Canvas Cursor ~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -135,9 +110,9 @@ clearCanvasButton.onclick = e => {
 const updateColor = () => {
   let newColor = colorSelect.value;
   currentRGB = [
-    parseInt(newColor.slice(1,3), 16),
-    parseInt(newColor.slice(3,5), 16),
-    parseInt(newColor.slice(5,7), 16)
+    parseInt(newColor.slice(1, 3), 16),
+    parseInt(newColor.slice(3, 5), 16),
+    parseInt(newColor.slice(5, 7), 16)
   ];
   ctx1.strokeStyle = newColor;
 
@@ -167,15 +142,15 @@ const findLastIndex = (list, fxn) => {
   return -1;
 }
 
-const handleDrawingEvent = e => {
+const handleDrawingEvent = (e, ctx) => {
   switch (e.type) {
     case "draw":
-      ctx1.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
-      ctx1.lineWidth = e.data.size;
-      drawSegment(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
+      ctx.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
+      ctx.lineWidth = e.data.size;
+      drawSegment(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY, ctx);
       break;
     case "fill":
-      floodFill(e.data.x, e.data.y, e.data.color);
+      floodFill(e.data.x, e.data.y, e.data.color, ctx);
       break;
     default:
       break;
@@ -185,7 +160,7 @@ const handleDrawingEvent = e => {
 const storeBreakpointEvent = () => drawingEvents.push({ type: "breakpoint", data: {} });
 
 const drawAndStore = (previousX, previousY, currentX, currentY) => {
-  drawingEvents.push({
+  let newDrawingEvent = {
     type: "draw",
     data: {
       fromX: previousX,
@@ -195,29 +170,33 @@ const drawAndStore = (previousX, previousY, currentX, currentY) => {
       color: currentRGB,
       size: currentSize
     }
-  });
-  drawSegment(previousX, previousY, currentX, currentY);
-  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
+  }
+
+  drawingEvents.push(newDrawingEvent);
+  drawSegment(previousX, previousY, currentX, currentY, ctx1);
+  socket.emit('drawingUpdate', newDrawingEvent, drawerNumber);
 }
 
 const fillAndStore = (x, y, fillColor) => {
-  drawingEvents.push({
+  let newDrawingEvent = {
     type: "fill",
     data: {
       x,
       y,
       color: fillColor
     }
-  });
-  floodFill(x, y, fillColor);
-  socket.emit('drawingUpdate', drawingEvents, drawerNumber);
+  }
+
+  drawingEvents.push(newDrawingEvent);
+  floodFill(x, y, fillColor, ctx1);
+  socket.emit('drawingUpdate', newDrawingEvent, drawerNumber);
 }
 
-const drawSegment = (previousX, previousY, currentX, currentY) => {
-  ctx1.beginPath(); // This empties the list of things to be drawn by stroke()
-  ctx1.moveTo(previousX, previousY);
-  ctx1.lineTo(currentX, currentY);
-  ctx1.stroke();
+const drawSegment = (previousX, previousY, currentX, currentY, ctx) => {
+  ctx.beginPath(); // This empties the list of things to be drawn by stroke()
+  ctx.moveTo(previousX, previousY);
+  ctx.lineTo(currentX, currentY);
+  ctx.stroke();
 }
 
 /* ------------ Undo ------------ */
@@ -228,7 +207,7 @@ const undoDrawingEvents = () => {
   ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
   ctx1.beginPath();
   for (let i = 0; i < drawingEvents.length; i++) {
-    handleDrawingEvent(drawingEvents[i]);
+    handleDrawingEvent(drawingEvents[i], ctx1);
   }
   ctx1.stroke();
 
@@ -280,21 +259,22 @@ document.onmousemove = ({ pageX, pageY }) => {
 
   let [x, y] = [...offsetPosToCanvasPos(
     pageX - canvas1Rect.left - window.scrollX,
-    pageY - canvas1Rect.top - window.scrollY
+    pageY - canvas1Rect.top - window.scrollY,
+    canvas1
   )];
 
   updatePreviousPositions(x, y);
 }
 
 canvas1.onmouseleave = ({ offsetX, offsetY, buttons }) => {
-  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY, canvas1);
   if (buttons === 1 && drawMode === 0) {
     drawAndStore(prevX, prevY, canvasX, canvasY);
   }
 }
 
 canvas1.onmousemove = ({ offsetX, offsetY, buttons }) => {
-  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY, canvas1);
 
   if (buttons === 1 && drawMode === 0) {
     drawAndStore(prevX, prevY, canvasX, canvasY);
@@ -303,7 +283,7 @@ canvas1.onmousemove = ({ offsetX, offsetY, buttons }) => {
 
 // If the user just taps the mouse, this draws a dot.
 canvas1.onmousedown = ({ offsetX, offsetY, buttons }) => {
-  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY, canvas1);
 
   if (buttons === 1) {
     storeBreakpointEvent();
@@ -332,7 +312,7 @@ canvas1.ontouchstart = ev => {
   storeBreakpointEvent();
 
   let { offsetX, offsetY } = getOffsetFromTouchEvent(ev);
-  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+  let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY, canvas1);
 
   if (drawMode === 0) {
     drawAndStore(canvasX, canvasY, canvasX, canvasY);
@@ -347,7 +327,7 @@ canvas1.ontouchmove = ev => {
 
   if (drawMode === 0) {
     let { offsetX, offsetY } = getOffsetFromTouchEvent(ev);
-    let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY);
+    let [canvasX, canvasY] = offsetPosToCanvasPos(offsetX, offsetY, canvas1);
 
     drawAndStore(prevX, prevY, canvasX, canvasY);
     updatePreviousPositions(canvasX, canvasY);
@@ -384,12 +364,11 @@ const setColor = (fillColor, imgData, x, y, w) => {
 }
 
 // Adapted from: http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-// ( Will we have problems with pixels starting out as transparent? )
-const floodFill = (startX, startY, fillColor) => {
-  const spreadColor = ctx1.getImageData(startX, startY, 1, 1).data;
-  const w = canvas1.width;
-  const h = canvas1.height;
-  const imgData = ctx1.getImageData(0, 0, w, h);
+const floodFill = (startX, startY, fillColor, ctx) => {
+  const spreadColor = ctx.getImageData(startX, startY, 1, 1).data;
+  const w = ctx.canvas.width;
+  const h = ctx.canvas.height;
+  const imgData = ctx.getImageData(0, 0, w, h);
 
   const pixelStack = [];
 
@@ -432,304 +411,5 @@ const floodFill = (startX, startY, fillColor) => {
     }
   }
 
-  ctx1.putImageData(imgData, 0, 0);
-}
-
-
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~ Updating Guessers ~~~~~~~~~~~~~~~~~~~~~~~~ */
-const handleDrawingEvent1 = e => {
-  switch (e.type) {
-    case "draw":
-      gctx1.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
-      gctx1.lineWidth = e.data.size;
-      drawSegment1(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
-      break;
-    case "fill":
-      floodFill1(e.data.x, e.data.y, e.data.color);
-      break;
-    default:
-      break;
-  }
-}
-
-
-const drawSegment1 = (previousX, previousY, currentX, currentY) => {
-  gctx1.beginPath(); // This empties the list of things to be drawn by stroke()
-  gctx1.moveTo(previousX, previousY);
-  gctx1.lineTo(currentX, currentY);
-  gctx1.stroke();
-}
-
-const floodFill1 = (startX, startY, fillColor) => {
-  const spreadColor = gctx1.getImageData(startX, startY, 1, 1).data;
-  const w = guesscanvas1.width;
-  const h = guesscanvas1.height;
-  const imgData = gctx1.getImageData(0, 0, w, h);
-
-  const pixelStack = [];
-
-  let curX = startX;
-  let curY = startY;
-
-  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
-
-  pixelStack.push([curX, curY]);
-
-  while (pixelStack.length > 0) {
-    let topAdd = true;
-    let bottomAdd = true;
-    [curX, curY] = pixelStack.pop();
-
-    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
-
-    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
-      setColor(fillColor, imgData, curX, curY, w);
-
-      if (topAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
-          pixelStack.push([curX, curY - 1]);
-          topAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
-      }
-
-      if (bottomAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
-          pixelStack.push([curX, curY + 1]);
-          bottomAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
-      }
-
-      curX += 1;
-    }
-  }
-
-  gctx1.putImageData(imgData, 0, 0);
-}
-
-const handleDrawingEvent2 = e => {
-  switch (e.type) {
-    case "draw":
-      gctx2.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
-      gctx2.lineWidth = e.data.size;
-      drawSegment2(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
-      break;
-    case "fill":
-      floodFill2(e.data.x, e.data.y, e.data.color);
-      break;
-    default:
-      break;
-  }
-}
-
-
-const drawSegment2 = (previousX, previousY, currentX, currentY) => {
-  gctx2.beginPath(); // This empties the list of things to be drawn by stroke()
-  gctx2.moveTo(previousX, previousY);
-  gctx2.lineTo(currentX, currentY);
-  gctx2.stroke();
-}
-
-const floodFill2 = (startX, startY, fillColor) => {
-  const spreadColor = gctx2.getImageData(startX, startY, 1, 1).data;
-  const w = guesscanvas2.width;
-  const h = guesscanvas2.height;
-  const imgData = gctx2.getImageData(0, 0, w, h);
-
-  const pixelStack = [];
-
-  let curX = startX;
-  let curY = startY;
-
-  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
-
-  pixelStack.push([curX, curY]);
-
-  while (pixelStack.length > 0) {
-    let topAdd = true;
-    let bottomAdd = true;
-    [curX, curY] = pixelStack.pop();
-
-    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
-
-    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
-      setColor(fillColor, imgData, curX, curY, w);
-
-      if (topAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
-          pixelStack.push([curX, curY - 1]);
-          topAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
-      }
-
-      if (bottomAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
-          pixelStack.push([curX, curY + 1]);
-          bottomAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
-      }
-
-      curX += 1;
-    }
-  }
-
-  gctx2.putImageData(imgData, 0, 0);
-}
-
-
-/* ~~~~~~~~~~~ Updating Scoreboard ~~~~~~~~~~~*/
-
-
-const handleDrawingEvent3 = e => {
-  switch (e.type) {
-    case "draw":
-      sctx1.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
-      sctx1.lineWidth = e.data.size;
-      drawSegment3(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
-      break;
-    case "fill":
-      floodFill3(e.data.x, e.data.y, e.data.color);
-      break;
-    default:
-      break;
-  }
-}
-
-
-const drawSegment3 = (previousX, previousY, currentX, currentY) => {
-  sctx1.beginPath(); // This empties the list of things to be drawn by stroke()
-  sctx1.moveTo(previousX, previousY);
-  sctx1.lineTo(currentX, currentY);
-  sctx1.stroke();
-}
-
-const floodFill3 = (startX, startY, fillColor) => {
-  const spreadColor = sctx1.getImageData(startX, startY, 1, 1).data;
-  const w = scorecanvas1.width;
-  const h = scorecanvas1.height;
-  const imgData = sctx1.getImageData(0, 0, w, h);
-
-  const pixelStack = [];
-
-  let curX = startX;
-  let curY = startY;
-
-  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
-
-  pixelStack.push([curX, curY]);
-
-  while (pixelStack.length > 0) {
-    let topAdd = true;
-    let bottomAdd = true;
-    [curX, curY] = pixelStack.pop();
-
-    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
-
-    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
-      setColor(fillColor, imgData, curX, curY, w);
-
-      if (topAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
-          pixelStack.push([curX, curY - 1]);
-          topAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
-      }
-
-      if (bottomAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
-          pixelStack.push([curX, curY + 1]);
-          bottomAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
-      }
-
-      curX += 1;
-    }
-  }
-
-  sctx1.putImageData(imgData, 0, 0);
-}
-
-const handleDrawingEvent4 = e => {
-  switch (e.type) {
-    case "draw":
-      sctx2.strokeStyle = rgb2Hex(e.data.color[0], e.data.color[1], e.data.color[2]);
-      sctx2.lineWidth = e.data.size;
-      drawSegment4(e.data.fromX, e.data.fromY, e.data.toX, e.data.toY);
-      break;
-    case "fill":
-      floodFill4(e.data.x, e.data.y, e.data.color);
-      break;
-    default:
-      break;
-  }
-}
-
-
-const drawSegment4 = (previousX, previousY, currentX, currentY) => {
-  sctx2.beginPath(); // This empties the list of things to be drawn by stroke()
-  sctx2.moveTo(previousX, previousY);
-  sctx2.lineTo(currentX, currentY);
-  sctx2.stroke();
-}
-
-const floodFill4 = (startX, startY, fillColor) => {
-  const spreadColor = sctx2.getImageData(startX, startY, 1, 1).data;
-  const w = scorecanvas2.width;
-  const h = scorecanvas2.height;
-  const imgData = sctx2.getImageData(0, 0, w, h);
-
-  const pixelStack = [];
-
-  let curX = startX;
-  let curY = startY;
-
-  if (compareColor(fillColor, imgData, startX, startY, w, h)) return;
-
-  pixelStack.push([curX, curY]);
-
-  while (pixelStack.length > 0) {
-    let topAdd = true;
-    let bottomAdd = true;
-    [curX, curY] = pixelStack.pop();
-
-    while (curX > 0 && compareColor(spreadColor, imgData, curX - 1, curY, w, h)) curX -= 1;
-
-    while (curX < 200 && compareColor(spreadColor, imgData, curX, curY, w, h)) {
-      setColor(fillColor, imgData, curX, curY, w);
-
-      if (topAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY - 1, w, h)) {
-          pixelStack.push([curX, curY - 1]);
-          topAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY - 1, w, h)) topAdd = true;
-      }
-
-      if (bottomAdd) {
-        if (compareColor(spreadColor, imgData, curX, curY + 1, w, h)) {
-          pixelStack.push([curX, curY + 1]);
-          bottomAdd = false;
-        }
-      } else {
-        if (!compareColor(spreadColor, imgData, curX, curY + 1, w, h)) bottomAdd = true;
-      }
-
-      curX += 1;
-    }
-  }
-
-  sctx2.putImageData(imgData, 0, 0);
+  ctx.putImageData(imgData, 0, 0);
 }
