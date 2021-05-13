@@ -130,10 +130,7 @@
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:40vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
             <div class="uk-width-auto uk-padding-remove">
-              <div class="uk-section uk-section-secondary uk-width-expand uk-text-center"
-                style="height:30vh;width:80vw;max-width:680px">
-                <p style="font-size:36px"> Illustration</p>
-              </div>
+              <img data-src="homeImage.jpeg" style="height:30vh;width:80vw;max-width:640px" uk-img>
             </div>
           </div>
         </div>
@@ -303,7 +300,7 @@
               style="height:5vh;width:35vw;max-width:680px">
               <p style="font-size:15px;"> Round Timer (Sec):</p>
             </div>
-            <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
+            <div class="uk-card uk-padding-remove uk-text -center uk-text-middle"
               style="height:5vh;width:10vw;max-width:680px"> </div>
             <input type='text' placeholder='120' id='RoundTimerInput'
               class="uk-input uk-padding-remove uk-text-middle uk-text-center" style="width:13vw" />
@@ -472,9 +469,10 @@
                 style="height:10vh;width:80vw;max-width:680px">
                 <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
                 <div class="uk-card" style="height:1vh;width:40vw"></div>
-                <!-- 
-          <p style="font-size:24px"> Your Room Code Is [TODO]</p>
-          -->
+
+                <p style="font-size:24px"> Your Room Code Is</p>
+                <p id='displayRoom' style='font-size:24px'></p>
+
               </div>
               <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
                 style="height:10vh;width:80vw;max-width:680px">
@@ -1380,7 +1378,7 @@
     socket.on('waitingRoomForPlayer', function (roomId, users) {
       console.debug('waitingRoomForPlayer', { roomId });
       switchToView('waitingRoomForPlayer');
-      displayRoom.innerText += 'You are in room ' + roomId + '! Waiting for host to start game...\n';
+      displayRoom.innerText += roomId.substring(5, roomId.length + 1);
 
       for (var i = 0; i < Object.values(users).length; i++) {
         for (el of playerJoinNotifications) {
