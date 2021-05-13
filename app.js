@@ -172,7 +172,7 @@ io.on('connection', function (socket) {
 
       addUserToLobby(lobbyId, socket, username);
 
-      io.in(lobbyId).emit('broadcastJoined', getUsername(socket));
+      io.in(lobbyId).emit('broadcastJoined', lobbies[lobbyId].users);
     } else {
       socket.emit('errorRoomId');
       return;
@@ -236,7 +236,7 @@ io.on('connection', function (socket) {
     let lobbyId = socket.lobbyId;
     let ld = lib.getLDistance(playerGuess, lobbies[lobbyId].state.roundInfo.compound.word);
     if (ld === 0) {
-      if(!lobbies[lobbyId].state.players[socket.id].doneGuessing){
+      if (!lobbies[lobbyId].state.players[socket.id].doneGuessing) {
         // Calculate guesser score
         let score = lib.calculateScore(lobbies[lobbyId].state.roundInfo.guessCount);
 
@@ -261,7 +261,7 @@ io.on('connection', function (socket) {
       }
     } else if (ld <= 2) {
       socket.emit('closeGuess');
-      io.sockets.in(lobbyId).emit('broadcastClose',lobbies[lobbyId].users[socket.id]);
+      io.sockets.in(lobbyId).emit('broadcastClose', lobbies[lobbyId].users[socket.id]);
     } else {
       io.sockets.in(lobbyId)
         .emit('wrongGuess', playerGuess, socket.id, lobbies[lobbyId].users[socket.id]);
@@ -402,12 +402,14 @@ io.on('connection', function (socket) {
           lobbies[curLobbyId].state.timer.scoreScreenId === null
         ) {
           shouldEndRound = true;
+          removeUserFromLobby(socket);
         }
       } else {
-        io.in(curLobbyId).emit('broadcastLeft', getUsername(socket));
+        removeUserFromLobby(socket);
+        io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
       }
 
-      removeUserFromLobby(socket);
+
 
       if (shouldEndGame) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
@@ -416,6 +418,7 @@ io.on('connection', function (socket) {
       } else if (shouldEndRound) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
         endOfRound(curLobbyId);
+
       }
     }
 
