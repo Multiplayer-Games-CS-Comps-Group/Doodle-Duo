@@ -524,9 +524,9 @@ td {
   color: white;
 }
 
-/* Changed to using width here. Let Tessa know if there are issues w your device*/
-/*@media screen and (max-height: 1000px) {  */
-@media screen and (min-width: 768px) {
+/* Changing to using width here. Let Tessa know if there are issues w your device*/
+/*@media screen and (max-height: 1000px) {*/
+@media screen and (min-width: 1025px) {
 
   .drawer-view {
     display: grid;
