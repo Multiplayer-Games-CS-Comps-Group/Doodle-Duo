@@ -259,6 +259,9 @@
             <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
               <p id='playerJoin2' style="font-size:16px;"></p>
             </div>
+            <div class="uk-card uk-padding-remove uk-text-center" style="height:15vh;width:30vw;max-width:680px">
+              <p id='playerJoin3' style="font-size:16px;"></p>
+            </div>
           </div>
         </div>
 
@@ -765,7 +768,7 @@
     const roundInput = document.getElementById('RoundInput');
     const roundTimer = document.getElementById('RoundTimerInput');
     // Player join notification divs from waiting rooms
-    const playerJoinNotifications = getElementsById('playerJoin playerJoin2');
+    const playerJoinNotifications = getElementsById('playerJoin playerJoin2 playerJoin3');
 
     const spaces = document.getElementById('spacesDisplay');
     // Chat boxes from guesser and drawer views
@@ -1348,20 +1351,49 @@
 
     socket.on('broadcastJoined', function (users) {
 
-      for (el of playerJoinNotifications) {
-        el.innerHTML = ''
 
-        for (var i = 0; i < Object.values(users).length; i++) {
-          el.appendChild(document.createElement('br'));
-          if (i == 0) {
-            el.appendChild(document.createTextNode('[HOST] ' + Object.values(users)[i]));
-          }
-          else {
-            el.appendChild(document.createTextNode(Object.values(users)[i]));
-          }
+      // playerJoin2 == Host
+      // playerJoin == nonHost
+
+      // Player roster for non-host players
+      nonHostPlayers = document.getElementById('playerJoin');
+      nonHostPlayers.innerHTML='';
+      for (var i = 0; i < Object.values(users).length; i++) {
+        nonHostPlayers.appendChild(document.createElement('br'));
+        if (i == 0) {
+          nonHostPlayers.appendChild(document.createTextNode('[HOST] ' + Object.values(users)[i]));
+        }
+        else {
+          nonHostPlayers.appendChild(document.createTextNode(Object.values(users)[i]));
         }
       }
-      console.log(Object.values(users));
+
+      //Player roster for host player
+
+
+      hostPlayersLeft = document.getElementById('playerJoin2');
+      hostPlayersRight = document.getElementById('playerJoin3');
+
+      hostPlayersLeft.innerHTML='';
+      hostPlayersRight.innerHTML='';
+
+      for (var i = 0; i < Math.min(6, Object.values(users).length); i++) {
+        if (i == 0) {
+          hostPlayersLeft.appendChild(document.createTextNode('[HOST] ' + Object.values(users)[i]));
+        }
+        else {
+          hostPlayersLeft.appendChild(document.createTextNode(Object.values(users)[i]));
+        }
+        hostPlayersLeft.appendChild(document.createElement('br'));
+      }
+
+      if (Object.values(users).length > 6) {
+        for (var i = 6; i < Object.values(users).length; i++) {
+          hostPlayersRight.appendChild(document.createTextNode(Object.values(users)[i]));
+          hostPlayersRight.appendChild(document.createElement('br'));
+
+        }
+      }
     });
 
     socket.on('playerDisconnect', function (username) {
@@ -1374,13 +1406,13 @@
         el.innerHTML = ''
 
         for (var i = 0; i < Object.values(users).length; i++) {
-          el.appendChild(document.createElement('br'));
           if (i == 0) {
             el.appendChild(document.createTextNode('[HOST] ' + Object.values(users)[i]));
           }
           else {
             el.appendChild(document.createTextNode(Object.values(users)[i]));
           }
+          el.appendChild(document.createElement('br'));
         }
       }
       console.log(Object.values(users));
@@ -1393,8 +1425,8 @@
 
       for (var i = 0; i < Object.values(users).length; i++) {
         for (el of playerJoinNotifications) {
-          el.appendChild(document.createElement('br'));
           el.appendChild(document.createTextNode(Object.values(users)[i] + '  has joined! \n'));
+          el.appendChild(document.createElement('br'));
         }
       }
       console.log(Object.values(users));
