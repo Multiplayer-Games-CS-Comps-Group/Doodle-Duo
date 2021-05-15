@@ -475,7 +475,7 @@
               </div>
               <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
                 style="height:10vh;width:80vw;max-width:680px">
-                <!-- 
+                <!--
           <input id="gameCodeDisplay" readonly="readonly"class="uk-input" style="width:40vw;max-width:340px;text-align:center"></input>
           <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()" style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click to copy</button>
           -->
@@ -573,16 +573,18 @@
         <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
       </div>
       <div id="gv-info">
-        <div class="players-container">
-          <b>Current Players</b>
-          <table id='players-table'>
-            <tr>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-            <tbody id='pbody'>
-            </tbody>
-          </table>
+        <div class="players-wrapper">
+          <div class="players-container scroll-container">
+            <b>Current Players</b>
+            <table id='players-table'>
+              <tr>
+                <th>Player</th>
+                <th>Score</th>
+              </tr>
+              <tbody id='pbody'>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="guesserWordSpaces">
           <span class="center-content" id="spacesDisplay">_</span>
@@ -674,17 +676,19 @@
             ERROR
           </div>
         </div>
-        <div class="players2-container">
-          <b>Current Players</b>
-          <table id='players2-table'>
-            <tr>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-            <tbody id='p2body'>
+        <div class="players2-wrapper">
+          <div class="players2-container scroll-container">
+            <b>Current Players</b>
+            <table id='players2-table'>
+              <tr>
+                <th>Player</th>
+                <th>Score</th>
+              </tr>
+              <tbody id='p2body'>
 
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div id="dv-chatbox">
