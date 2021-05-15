@@ -1089,7 +1089,9 @@
         addCell.appendChild(playerUsername);
         addCell.appendChild(points);
       }
-
+      postChatMessage('\n------------------------' +
+                     '\n----- New Round! ------\n' +
+                      '------------------------\n');
       console.debug('endRoundScores', { scoresObj });
     });
 

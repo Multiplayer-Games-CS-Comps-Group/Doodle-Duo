@@ -71,7 +71,7 @@
   grid-column-end: 3;
   align-content: center;
   justify-content: center;
-  background-color: #aaaaaa;
+  background-color: #ffffff;
 }
 
 #nameDrawing1 {
@@ -506,7 +506,7 @@ td {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   /*check this*/
-  grid-template-rows: 20% 20% auto;
+  grid-template-rows: 50% 20% auto;
 }
 
 #sv-info {
@@ -664,7 +664,7 @@ td {
   #gv-info {
     grid-column-start: 2;
     grid-column-end: 5;
-    grid-row-start: 4;
+    grid-row-start: 3;
     grid-row-end: 5;
     background-color: #b6d4cf;
     border-radius: 5px;
@@ -676,6 +676,9 @@ td {
   .timeDisplay {
     grid-column-start: 3;
     grid-column-end: 4;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
   }
 
 }
