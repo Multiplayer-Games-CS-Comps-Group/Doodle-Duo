@@ -575,7 +575,7 @@
       <div id="gv-info">
         <div class="players-wrapper">
           <div class="players-container scroll-container">
-            <b>Current Players</b>
+<!--            <b>Current Players</b>-->
             <table id='players-table'>
               <tr>
                 <th>Player</th>
@@ -589,9 +589,11 @@
         <div class="guesserWordSpaces">
           <span class="center-content" id="spacesDisplay">_</span>
         </div>
-        <div class="timeDisplay">
-          <div id="timeRemaining">Time Remaining:</div>
-          <span id="gameTimeDisplay"></span>
+        <div class="timeWrapper">
+          <div class="timeDisplay">
+            <div id="timeRemaining">Time Remaining:</div>
+            <span id="gameTimeDisplay"></span>
+          </div>
         </div>
       </div>
       <div class="chat-box-gv">
@@ -667,18 +669,9 @@
         <canvas class="canvas-style" id="canvas-1" width="200" height="400"></canvas>
       </div>
       <div id="dv-info">
-        <div>
-          <div>Time Remaining:</div>
-          <span id="dGameTimeDisplay"></span>
-        </div>
-        <div class="drawerWordContainer">
-          <div id="wordToDraw">
-            ERROR
-          </div>
-        </div>
         <div class="players2-wrapper">
           <div class="players2-container scroll-container">
-            <b>Current Players</b>
+            <!--            <b>Current Players</b>-->
             <table id='players2-table'>
               <tr>
                 <th>Player</th>
@@ -688,6 +681,17 @@
 
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="drawerWordContainer">
+          <div id="wordToDraw">
+            ERROR
+          </div>
+        </div>
+        <div class="timeWrapper">
+          <div class="timeDisplay">
+            <div>Time Remaining:</div>
+            <span id="dGameTimeDisplay"></span>
           </div>
         </div>
       </div>
@@ -784,6 +788,8 @@
     // Canvas username tags from drawer view
     const nameDrawing1 = document.getElementById('nameDrawing1');
     const nameDrawing2 = document.getElementById('nameDrawing2');
+    const scorenameDrawing1 = document.getElementById('scorenameDrawing1');
+    const scorenameDrawing2 = document.getElementById('scorenameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
     //buttons for controlling drawer view draw mode
@@ -992,6 +998,10 @@
     */
     function startGameButtonClicked() {
       socket.emit('startGame', 8, roundInput.value, roundTimer.value);
+      postChatMessage(
+              '--- Game Started! ---\n' +
+              '-- Player guesses will appear here --\n' +
+              '\n');
     }
 
     function paintbrushButtonClicked() {
@@ -1173,6 +1183,9 @@
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+      // these won't show up until the scoreboard view:
+      scorenameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+      scorenameDrawing2.innerText = 'Doodler: ' + drawerNames[0];
       playerBody.innerHTML = '';
 
       playerList = [];
