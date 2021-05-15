@@ -1136,6 +1136,24 @@
       alert('We recommend a minimum of four players to play this game');
     });
 
+    socket.on('zeroValue', function () {
+      console.debug('zeroValue');
+      //reset();
+      alert('Please enter a value greater than zero');
+    });
+
+    socket.on('integerError', function () {
+      console.debug('inputError');
+      //reset();
+      alert('Please enter an integer');
+    });
+
+    socket.on('inputError', function () {
+      console.debug('inputError');
+      //reset();
+      alert('Please enter a valid input');
+    });
+
     socket.on('drawerView', function (scores, data) {
       console.debug('drawerView', { scores, data });
       drawerNumber = data.drawer;

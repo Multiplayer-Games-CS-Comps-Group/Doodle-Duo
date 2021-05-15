@@ -181,6 +181,12 @@ io.on('connection', function (socket) {
 
   socket.on('startGame', function (maxPlayers, numRounds, roundTimer) {
     let lobbyId = socket.lobbyId;
+
+    if( isNaN(maxPlayers) || isNaN(numRounds) || isNaN(roundTimer) ){
+      socket.emit('inputError');
+      return;
+    }
+  
     if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
     else maxPlayers = parseInt(maxPlayers);
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
@@ -192,6 +198,12 @@ io.on('connection', function (socket) {
 
     if (currentRoomSize < MIN_PLAYERS) {
       socket.emit('tooFewPlayers');
+      return;
+    } else if (parseInt(numRounds) == 0) {
+      socket.emit('zeroValue');
+      return;
+    } else if (parseInt(roundTimer) == 0) {
+      socket.emit('zeroValue');
       return;
     }
 
