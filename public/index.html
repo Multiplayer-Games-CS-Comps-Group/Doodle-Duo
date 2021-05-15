@@ -475,7 +475,7 @@
               </div>
               <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
                 style="height:10vh;width:80vw;max-width:680px">
-                <!-- 
+                <!--
           <input id="gameCodeDisplay" readonly="readonly"class="uk-input" style="width:40vw;max-width:340px;text-align:center"></input>
           <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()" style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click to copy</button>
           -->
@@ -573,23 +573,27 @@
         <div id="nameDrawing2" class="uk-text-center">Doodler 2</div>
       </div>
       <div id="gv-info">
-        <div class="players-container">
-          <b>Current Players</b>
-          <table id='players-table'>
-            <tr>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-            <tbody id='pbody'>
-            </tbody>
-          </table>
+        <div class="players-wrapper">
+          <div class="players-container scroll-container">
+<!--            <b>Current Players</b>-->
+            <table id='players-table'>
+              <tr>
+                <th>Player</th>
+                <th>Score</th>
+              </tr>
+              <tbody id='pbody'>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="guesserWordSpaces">
           <span class="center-content" id="spacesDisplay">_</span>
         </div>
-        <div class="timeDisplay">
-          <div id="timeRemaining">Time Remaining:</div>
-          <span id="gameTimeDisplay"></span>
+        <div class="timeWrapper">
+          <div class="timeDisplay">
+            <div id="timeRemaining">Time Remaining:</div>
+            <span id="gameTimeDisplay"></span>
+          </div>
         </div>
       </div>
       <div class="chat-box-gv">
@@ -665,26 +669,30 @@
         <canvas class="canvas-style" id="canvas-1" width="200" height="400"></canvas>
       </div>
       <div id="dv-info">
-        <div>
-          <div>Time Remaining:</div>
-          <span id="dGameTimeDisplay"></span>
+        <div class="players2-wrapper">
+          <div class="players2-container scroll-container">
+            <!--            <b>Current Players</b>-->
+            <table id='players2-table'>
+              <tr>
+                <th>Player</th>
+                <th>Score</th>
+              </tr>
+              <tbody id='p2body'>
+
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="drawerWordContainer">
           <div id="wordToDraw">
             ERROR
           </div>
         </div>
-        <div class="players2-container">
-          <b>Current Players</b>
-          <table id='players2-table'>
-            <tr>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-            <tbody id='p2body'>
-
-            </tbody>
-          </table>
+        <div class="timeWrapper">
+          <div class="timeDisplay">
+            <div>Time Remaining:</div>
+            <span id="dGameTimeDisplay"></span>
+          </div>
         </div>
       </div>
       <div id="dv-chatbox">
@@ -780,6 +788,8 @@
     // Canvas username tags from drawer view
     const nameDrawing1 = document.getElementById('nameDrawing1');
     const nameDrawing2 = document.getElementById('nameDrawing2');
+    const scorenameDrawing1 = document.getElementById('scorenameDrawing1');
+    const scorenameDrawing2 = document.getElementById('scorenameDrawing2');
     // Word to draw div from drawer view
     const wordToDraw = document.getElementById('wordToDraw');
     //buttons for controlling drawer view draw mode
@@ -988,6 +998,10 @@
     */
     function startGameButtonClicked() {
       socket.emit('startGame', 8, roundInput.value, roundTimer.value);
+      postChatMessage(
+              '--- Game Started! ---\n' +
+              '-- Player guesses will appear here --\n' +
+              '\n');
     }
 
     function paintbrushButtonClicked() {
@@ -1085,7 +1099,9 @@
         addCell.appendChild(playerUsername);
         addCell.appendChild(points);
       }
-
+      postChatMessage('\n------------------------' +
+                     '\n----- New Round! ------\n' +
+                      '------------------------\n');
       console.debug('endRoundScores', { scoresObj });
     });
 
@@ -1167,6 +1183,9 @@
 
       nameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+      // these won't show up until the scoreboard view:
+      scorenameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+      scorenameDrawing2.innerText = 'Doodler: ' + drawerNames[0];
       playerBody.innerHTML = '';
 
       playerList = [];

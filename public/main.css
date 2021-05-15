@@ -1,6 +1,7 @@
 
 /* DEFINITION OF COLORS/THEME */
 :root {
+  --mainGrey: #e9e9e9;
   --turquoise: #79adae;
   --blue: #263fa2;
   --yellow: #e5c83c;
@@ -8,13 +9,13 @@
 }
 
 .header {
-  color: var(--turquoise);
+  color: white;
 }
 
 .title {
   grid-column: 1/-1;
-  background-color: #79adae;
-  color: #f8f8f8;
+  background-color: white;
+  color: white;
   text-align: center;
   justify-content: center;
 }
@@ -71,7 +72,7 @@
   grid-column-end: 3;
   align-content: center;
   justify-content: center;
-  background-color: #aaaaaa;
+  background-color: #ffffff;
 }
 
 #nameDrawing1 {
@@ -107,14 +108,6 @@
 
 }
 
-/*TESSA*/
-/*.guessInput {*/
-/*  grid-column-start: 2;*/
-/*  grid-column-end: 3;*/
-/*  grid-row-start: 2;*/
-/*  grid-row-end: 4;*/
-/*}*/
-
 .guessInput {
   height: 40px;
   width: calc(100% - 4px);
@@ -139,6 +132,9 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 .drawerToolboxContainer {
@@ -167,7 +163,6 @@ text {
   padding-right: 15px;
   font-family: "Lucida Console", "Courier New", monospace;
 }
-
 
 .text {
   font-size: 40px;
@@ -345,33 +340,75 @@ td {
 
 /*check this*/
 .players-container {
-  padding: 5px;
+  padding: 10px;
+  width: 60%;
+  margin-left: 30px;
+  align-self: center;
+  height:80%;
+  background-color: white;
+  border-radius: 5px;
+  align-content: center;
+  text-align: center;
+}
+
+.scroll-container {
+  overflow: scroll;
+}
+
+.players-wrapper {
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 3;
   width: 100%;
   height:100%;
+  align-items: center;
   align-content: center;
+  justify-content: center;
+  overflow-y: scroll;
+}
+
+.players2-wrapper {
+  width: 100%;
+  height:100%;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  overflow-y: scroll;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
 }
 
 .players2-container {
-  padding: 5px;
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 1;
-  grid-row-end: 3;
-  width: 100%;
-  height:100%;
+  width: 60%;
+  margin-left: 30px;
+  align-self: center;
+  height:80%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
   align-content: center;
+  text-align: center;
 }
 
-
-/*check this*/
-.timeDisplay {
-  padding: 5px;
+.timeWrapper {
   grid-column-start: 3;
   grid-column-end: 4;
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.timeDisplay {
+  padding: 5px;
+  background-color: white;
+  margin: 10px;
+  align-self: center;
 }
 
 #dv-canvas-controls {
@@ -383,7 +420,7 @@ td {
 
 #dv-controls-outer-container {
   display: inline-block;
-  background-color: #efe0ab;
+  background-color: #ffffff;
   padding: 10px;
   border-radius: 10px; /* https://stackoverflow.com/a/31617496 - Absolute units are important for border-radius */
   -webkit-box-shadow: 2px 8px 14px 0px rgba(0,0,0,0.22);
@@ -458,7 +495,7 @@ td {
   padding: 5px;
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: #b6d4cf;
+  background-color: var(--mainGrey);
   border-radius: 5px;
   display: inline-grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -469,19 +506,19 @@ td {
   grid-column-start: 2;
   grid-column-end: 5;
   grid-row-start: 4;
-  background-color: #b6d4cf;
+  background-color: var(--mainGrey);
   border-radius: 5px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   /*check this*/
-  grid-template-rows: 20% 20% auto;
+  grid-template-rows: 50% 20% auto;
 }
 
 #sv-info {
   grid-column-start: 2;
   grid-column-end: 5;
   height: 100%;
-  background-color: #b6d4cf;
+  background-color: var(--mainGrey);
   border-radius: 5px;
 }
 
@@ -489,20 +526,20 @@ td {
 #dv-chatbox {
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: #aaa;
+  background-color: #e2e2e2;
 }
 
 .chat-box-gv {
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: #aaa;
+  background-color: #e2e2e2;
   grid-row-start: 5;
 }
 
 .chat-box-sv {
   grid-column-start: 2;
   grid-column-end: 5;
-  background-color: #aaa;
+  background-color: #e2e2e2;
 }
 
 /*.guessInput {*/
@@ -517,7 +554,7 @@ td {
   margin-left: -60px;
   /*height: 25px;*/
   width: 60px;
-  background: blue;
+  background: #323232;
   color: white;
   border: 0;
   -webkit-appearance: none;
@@ -527,8 +564,6 @@ td {
   color: white;
 }
 
-/* Changing to using width here. Let Tessa know if there are issues w your device*/
-/*@media screen and (max-height: 1000px) {*/
 @media screen and (min-width: 1025px) {
 
   .drawer-view {
@@ -562,11 +597,15 @@ td {
   }
 
   .players-container {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    width: 100%;
-    height:100%;
+    width: 60%;
+    margin-left: 20px;
+    align-self: center;
+    height:80%;
+    background-color: white;
+    border-radius: 5px;
     align-content: center;
+    padding: 5px;
+    text-align: center;
   }
 
   .guessInput {
@@ -580,7 +619,7 @@ td {
     margin-left: -50px;
     /*height: 25px;*/
     width: 50px;
-    background: blue;
+    background: #2d2d2d;
     color: white;
     border: 0;
     -webkit-appearance: none;
@@ -621,7 +660,7 @@ td {
     padding: 5px;
     grid-column-start: 2;
     grid-column-end: 5;
-    background-color: #b6d4cf;
+    background-color: var(--mainGrey);
     border-radius: 5px;
     display: inline-grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -630,9 +669,9 @@ td {
   #gv-info {
     grid-column-start: 2;
     grid-column-end: 5;
-    grid-row-start: 4;
+    grid-row-start: 3;
     grid-row-end: 5;
-    background-color: #b6d4cf;
+    background-color: var(--mainGrey);
     border-radius: 5px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -642,6 +681,9 @@ td {
   .timeDisplay {
     grid-column-start: 3;
     grid-column-end: 4;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
   }
 
 }
