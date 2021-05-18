@@ -18,10 +18,11 @@
   color: white;
   text-align: center;
   justify-content: center;
+  height: 150px;
 }
 
 .titleImage {
-  height: 100px;
+  height: 150%;
 }
 
 
@@ -45,13 +46,24 @@
   top: -30px;
 }
 
-@media (min-width: 481px) and (max-width: 2560px) {
+@media (min-width: 1000px) and (max-width: 2560px) {
   .center {
-    max-width: 35%; 
+    max-width: 35%;
     height:auto;
   }
   .center2 {
-    max-width: 35%; 
+    max-width: 35%;
+    height:auto;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1000px) {
+  .center {
+    max-width: 35%;
+    height:auto;
+  }
+  .center2 {
+    max-width: 85%;
     height:auto;
   }
 }
@@ -361,7 +373,6 @@ td {
   display: grid;
   height: 90vh;
   grid-template-columns: 1fr auto 0.2fr auto 1fr;
-  /*grid-template-rows: 160px auto 50px 16% 15% 0.7fr; TESSa*/
   grid-template-rows: auto auto 10px 10% 20% 1fr;
   gap: 5px;
 }
@@ -680,7 +691,7 @@ td {
   #dv-chatbox {
     grid-column-start: 4;
     grid-column-end: 5;
-    background-color: #aaa;
+    background-color: #e2e2e2;
     grid-row-start: 2;
     grid-row-end: 3;
   }
@@ -690,7 +701,7 @@ td {
     grid-row-end: 4;
     grid-column-start: 5;
     grid-column-end: 6;
-    background-color: #aaa;
+    background-color: #e2e2e2;
   }
 
   .chat-box-sv {
@@ -698,7 +709,7 @@ td {
     grid-row-end: 4;
     grid-column-start: 5;
     grid-column-end: 6;
-    background-color: #aaa;
+    background-color: #e2e2e2;
   }
 
   #dv-info {
