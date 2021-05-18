@@ -1146,6 +1146,12 @@
       alert('Please enter a value greater than zero');
     });
 
+    socket.on('gameInProgress', function () {
+      console.debug('gameInProgress');
+      reset();
+      alert('The lobby you\'re attempting to join is already in progress');
+    });
+
     socket.on('integerError', function () {
       console.debug('inputError');
       //reset();

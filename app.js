@@ -165,6 +165,11 @@ io.on('connection', function (socket) {
         return;
       }
 
+      if (Object.keys(lobbies[lobbyId].state).length !== 0) {
+        socket.emit('gameInProgress');
+        return;
+      }
+
       if (username === '') {
         username = 'Player ' + (getRoomSize(lobbyId) + 1);
       }
