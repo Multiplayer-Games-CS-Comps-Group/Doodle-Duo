@@ -432,9 +432,9 @@ io.on('connection', function (socket) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
         endOfRound(curLobbyId);
       }
-    }
 
-    if (shouldBroadcast) io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
+      if (shouldBroadcast) io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
+    }
   });
 });
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
