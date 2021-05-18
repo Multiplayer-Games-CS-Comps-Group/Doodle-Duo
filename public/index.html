@@ -121,9 +121,8 @@
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
             <div class="uk-width-auto uk-padding-remove">
-              <div class="imgbox">
-                <img src="doodleDuo.png" class='center' uk-img>
-              </div>
+              <img data-src="doodleDuoEdited.png" style="height:30vw ;max-height:15vh; width:80vw;max-width:380px"
+                uk-img>
             </div>
           </div>
         </div>
@@ -131,8 +130,8 @@
         <!-- Central Image-->
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:40vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
-            <div class="uk-width-auto">
-              <img src="homeImage1.jpeg" class = 'center2' uk-img>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="homeImage1.jpeg" style="height:40vw;max-height:30vh;width:80vw;max-width:580px" uk-img>
             </div>
           </div>
         </div>
@@ -143,8 +142,8 @@
             <div class="uk-width-auto uk-padding-remove uk-flex-center uk-flex-middle">
               <div class="uk-margin">
                 <div class="uk-card" style="height:1vh; padding-top: 1em"></div>
-                <input class="uk-input" type="text" placeholder="Enter Player Name" id='nameInput'
-                autocorrect="off" spellcheck="false" autocomplete="off" style="text-align:center">
+                <input class="uk-input" type="text" placeholder="Enter Player Name" id='nameInput' autocorrect="off"
+                  spellcheck="false" autocomplete="off" style="text-align:center">
               </div>
             </div>
           </div>
@@ -160,8 +159,8 @@
                 style="height:20vh;width:40vw;text-align:center;max-width:340px">
                 <p style="font-size: 16px;"> Join A Lobby </p>
                 <div class="uk-margin" uk-margin>
-                  <input class="uk-input" type="text" placeholder="Room Code" id='roomIdInput'
-                    autocorrect="off" spellcheck="false" autocomplete="off"
+                  <input class="uk-input" type="text" placeholder="Room Code" id='roomIdInput' autocorrect="off"
+                    spellcheck="false" autocomplete="off"
                     style="width:37vw;font-size:15px;height:5vh;text-align:center;max-width:320px">
                   <button class="uk-button uk-button-primary" onclick="joinButtonClicked()"
                     style="width:37vw;font-size:15px;height:5vh;text-transform:none;text-align:center;max-width:320px">Join</button>
@@ -216,7 +215,32 @@
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
             <div class="uk-width-auto uk-padding-remove">
-              <img data-src="doodleDuo.png" class='center' uk-img>
+              <img data-src="doodleDuoEdited.png" style="height:30vw ;max-height:15vh; width:80vw;max-width:380px"
+                uk-img>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ID Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
+          <div
+            class="uk-padding-remove uk-height-1-1 uk-marging-remove uk-flex uk-flex-column uk-flex-column uk-flex-middle">
+            <div class="uk-width-auto uk-padding-remove" style=height:20vh>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
+                <div class="uk-card" style="height:1vh;width:40vw"></div>
+                <p style="font-size:24px"> Your Room Code Is</p>
+              </div>
+              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
+                style="height:10vh;width:80vw;max-width:680px">
+                <input id="gameCodeDisplay" readonly="readonly" class="uk-input"
+                  style="width:40vw;max-width:340px;text-align:center"></input>
+                <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()"
+                  style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click
+                  to copy</button>
+              </div>
             </div>
           </div>
         </div>
@@ -272,8 +296,7 @@
             </div>
             <div class="uk-card uk-padding-remove uk-text-center uk-text-middle"
               style="height:5vh;width:10vw;max-width:680px"> </div>
-            <input type='text' value='6' id='RoundInput'
-              autocorrect="off" spellcheck="false" autocomplete="off"
+            <input type='text' value='6' id='RoundInput' autocorrect="off" spellcheck="false" autocomplete="off"
               class="uk-input uk-padding-remove uk-text-middle uk-text-center" style="width:13vw" />
           </div>
 
@@ -285,36 +308,12 @@
             </div>
             <div class="uk-card uk-padding-remove uk-text -center uk-text-middle"
               style="height:5vh;width:10vw;max-width:680px"> </div>
-            <input type='text' value='120' id='RoundTimerInput'
-              autocorrect="off" spellcheck="false" autocomplete="off"
+            <input type='text' value='120' id='RoundTimerInput' autocorrect="off" spellcheck="false" autocomplete="off"
               class="uk-input uk-padding-remove uk-text-middle uk-text-center" style="width:13vw" />
           </div>
 
         </div>
 
-
-        <!-- ID Section-->
-        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:20vh>
-          <div
-            class="uk-padding-remove uk-height-1-1 uk-marging-remove uk-flex uk-flex-column uk-flex-column uk-flex-middle">
-            <div class="uk-width-auto uk-padding-remove" style=height:20vh>
-              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
-                style="height:10vh;width:80vw;max-width:680px">
-                <!-- Spacer box becuase I couldn't figure out how to push the button down without manually moving it like this-->
-                <div class="uk-card" style="height:1vh;width:40vw"></div>
-                <p style="font-size:24px"> Your Room Code Is</p>
-              </div>
-              <div class="uk-section uk-width-expand uk-text-center uk-padding-remove"
-                style="height:10vh;width:80vw;max-width:680px">
-                <input id="gameCodeDisplay" readonly="readonly" class="uk-input"
-                  style="width:40vw;max-width:340px;text-align:center"></input>
-                <button class="uk-button uk-button-primary uk-button-small" id="copy-room-code" onclick="copyLobbyId()"
-                  style="width:30vw;height:40px;font-size:14px;text-transform:none;text-align:center;max-width:120px">Click
-                  to copy</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
 
         <!-- Start Game Button -->
@@ -360,12 +359,12 @@
           </div>
         </div>
 
-
         <!-- Title Section-->
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
             <div class="uk-width-auto uk-padding-remove">
-              <img data-src="doodleDuo.png" class='center' uk-img>
+              <img data-src="doodleDuoEdited.png" style="height:30vw ;max-height:15vh; width:80vw;max-width:380px"
+                uk-img>
             </div>
           </div>
         </div>
@@ -463,7 +462,8 @@
         <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
             <div class="uk-width-auto uk-padding-remove">
-              <img data-src="doodleDuo.png" class='center' uk-img>
+              <img data-src="doodleDuoEdited.png" style="height:30vw ;max-height:15vh; width:80vw;max-width:380px"
+                uk-img>
             </div>
           </div>
         </div>
@@ -584,7 +584,7 @@
       <div id="gv-info">
         <div class="players-wrapper">
           <div class="players-container scroll-container">
-<!--            <b>Current Players</b>-->
+            <!--            <b>Current Players</b>-->
             <table id='players-table'>
               <tr>
                 <th>Player</th>
@@ -1008,9 +1008,9 @@
     function startGameButtonClicked() {
       socket.emit('startGame', 8, roundInput.value, roundTimer.value);
       postChatMessage(
-              '--- Game Started! ---\n' +
-              '-- Player guesses will appear here --\n' +
-              '\n');
+        '--- Game Started! ---\n' +
+        '-- Player guesses will appear here --\n' +
+        '\n');
     }
 
     function paintbrushButtonClicked() {
@@ -1109,8 +1109,8 @@
         addCell.appendChild(points);
       }
       postChatMessage('\n------------------------' +
-                     '\n----- New Round! ------\n' +
-                      '------------------------\n');
+        '\n----- New Round! ------\n' +
+        '------------------------\n');
       console.debug('endRoundScores', { scoresObj });
     });
 
@@ -1403,7 +1403,7 @@
 
       // Player roster for non-host players
       nonHostPlayers = document.getElementById('playerJoin');
-      nonHostPlayers.innerHTML='';
+      nonHostPlayers.innerHTML = '';
       for (var i = 0; i < Object.values(users).length; i++) {
         nonHostPlayers.appendChild(document.createElement('br'));
         if (i == 0) {
@@ -1420,8 +1420,8 @@
       hostPlayersLeft = document.getElementById('playerJoin2');
       hostPlayersRight = document.getElementById('playerJoin3');
 
-      hostPlayersLeft.innerHTML='';
-      hostPlayersRight.innerHTML='';
+      hostPlayersLeft.innerHTML = '';
+      hostPlayersRight.innerHTML = '';
 
       for (var i = 0; i < Math.min(6, Object.values(users).length); i++) {
         if (i == 0) {
