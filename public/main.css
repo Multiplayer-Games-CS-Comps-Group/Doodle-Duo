@@ -717,7 +717,8 @@ td {
   }
 
   #dv-info {
-    padding: 5px;
+    height: 140px;
+    padding: 0px;
     grid-column-start: 2;
     grid-column-end: 5;
     background-color: var(--mainGrey);
@@ -727,6 +728,7 @@ td {
   }
 
   #gv-info {
+    height:175px;
     grid-column-start: 2;
     grid-column-end: 5;
     grid-row-start: 3;
