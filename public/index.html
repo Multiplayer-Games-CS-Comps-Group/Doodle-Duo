@@ -1360,36 +1360,6 @@
       }
     });
 
-    socket.on('updateScore2', function (gameState, username) {
-      playerList = [];
-      for (let player in gameState) {
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i < playerList.length; i++) {
-        if (playerList[i].username === username) {
-          console.log('someoneGuessed');
-          document.getElementById(username + '2').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('updateScore2', function (gameState, username) {
-      playerList = [];
-      for (let player in gameState) {
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i < playerList.length; i++) {
-        if (playerList[i].username === username) {
-          console.log('someoneGuessed');
-          document.getElementById(username + 'score').innerText = playerList[i].score;
-        }
-      }
-    });
-
     socket.on('closeGuess', function () {
       console.debug('closeGuess');
       postChatMessage('Your guess was close...');
