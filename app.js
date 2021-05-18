@@ -386,6 +386,8 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function () {
     console.log('A user disconnected');
 
+    let shouldBroadcast = false;
+
     if (socket.lobbyId) {
       let curLobbyId = socket.lobbyId;
       let shouldEndRound = false;
@@ -414,14 +416,12 @@ io.on('connection', function (socket) {
           lobbies[curLobbyId].state.timer.scoreScreenId === null
         ) {
           shouldEndRound = true;
-          removeUserFromLobby(socket);
         }
       } else {
-        removeUserFromLobby(socket);
-        io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
+        shouldBroadcast = true;
       }
 
-
+      removeUserFromLobby(socket);
 
       if (shouldEndGame) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
@@ -430,10 +430,10 @@ io.on('connection', function (socket) {
       } else if (shouldEndRound) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
         endOfRound(curLobbyId);
-
       }
     }
 
+    if (shouldBroadcast) io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
   });
 });
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
