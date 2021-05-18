@@ -179,7 +179,7 @@ function calculateScore(guessCount) {
  *   ['fdef0efe', 'Bob' 0, 0]
  * ]
  */
-function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
+function createGameInstance(userIdList, numRounds, roundTimer) {
   let players = {};
   for (let userId of userIdList) {
     players[userId] = {
@@ -197,7 +197,6 @@ function createGameInstance(userIdList, maxPlayers, numRounds, roundTimer) {
   let gameInstance = {
     players,
     rules: {
-      maxPlayers,
       numRounds,
       roundTimer,
     },

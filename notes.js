@@ -22,7 +22,6 @@ lobbies = {
         //...
       },
       rules: {
-        maxPlayers: 12,
         numRounds: 8,
         roundTimer: 45, //seconds
       },

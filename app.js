@@ -23,7 +23,6 @@ app.get('/', function (req, res) {
 const MAX_LOBBY_SIZE = 12;
 const MIN_PLAYERS = 3;
 
-const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
@@ -184,16 +183,14 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('startGame', function (maxPlayers, numRounds, roundTimer) {
+  socket.on('startGame', function (numRounds, roundTimer) {
     let lobbyId = socket.lobbyId;
 
-    if( isNaN(maxPlayers) || isNaN(numRounds) || isNaN(roundTimer) ){
+    if( isNaN(numRounds) || isNaN(roundTimer) ){
       socket.emit('inputError');
       return;
     }
   
-    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
-    else maxPlayers = parseInt(maxPlayers);
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
     else numRounds = parseInt(numRounds);
     if (roundTimer === '') roundTimer = DEFAULT_ROUND_TIMER;
@@ -216,7 +213,6 @@ io.on('connection', function (socket) {
 
     lobbies[lobbyId].state = lib.createGameInstance(
       currentUserIds,
-      maxPlayers,
       numRounds,
       roundTimer
     );

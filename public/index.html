@@ -1001,7 +1001,7 @@
     * onclick function for start game button
     */
     function startGameButtonClicked() {
-      socket.emit('startGame', 8, roundInput.value, roundTimer.value);
+      socket.emit('startGame', roundInput.value, roundTimer.value);
       postChatMessage(
         '--- Game Started! ---\n' +
         '-- Player guesses will appear here --\n' +
