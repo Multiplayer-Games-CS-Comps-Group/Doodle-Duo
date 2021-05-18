@@ -1001,7 +1001,7 @@
     * onclick function for start game button
     */
     function startGameButtonClicked() {
-      socket.emit('startGame', 8, roundInput.value, roundTimer.value);
+      socket.emit('startGame', roundInput.value, roundTimer.value);
       postChatMessage(
         '--- Game Started! ---\n' +
         '-- Player guesses will appear here --\n' +
@@ -1146,6 +1146,12 @@
       alert('Please enter a value greater than zero');
     });
 
+    socket.on('gameInProgress', function () {
+      console.debug('gameInProgress');
+      reset();
+      alert('The lobby you\'re attempting to join is already in progress');
+    });
+
     socket.on('integerError', function () {
       console.debug('inputError');
       //reset();
@@ -1159,6 +1165,10 @@
     });
 
     socket.on('drawerView', function (scores, data) {
+      let drawerNames = getDrawerNames(scores);
+      scorenameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
+      scorenameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
+
       console.debug('drawerView', { scores, data });
       drawerNumber = data.drawer;
       switchToView('drawerView');
@@ -1207,7 +1217,7 @@
       nameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
       // these won't show up until the scoreboard view:
       scorenameDrawing1.innerText = 'Doodler: ' + drawerNames[0];
-      scorenameDrawing2.innerText = 'Doodler: ' + drawerNames[0];
+      scorenameDrawing2.innerText = 'Doodler: ' + drawerNames[1];
       playerBody.innerHTML = '';
 
       playerList = [];
@@ -1346,36 +1356,6 @@
         if (playerList[i].username === username) {
           console.log('someoneGuessed');
           document.getElementById(username + '2').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('updateScore2', function (gameState, username) {
-      playerList = [];
-      for (let player in gameState) {
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i < playerList.length; i++) {
-        if (playerList[i].username === username) {
-          console.log('someoneGuessed');
-          document.getElementById(username + '2').innerText = playerList[i].score;
-        }
-      }
-    });
-
-    socket.on('updateScore2', function (gameState, username) {
-      playerList = [];
-      for (let player in gameState) {
-        let playerObj = gameState[player];
-        playerList.push(playerObj);
-      }
-
-      for (var i = 0; i < playerList.length; i++) {
-        if (playerList[i].username === username) {
-          console.log('someoneGuessed');
-          document.getElementById(username + 'score').innerText = playerList[i].score;
         }
       }
     });

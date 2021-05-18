@@ -23,11 +23,10 @@ app.get('/', function (req, res) {
 const MAX_LOBBY_SIZE = 12;
 const MIN_PLAYERS = 3;
 
-const DEFAULT_MAX_PLAYERS = 12;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 15;
+const SCORE_DISPLAY_TIMER = 3;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
@@ -165,6 +164,11 @@ io.on('connection', function (socket) {
         return;
       }
 
+      if (Object.keys(lobbies[lobbyId].state).length !== 0) {
+        socket.emit('gameInProgress');
+        return;
+      }
+
       if (username === '') {
         username = 'Player ' + (getRoomSize(lobbyId) + 1);
       }
@@ -179,16 +183,14 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('startGame', function (maxPlayers, numRounds, roundTimer) {
+  socket.on('startGame', function (numRounds, roundTimer) {
     let lobbyId = socket.lobbyId;
 
-    if( isNaN(maxPlayers) || isNaN(numRounds) || isNaN(roundTimer) ){
+    if( isNaN(numRounds) || isNaN(roundTimer) ){
       socket.emit('inputError');
       return;
     }
   
-    if (maxPlayers === '') maxPlayers = DEFAULT_MAX_PLAYERS;
-    else maxPlayers = parseInt(maxPlayers);
     if (numRounds === '') numRounds = DEFAULT_NUM_ROUNDS;
     else numRounds = parseInt(numRounds);
     if (roundTimer === '') roundTimer = DEFAULT_ROUND_TIMER;
@@ -199,10 +201,10 @@ io.on('connection', function (socket) {
     if (currentRoomSize < MIN_PLAYERS) {
       socket.emit('tooFewPlayers');
       return;
-    } else if (parseInt(numRounds) == 0) {
+    } else if (parseInt(numRounds) <= 0) {
       socket.emit('zeroValue');
       return;
-    } else if (parseInt(roundTimer) == 0) {
+    } else if (parseInt(roundTimer) <= 0) {
       socket.emit('zeroValue');
       return;
     }
@@ -211,7 +213,6 @@ io.on('connection', function (socket) {
 
     lobbies[lobbyId].state = lib.createGameInstance(
       currentUserIds,
-      maxPlayers,
       numRounds,
       roundTimer
     );
@@ -396,10 +397,10 @@ io.on('connection', function (socket) {
       if (Object.keys(lobbies[curLobbyId].state).length !== 0) {
         io.sockets.in(curLobbyId).emit('playerDisconnect', getUsername(socket));
 
-        const numRoundsLeft = lobbies[curLobbyId].state.rules.numRounds - lobbies[curLobbyId].state.roundInfo.round - 1;
+        const numRounds = lobbies[curLobbyId].state.rules.numRounds;
 
         lobbies[curLobbyId].state.meta.drawPairs = lib.getDrawPairs(
-          lib.getGameWords(numRoundsLeft),
+          lib.getGameWords(numRounds),
           Object.keys(lobbies[curLobbyId].users).filter(id => id != socket.id)
         );
 
@@ -431,9 +432,9 @@ io.on('connection', function (socket) {
         clearInterval(lobbies[curLobbyId].state.timer.id);
         endOfRound(curLobbyId);
       }
-    }
 
-    if (shouldBroadcast) io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
+      if (shouldBroadcast) io.in(curLobbyId).emit('broadcastLeft', lobbies[curLobbyId].users);
+    }
   });
 });
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SocketIO END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
