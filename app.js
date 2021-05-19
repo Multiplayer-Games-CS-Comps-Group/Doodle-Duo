@@ -26,7 +26,7 @@ const MIN_PLAYERS = 3;
 const DEFAULT_NUM_ROUNDS = 8;
 const DEFAULT_ROUND_TIMER = 45;
 
-const SCORE_DISPLAY_TIMER = 3;
+const SCORE_DISPLAY_TIMER = 15;
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Game Constants END ~~~~~~~~~~~~~~~~~~~~~~~~~~~  **/
 
 
