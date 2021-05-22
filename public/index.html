@@ -109,8 +109,8 @@
           <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
             <div class="uk-width-auto uk-position-top-left uk-padding-remove">
               <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
-                <!-- <a class="uk-link-muted" onClick="howToPlayClicked()"
-                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> How To Play</a> -->
+                < <a class="uk-link-muted" onClick="contactInfo()"
+                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> Contact us!</a> >
               </div>
             </div>
           </div>
@@ -430,6 +430,74 @@
   </div>
 
   <!-- ####### -->
+
+
+
+
+  <!-- ####### -->
+
+  <!-- Contact Info Screen-->
+
+  <div id='contact-info-screen' style="display:none">
+
+    <!-- Background Image Render [currently not working b/c we're using the changing background]-->
+    <div class="uk-height-viewport uk-flex uk-flex-column uk-background-cover uk-padding-remove">
+
+      <!-- TODO: When Desktop mode written, replace below non-commented line with:  <div class="uk-hidden@s uk-height-viewport uk-width-1-1" style=height:100vh>-->
+      <div class="uk-height-viewport uk-width-1-1" style=height:100vh>
+
+        <!-- NavBar-like Top Of Window-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:4vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-padding-remove" uk-grid>
+            <div class="uk-width-auto uk-position-top-left uk-padding-remove">
+              <div class="uk-card uk-padding-small uk-padding-remove-vertical" style=height:4vh>
+                <a class="uk-link-muted" onClick="backHome()"
+                  style="font-size: 16px;text-decoration:underline;font-weight:bold;"> Back to Home </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Title Section-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:15vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <img data-src="doodleDuoEdited.png" style="height:auto; width:80vw;max-width:380px" uk-img>
+            </div>
+          </div>
+        </div>
+
+        <!-- Central Image-->
+        <div class="uk-section uk-width-1-1 uk-padding-remove" style=height:10vh>
+          <div class="uk-padding-remove uk-height-1-1 uk-margin-remove uk-flex-center uk-flex-middle" uk-grid>
+            <div class="uk-width-auto uk-padding-remove">
+              <div class="uk-section uk-section-secondary uk-width-expand uk-text-center"
+                style="height:30vh;width:80vw;max-width:680px;">
+                <p style="font-size:36px">Contact us: bugs@doodleduo.com</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ####### -->
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -760,6 +828,7 @@
       waitingRoomForHost: document.getElementById('waiting-room-host'),
       waitingRoomForPlayer: document.getElementById('waiting-room-player'),
       howToPlayScreen: document.getElementById('how-to-play-screen'),
+      contactInfoScreen: document.getElementById('contact-info-screen'),
       example: document.getElementById('example'),
       guesserView: document.getElementById('guesser-view'),
       drawerView: document.getElementById('drawer-view'),
@@ -997,6 +1066,14 @@
     function howToPlayClicked() {
       switchToView('howToPlayScreen');
     }
+
+    /**
+     * onclick function for how to play text/button
+     */
+    function contactInfo() {
+      switchToView('contactInfoScreen');
+    }
+
     /**
     * onclick function for start game button
     */
