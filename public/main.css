@@ -8,6 +8,12 @@
   --red: #7e1818;
 }
 
+html *
+{
+  font-family: 'Coming Soon', cursive!important;
+  font-style: bold !important;
+}
+
 body {
   height: 100vh;
 }
